@@ -1,0 +1,9 @@
+/* ===== START YOUR CUSTOMIZATIONS HERE ===== */
+/* loading ajax */
+.loading {
+	background: url(../images/loading.gif) no-repeat center;
+	width: 100%;
+	height:25px;
+	text-align: center;
+	margin-top:15px;
+}
