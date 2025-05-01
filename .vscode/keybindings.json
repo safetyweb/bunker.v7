@@ -1,0 +1,14 @@
+[
+    {
+        "key": "ctrl+e",
+        "command": "extension.htmlEntities"
+    },
+    {
+        "key": "shift+alt+u",
+        "command": "editor.action.transformToUppercase"
+    },
+    {
+        "key": "shift+alt+l",
+        "command": "editor.action.transformToLowercase"
+    }
+]
