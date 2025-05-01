@@ -1,0 +1,9 @@
+<?php
+
+$User=array('login'=>'effmail',
+            'senha'=>'LbtHPymim6U=',
+            'URLWSDL'=>'http://www.cliente.email/effectivemail/v2/api.asmx?wsdl');
+                        
+$Userv2=array('login'=>'effmail',
+            'senha'=>'LbtHPymim6U=',
+            'URLWSDL'=>'http://www.cliente.email/effectivemail/v2/apiv2.asmx');

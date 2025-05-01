@@ -1,0 +1,176 @@
+<?php
+ $sql1 = "SELECT TIP_RETORNO FROM EMPRESAS WHERE COD_EMPRESA =". $arraydados['cod_empresa'];
+    $arrayQuery = mysqli_query($arraydados['conadm'],$sql1);
+    $qrBuscaEmpresa = mysqli_fetch_assoc($arrayQuery);
+    $tip_retorno = $qrBuscaEmpresa['TIP_RETORNO'];
+    if($tip_retorno == 1){$casasDec = 0;}else{$casasDec = 2;}
+	
+$ARRAY_UNIDADE1=array(
+                            'sql'=>"select COD_UNIVEND,cod_empresa,nom_fantasi,NOM_UNIVEND from unidadevenda where cod_empresa=".$arraydados['cod_empresa']."  and cod_exclusa=0",
+                            'cod_empresa'=>$arraydados['cod_empresa'],
+                            'conntadm'=>$arraydados['conadm'],
+                            'IN'=>'N',
+                            'nomecampo'=>'',
+                            'conntemp'=>'',
+                            'SQLIN'=> ""   
+                            );
+    $ARRAY_UNIDADE=fnUnivend($ARRAY_UNIDADE1); 
+$tags = explode(',',$arraydados['TAGS']);                        
+       $sql = "SELECT   C.COD_EMPRESA,
+                         C.COD_CLIENTE,
+                         C.NOM_CLIENTE,
+                         C.DES_EMAILUS,
+                         C.DAT_NASCIME,
+                         C.COD_UNIVEND,
+                               (SELECT 
+                                        MIN(DAT_EXPIRA) AS DAT_EXPIRA
+                                FROM creditosdebitos 
+                                            WHERE DAT_EXPIRA >= NOW() AND  cod_CLIENTE=C.cod_CLIENTE) AS DAT_EXPIRA,
+
+                                   FORMAT((SELECT 
+                                                IFNULL((SELECT Sum(val_saldo) FROM creditosdebitos f 
+                                                WHERE f.cod_cliente = cred.cod_cliente AND 
+                                                                f.tip_credito = 'C' AND 
+                                                                f.cod_statuscred = 1 AND 
+                                                                f.tip_campanha = cred.tip_campanha AND 
+                                                                (( f.log_expira = 'S' AND DATE_FORMAT(f.dat_expira, '%Y-%m-%d') >= Date_format(Now(), '%Y-%m-%d') ) OR ( f.log_expira = 'N' ) )),0)+
+                                                IFNULL((SELECT Sum(val_saldo) FROM creditosdebitos_bkp g
+                                                WHERE g.cod_cliente = cred.cod_cliente AND 
+                                                                g.tip_credito = 'C' AND 
+                                                                g.cod_statuscred = 1 AND 
+                                                                g.tip_campanha = cred.tip_campanha AND 
+                                                                ((g.log_expira = 'S' AND DATE_FORMAT(g.dat_expira, '%Y-%m-%d') >= Date_format(Now(), '%Y-%m-%d') ) OR (g.log_expira = 'N' ) )),0) AS CREDITO_DISPONIVEL
+                                                                FROM creditosdebitos cred 
+                                                                WHERE cred.cod_cliente=C.cod_CLIENTE
+                                                                GROUP BY cred.cod_cliente ),$casasDec,'pt_BR') AS CREDITO_DISPONIVEL
+                        FROM clientes C 
+                        INNER JOIN $arraydados[table_join] EC ON EC.COD_CLIENTE = C.COD_CLIENTE
+                        WHERE EC.COD_EMPRESA = '".$arraydados['cod_empresa']."' 
+                        AND EC.COD_CAMPANHA = '".$arraydados['cod_campanha']."'
+                        AND C.DES_EMAILUS !=''     
+                        $arraydados[blacklist_email] 
+                        $arraydados[LOG_EMAIL]    
+                        $arraydados[TIP_FILA]  
+                        GROUP BY  C.COD_CLIENTE    
+        
+                    ";
+//echo $sql;
+        // fnEscreve($sql);
+        // fnEscreve($arquivo);
+echo '<br>aqui 222<br>'.$sql.'<br>';
+        $arrayQuery = mysqli_query($arraydados['contemp'],$sql) or die(mysqli_error());
+
+        $array = array();
+        $linhas=0;
+        while($row = mysqli_fetch_assoc($arrayQuery)){
+
+                $linha = "";
+               
+                for ($i=0; $i < count($tags) ; $i++) {
+                        // fnEscreve($tags[$i]);
+                        switch($tags[$i]){
+
+                                case '<#NOME>';
+                                        $nome = explode(' ', $row['NOM_CLIENTE']);
+                                        $itemLinha = ucfirst(strtolower($nome[0]));
+                                break;
+                                case '<#CARTAO>';
+                                        $itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+                                break;
+                                case '<#ESTADOCIVIL>';
+                                        $itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+                                break;
+                                case '<#SEXO>';
+                                        $itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+                                break;
+                                case '<#PROFISSAO>';
+                                        $itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+                                break;
+                                case '<#NASCIMENTO>';
+                                        $itemLinha = $row['DAT_NASCIME'];
+                                break;
+                                case '<#ENDERECO>';
+                                        $itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+                                break;
+                                case '<#NUMERO>';
+                                        $itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+                                break;
+                                case '<#BAIRRO>';
+                                        $itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+                                break;
+                                case '<#CIDADE>';
+                                        $itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+                                break;
+                                case '<#ESTADO>';
+                                        $itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+                                break;
+                                case '<#CEP>';
+                                        $itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+                                break;
+                                case '<#COMPLEMENTO>';
+                                        $itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+                                break;
+                                case '<#TELEFONE>';
+                                        $itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+                                break;
+                                case '<#CELULAR>';
+                                        $itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+                                break;
+                                case '<#SALDO>';
+                                        $itemLinha = fnValor($row['CREDITO_DISPONIVEL'],$casasDec);
+                                break;
+                                case '<#PRIMEIRACOMPRA>';
+                                        $itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+                                break;
+                                case '<#ULTIMACOMPRA>';
+                                        $itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+                                break;
+                                case '<#TOTALCOMPRAS>';
+                                        $itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+                                break;
+                                case '<#CODIGO>';
+                                        $itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+                                break;
+                                case '<#CUPOMSORTEIO>';
+                                        $itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+                                break;
+                                case '<#CUPOM_INDICACAO>';
+                                        $itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+                                break;
+                                case '<#NUMEROLOJA>';
+                                        $itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+                                break;
+                                case '<#BAIRROLOJA>';
+                                        $itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+                                break;
+                                case '<#NOMELOJA>';
+                                       
+                                        $NOM_ARRAY_UNIDADE=(array_search($row['COD_UNIVEND'], array_column($ARRAY_UNIDADE, 'COD_UNIVEND')));
+                                        $itemLinha = fnAcentos($ARRAY_UNIDADE[$NOM_ARRAY_UNIDADE]['nom_fantasi']);
+                                break;
+                                case '<#ENDERECOLOJA>';
+                                        $itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+                                break;
+                                case '<#TELEFONELOJA>';
+                                        $itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+                                break;
+                                case '<#ANIVERSARIO>';
+                                        $itemLinha = substr($row['DAT_NASCIME'], 0,-5);
+                                break;
+                                case '<#DATAEXPIRA>';
+                                        $itemLinha = fnDataShort($row['DAT_EXPIRA']);
+                                break;
+                                default:
+                                        $itemLinha = $row['DES_EMAILUS'];
+                                break;
+
+                        }
+                        $linha .= $itemLinha.";";
+                }
+
+                // fnEscreve($linha);
+
+                $newRow[] = rtrim($linha,';');
+            $linhas++;    
+        }
+        fngravacvs($newRow,$caminhoarquivo,$nomeRel);

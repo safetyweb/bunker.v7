@@ -1,0 +1,439 @@
+<?php
+//include './FnIbotpe.php';
+//consulta campanha
+function BuscarCampanha ($User,$cod_externo)
+{        
+              $BuscarCampanha = curl_init();
+              curl_setopt_array($BuscarCampanha, array(
+              CURLOPT_URL => $User['URLWSDL'],
+              CURLOPT_SSL_VERIFYPEER=> false,    
+              CURLOPT_RETURNTRANSFER => true,
+              CURLOPT_ENCODING => "UTF-8",
+              CURLOPT_MAXREDIRS => 60,
+              CURLOPT_TIMEOUT => 60,
+              CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+              CURLOPT_CUSTOMREQUEST => "POST",
+              CURLOPT_POSTFIELDS => '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dtm="https://www.dtmmkt.com.br/DTM_Campanhas/">
+                                        <soapenv:Header>
+                                           <dtm:Autenticacao>
+                                              <dtm:Usuario>'.$User['login'].'</dtm:Usuario>
+                                              <dtm:Senha>'.$User['senha'].'</dtm:Senha>
+                                              </dtm:Autenticacao>
+                                        </soapenv:Header>
+                                        <soapenv:Body>
+                                           <dtm:BuscarCampanha>
+                                              <dtm:id>'.$cod_externo.'</dtm:id>
+                                           </dtm:BuscarCampanha>
+                                        </soapenv:Body>
+                                     </soapenv:Envelope>',
+              CURLOPT_HTTPHEADER => array(
+                "cache-control: no-cache",
+                "content-type: text/xml; charset=utf-8",
+               ),
+            ));
+
+            $response = curl_exec($BuscarCampanha);
+            $err = curl_error($BuscarCampanha);
+
+            curl_close($BuscarCampanha);
+
+            if ($err) {
+              echo "cURL Error #:" . $err;
+            } else {
+
+                  $doc = new DOMDocument();
+                  libxml_use_internal_errors(true);
+                  $doc->loadHTML($response);
+                  libxml_clear_errors();
+                  $xml = $doc->saveXML($doc->documentElement);
+                  $xml = simplexml_load_string($xml,'SimpleXMLElement',LIBXML_NOCDATA);
+            }
+            $array1=json_encode($xml);
+            $array2= json_decode($array1,true);
+            
+            return $array2;
+}
+//FIm da consulta campanha
+ //cadastra campanha
+function cadastraCampanha ($User,$dadoscampanha)
+{        
+              $cadastraCampanha = curl_init();
+              curl_setopt_array($cadastraCampanha, array(
+              CURLOPT_URL => $User['URLWSDL'],
+              CURLOPT_SSL_VERIFYPEER=> false,    
+              CURLOPT_RETURNTRANSFER => true,
+              CURLOPT_ENCODING => "UTF-8",
+              CURLOPT_MAXREDIRS => 60,
+              CURLOPT_TIMEOUT => 60,
+              CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+              CURLOPT_CUSTOMREQUEST => "POST",
+              CURLOPT_POSTFIELDS => '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dtm="https://www.dtmmkt.com.br/DTM_Campanhas/">
+                                    <soapenv:Header>
+                                       <dtm:Autenticacao>
+                                            <dtm:Usuario>'.$User['login'].'</dtm:Usuario>
+                                            <dtm:Senha>'.$User['senha'].'</dtm:Senha>
+                                        </dtm:Autenticacao>
+                                    </soapenv:Header>
+                                    <soapenv:Body>
+                                       <dtm:cadastraCampanha>
+                                          <dtm:nome>'.$dadoscampanha['nome'].'</dtm:nome>
+                                          <dtm:dataInicio>'.$dadoscampanha['dataInicio'].'</dtm:dataInicio>
+                                          <dtm:dataVencimento>'.$dadoscampanha['dataVencimento'].'</dtm:dataVencimento>
+                                          <dtm:tipoCampanha>'.$dadoscampanha['tipoCampanha'].'</dtm:tipoCampanha>
+                                          <dtm:objetivo>'.$dadoscampanha['objetivo'].'</dtm:objetivo>
+                                          <dtm:ativacao>'.$dadoscampanha['ativacao'].'</dtm:ativacao>
+                                       </dtm:cadastraCampanha>
+                                    </soapenv:Body>
+                                 </soapenv:Envelope>',
+              CURLOPT_HTTPHEADER => array(
+                "cache-control: no-cache",
+                "content-type: text/xml; charset=utf-8",
+               ),
+            ));
+
+            $response = curl_exec($cadastraCampanha);
+            $err = curl_error($cadastraCampanha);
+
+            curl_close($cadastraCampanha);
+
+            if ($err) {
+              echo "cURL Error #:" . $err;
+            } else {
+
+                  $doc = new DOMDocument();
+                  libxml_use_internal_errors(true);
+                  $doc->loadHTML($response);
+                  libxml_clear_errors();
+                  $xml = $doc->saveXML($doc->documentElement);
+                  $xml = simplexml_load_string($xml,'SimpleXMLElement',LIBXML_NOCDATA);
+            }
+            $array1=json_encode($xml);
+            $array2= json_decode($array1,true);
+            
+            return $array2;
+}                       
+//cadastraConfiguracaoEmail
+function cadastraConfiguracaoEmail ($User,$dadosConfiguracaoEmail)
+{   
+	
+    $conteudoHtml=str_replace('<','&lt;',$dadosConfiguracaoEmail['conteudoHtml']);
+    $conteudoHtml=str_replace('>','&gt;',$conteudoHtml);
+	
+	/*$conteudoHtml=str_replace('<','&#60;',$dadosConfiguracaoEmail['conteudoHtml']);
+    $conteudoHtml=str_replace('>','&#62;',$conteudoHtml);
+	*/
+	$conteudoHtml=fnCHRHTML($conteudoHtml);    
+  
+    //=======================================
+     $tagLinkOptOut=str_replace('<','&lt;',$dadosConfiguracaoEmail['tagLinkOptOut']);
+     $tagLinkOptOut=str_replace('>','&gt;',$tagLinkOptOut); 
+     
+     $tagOptOut=str_replace('<','&lt;',$dadosConfiguracaoEmail['tagOptOut']);
+     $tagOptOut=str_replace('>','&gt;',$tagOptOut); 
+     
+     $assunto=str_replace('<','&lt;',$dadosConfiguracaoEmail['assunto']);
+     $assunto=str_replace('>','&gt;',$assunto); 
+    // $assunto=fnCHRHTML($assunto);
+     $xmlcompleto='<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dtm="https://www.dtmmkt.com.br/DTM_Campanhas/">
+                                        <soapenv:Header>
+                                            <dtm:Autenticacao>
+                                                <dtm:Usuario>'.$User['login'].'</dtm:Usuario>
+                                                <dtm:Senha>'.$User['senha'].'</dtm:Senha>
+                                            </dtm:Autenticacao>
+                                        </soapenv:Header>
+                                        <soapenv:Body>
+                                           <dtm:cadastraConfiguracaoEmail>
+                                              <dtm:enderecoRemetente>'.$dadosConfiguracaoEmail['enderecoRemetente'].'</dtm:enderecoRemetente>
+                                              <dtm:nomeRemetente>'.$dadosConfiguracaoEmail['nomeRemetente'].'</dtm:nomeRemetente>
+                                              <dtm:emailDeResposta>'.$dadosConfiguracaoEmail['emailDeResposta'].'</dtm:emailDeResposta>
+                                              <dtm:assunto>'.$assunto.'</dtm:assunto>
+                                              <dtm:conteudoHtml>'.$conteudoHtml.'</dtm:conteudoHtml>
+                                              <dtm:flagOptOut>'.$dadosConfiguracaoEmail['flagOptOut'].'</dtm:flagOptOut>
+                                              <dtm:textoLinkOptOut>'.$dadosConfiguracaoEmail['textoLinkOptOut'].'</dtm:textoLinkOptOut>
+                                              <dtm:textoOptOut>'.$dadosConfiguracaoEmail['textoOptOut'].'</dtm:textoOptOut>
+                                              <dtm:tagLinkOptOut>'.$tagLinkOptOut.'</dtm:tagLinkOptOut>
+                                              <dtm:tagOptOut>'.$tagOptOut.'</dtm:tagOptOut>
+                                           </dtm:cadastraConfiguracaoEmail>
+                                        </soapenv:Body>
+                                     </soapenv:Envelope>';
+$arquivo = fopen('meuarquivo.txt','w');
+fwrite($arquivo, $conteudoHtml);
+fclose($arquivo);
+
+    $cadastraConfiguracaoEmail = curl_init();
+              curl_setopt_array($cadastraConfiguracaoEmail, array(
+              CURLOPT_URL => $User['URLWSDL'],
+              CURLOPT_SSL_VERIFYPEER=> false,    
+              CURLOPT_RETURNTRANSFER => true,
+              CURLOPT_ENCODING => "UTF-8",
+              CURLOPT_MAXREDIRS => 60,
+              CURLOPT_TIMEOUT => 60,
+              CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+              CURLOPT_CUSTOMREQUEST => "POST",
+              CURLOPT_POSTFIELDS => "$xmlcompleto",
+              CURLOPT_HTTPHEADER => array(
+                "cache-control: no-cache",
+                "content-type: text/xml; charset=utf-8",
+               ),
+            ));
+
+            $response = curl_exec($cadastraConfiguracaoEmail);
+            $err = curl_error($cadastraConfiguracaoEmail);
+          // $teste = curl_getinfo($cadastraConfiguracaoEmail, CURLINFO_HTTP_CODE);
+            curl_close($cadastraConfiguracaoEmail);
+
+            if ($err) {
+              echo "cURL Error #:" . $err;
+            } else {
+
+                  $doc = new DOMDocument();
+                  libxml_use_internal_errors(true);
+                  $doc->loadHTML($response);
+                  libxml_clear_errors();
+                  $xml = $doc->saveXML($doc->documentElement);
+                  $xml = simplexml_load_string($xml,'SimpleXMLElement',LIBXML_NOCDATA);
+            }
+            $array1=json_encode($xml);
+            $array2= json_decode($array1,true);
+            
+            return $array2; 
+}
+
+function cadastraEProcessaMailing ($User,$dadosProcessaMailing)
+{
+       $maior=str_replace('<','&lt;',$dadosProcessaMailing['txtPersonalizacao']);
+       $maior=str_replace('>','&gt;',$maior);
+    
+              $cadastraEProcessaMailing = curl_init();
+              curl_setopt_array($cadastraEProcessaMailing, array(
+              CURLOPT_URL => $User['URLWSDL'],
+              CURLOPT_SSL_VERIFYPEER=> false,    
+              CURLOPT_RETURNTRANSFER => true,
+              CURLOPT_ENCODING => "UTF-8",
+              CURLOPT_MAXREDIRS => 60,
+              CURLOPT_TIMEOUT => 60,
+              CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+              CURLOPT_CUSTOMREQUEST => "POST",
+              CURLOPT_POSTFIELDS => '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dtm="https://www.dtmmkt.com.br/DTM_Campanhas/">
+                                        <soapenv:Header>
+                                           <dtm:Autenticacao>
+                                               <dtm:Usuario>'.$User['login'].'</dtm:Usuario>
+                                                <dtm:Senha>'.$User['senha'].'</dtm:Senha>                                            
+                                           </dtm:Autenticacao>
+                                        </soapenv:Header>
+                                        <soapenv:Body>
+                                           <dtm:cadastraEProcessaMailing>      
+                                              <dtm:txtNome>'.$dadosProcessaMailing['txtNome'].'</dtm:txtNome>
+                                              <dtm:flgUploadArquivo>'.$dadosProcessaMailing['flgUploadArquivo'].'</dtm:flgUploadArquivo>        
+                                              <dtm:txtSeparadorDadoArquivo>'.$dadosProcessaMailing['txtSeparadorDadoArquivo'].'</dtm:txtSeparadorDadoArquivo>
+                                              <dtm:flgAtivo>'.$dadosProcessaMailing['flgAtivo'].'</dtm:flgAtivo>         
+                                              <dtm:txtPersonalizacao>'.$maior.'</dtm:txtPersonalizacao>      
+                                              <dtm:txtNomeArquivo>'.$dadosProcessaMailing['txtNomeArquivo'].'</dtm:txtNomeArquivo>
+                                              <dtm:idConfig>'.$dadosProcessaMailing['idConfig'].'</dtm:idConfig>
+                                              <dtm:idCampanha>'.$dadosProcessaMailing['idCampanha'].'</dtm:idCampanha>       
+                                              <dtm:datAgendamento>'.$dadosProcessaMailing['datAgendamento'].'</dtm:datAgendamento>
+                                           </dtm:cadastraEProcessaMailing>
+                                        </soapenv:Body>
+                                     </soapenv:Envelope>',
+              CURLOPT_HTTPHEADER => array(
+                "cache-control: no-cache",
+                "content-type: text/xml; charset=utf-8",
+               ),
+            ));
+
+            $response = curl_exec($cadastraEProcessaMailing);
+            $err = curl_error($cadastraEProcessaMailing);
+        //$teste=curl_getinfo($cadastraEProcessaMailing, CURLINFO_HTTP_CODE);
+            curl_close($cadastraEProcessaMailing);
+           
+            if ($err) {
+              echo "cURL Error #:" . $err;
+            } else {
+
+                  $doc = new DOMDocument();
+                  libxml_use_internal_errors(true);
+                  $doc->loadHTML($response);
+                  libxml_clear_errors();
+                  $xml = $doc->saveXML($doc->documentElement);
+                  $xml = simplexml_load_string($xml,'SimpleXMLElement',LIBXML_NOCDATA);
+            }
+            $array1=json_encode($xml);
+            $array2= json_decode($array1,true);
+            
+            return $array2; 
+}
+
+function cadastraEProcessaMailingV2 ($Userv2,$dadosProcessaMailingV2)
+{
+       $maior=str_replace('<','&lt;',$dadosProcessaMailingV2['txtPersonalizacao']);
+       $maior=str_replace('>','&gt;',$maior);
+    
+              $cadastraEProcessaMailing = curl_init();
+              curl_setopt_array($cadastraEProcessaMailing, array(
+              CURLOPT_URL => $Userv2['URLWSDL'],
+              CURLOPT_SSL_VERIFYPEER=> false,    
+              CURLOPT_RETURNTRANSFER => true,
+              CURLOPT_ENCODING => "UTF-8",
+              CURLOPT_MAXREDIRS => 60,
+              CURLOPT_TIMEOUT => 60,
+              CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+              CURLOPT_CUSTOMREQUEST => "POST",
+              CURLOPT_POSTFIELDS => '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dtm="https://www.dtmmkt.com.br/DTM_Campanhas/">
+                                        <soapenv:Header>
+                                           <dtm:Autenticacao>
+                                               <dtm:Usuario>'.$Userv2['login'].'</dtm:Usuario>
+                                                <dtm:Senha>'.$Userv2['senha'].'</dtm:Senha>                                            
+                                           </dtm:Autenticacao>
+                                        </soapenv:Header>
+                                        <soapenv:Body>
+                                           <dtm:cadastraEProcessaMailingV2>      
+                                              <dtm:txtNome>'.$dadosProcessaMailingV2['txtNome'].'</dtm:txtNome>
+                                              <dtm:flgUploadArquivo>'.$dadosProcessaMailingV2['flgUploadArquivo'].'</dtm:flgUploadArquivo>        
+                                              <dtm:txtSeparadorDadoArquivo>'.$dadosProcessaMailingV2['txtSeparadorDadoArquivo'].'</dtm:txtSeparadorDadoArquivo>
+                                              <dtm:flgAtivo>'.$dadosProcessaMailingV2['flgAtivo'].'</dtm:flgAtivo>         
+                                              <dtm:txtPersonalizacao>'.$maior.'</dtm:txtPersonalizacao>      
+                                              <dtm:txtNomeArquivo>'.$dadosProcessaMailingV2['txtNomeArquivo'].'</dtm:txtNomeArquivo>
+                                              <dtm:idConfig>'.$dadosProcessaMailingV2['idConfig'].'</dtm:idConfig>
+                                              <dtm:idCampanha>'.$dadosProcessaMailingV2['idCampanha'].'</dtm:idCampanha>       
+                                              <dtm:datAgendamento>'.$dadosProcessaMailingV2['datAgendamento'].'</dtm:datAgendamento>
+                                           </dtm:cadastraEProcessaMailingV2>
+                                        </soapenv:Body>
+                                     </soapenv:Envelope>',
+              CURLOPT_HTTPHEADER => array(
+                "cache-control: no-cache",
+                "content-type: text/xml; charset=utf-8",
+               ),
+            ));
+
+            $response = curl_exec($cadastraEProcessaMailing);
+            $err = curl_error($cadastraEProcessaMailing);
+        //$teste=curl_getinfo($cadastraEProcessaMailing, CURLINFO_HTTP_CODE);
+            curl_close($cadastraEProcessaMailing);
+           
+            if ($err) {
+              echo "cURL Error #:" . $err;
+            } else {
+
+                  $doc = new DOMDocument();
+                  libxml_use_internal_errors(true);
+                  $doc->loadHTML($response);
+                  libxml_clear_errors();
+                  $xml = $doc->saveXML($doc->documentElement);
+                  $xml = simplexml_load_string($xml,'SimpleXMLElement',LIBXML_NOCDATA);
+            }
+            $array1=json_encode($xml);
+            $array2= json_decode($array1,true);
+            
+            return $array2; 
+}
+
+function ExcluirMensagem ($User,$dadosExcluirMensagem)
+{
+    $ExcluirMensagem = curl_init();
+              curl_setopt_array($ExcluirMensagem, array(
+              CURLOPT_URL => $User['URLWSDL'],
+              CURLOPT_SSL_VERIFYPEER=> false,    
+              CURLOPT_RETURNTRANSFER => true,
+              CURLOPT_ENCODING => "UTF-8",
+              CURLOPT_MAXREDIRS => 60,
+              CURLOPT_TIMEOUT => 60,
+              CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+              CURLOPT_CUSTOMREQUEST => "POST",
+              CURLOPT_POSTFIELDS => '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dtm="https://www.dtmmkt.com.br/DTM_Campanhas/">
+                                     <soapenv:Header>
+                                           <dtm:Autenticacao>
+                                               <dtm:Usuario>'.$User['login'].'</dtm:Usuario>
+                                                <dtm:Senha>'.$User['senha'].'</dtm:Senha>                                            
+                                           </dtm:Autenticacao>
+                                        </soapenv:Header>
+                                    <soapenv:Body>
+                                       <dtm:ExcluirMensagem>
+                                          <dtm:id>'.$dadosExcluirMensagem['id'].'</dtm:id>
+                                       </dtm:ExcluirMensagem>
+                                    </soapenv:Body>
+                                 </soapenv:Envelope>',
+              CURLOPT_HTTPHEADER => array(
+                "cache-control: no-cache",
+                "content-type: text/xml; charset=utf-8",
+               ),
+            ));
+
+            $response = curl_exec($ExcluirMensagem);
+            $err = curl_error($ExcluirMensagem);
+
+            curl_close($ExcluirMensagem);
+
+            if ($err) {
+              echo "cURL Error #:" . $err;
+            } else {
+
+                  $doc = new DOMDocument();
+                  libxml_use_internal_errors(true);
+                  $doc->loadHTML($response);
+                  libxml_clear_errors();
+                  $xml = $doc->saveXML($doc->documentElement);
+                  $xml = simplexml_load_string($xml,'SimpleXMLElement',LIBXML_NOCDATA);
+            }
+            $array1=json_encode($xml);
+            $array2= json_decode($array1,true);
+            
+            return $array2; 
+} 
+function BuscariDdisparo ($Userv2,$cod_externo)
+{        
+              $BuscariDdisparo = curl_init();
+              curl_setopt_array($BuscariDdisparo, array(
+              CURLOPT_URL => $Userv2['URLWSDL'],
+              CURLOPT_SSL_VERIFYPEER=> false,    
+              CURLOPT_RETURNTRANSFER => true,
+              CURLOPT_ENCODING => "UTF-8",
+              CURLOPT_MAXREDIRS => 60,
+              CURLOPT_TIMEOUT => 60,
+              CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+              CURLOPT_CUSTOMREQUEST => "POST",
+              CURLOPT_POSTFIELDS => '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dtm="https://www.dtmmkt.com.br/DTM_Campanhas/">
+                                    <soapenv:Header>
+                                       <dtm:Autenticacao>
+                                           <dtm:Usuario>'.$Userv2['login'].'</dtm:Usuario>
+                                          <dtm:Senha>'.$Userv2['senha'].'</dtm:Senha>
+                                       </dtm:Autenticacao>
+                                    </soapenv:Header>
+                                    <soapenv:Body>
+                                       <dtm:ListarDisparoPorMailing>
+                                          <dtm:mailingID>'.$cod_externo.'</dtm:mailingID>
+                                       </dtm:ListarDisparoPorMailing>
+                                    </soapenv:Body>
+                                 </soapenv:Envelope>',
+              CURLOPT_HTTPHEADER => array(
+                "cache-control: no-cache",
+                "content-type: text/xml; charset=utf-8",
+               ),
+            ));
+
+            $response = curl_exec($BuscariDdisparo);
+            $err = curl_error($BuscariDdisparo);
+
+            curl_close($BuscariDdisparo);
+
+            if ($err) {
+              echo "cURL Error #:" . $err;
+            } else {
+
+                  $doc = new DOMDocument();
+                  libxml_use_internal_errors(true);
+                  $doc->loadHTML($response);
+                  libxml_clear_errors();
+                  $xml = $doc->saveXML($doc->documentElement);
+                  $xml = simplexml_load_string($xml,'SimpleXMLElement',LIBXML_NOCDATA);
+            }
+            $array1=json_encode($xml);
+            $array2= json_decode($array1,true);
+            
+            return $array2['body']['envelope']['body']['listardisparopormailingresponse']['listardisparopormailingresult']['dtm_disparo']['id'];
+}
+/*$dadosExcluirMensagem=array('id'=>'17');
+$teste=ExcluirMensagem ($User,$dadosExcluirMensagem);
+echo '<pre>';
+print_r($teste);
+echo '</pre>';
+*/
