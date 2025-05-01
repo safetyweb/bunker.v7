@@ -1,0 +1,133 @@
+@media only screen and (max-width: 320px) {
+	/* Don't mess with the page width please! */
+	div.multi-step												{ overflow:hidden; }
+
+	/* Move the background, try to use all the available space */
+	div.multi-step ol > li										{ background-position:-8px 50%; }
+
+	/* Decrease the font size */
+	div.multi-step ol > li p									{ font-size:.8em; }
+
+	/* Loose the bolds, might get save some space, to keep the contents inside the “box” */
+	div.multi-step ol > li .title								{ font-weight:normal; word-break:break-all; -webkit-hyphens:auto; -moz-hyphens:auto; -ms-hyphens:auto; hyphens:auto; }
+
+	/* No room for subtitles! */
+	div.multi-step ol > li .subtitle							{ display:none; }
+
+	/* Make the steps more compact, try to keep the layout from falling apart! */
+	div.multi-step ol > li .wrap								{ max-width:100%; min-height:1px; padding:8px 0 8px 18px; overflow:hidden; }
+
+	/* If we have numbers, loose the titles too! */
+	div.multi-step.numbered ol > li .title						{ display:none; }
+
+	/* Make the steps more compact */
+	div.multi-step.numbered ol > li .wrap						{ padding:2px 2px 2px 18px; }
+
+	/* The number changes in style and shape */
+	div.multi-step.numbered ol > li .wrap:before				{ position:static; top:auto; left:auto; background:transparent; border:0; border-radius:0; width:auto; height:auto; color:#06c; font-size:1.2em; line-height:1; }
+
+	/* This is the active color of the title, from colors.css */
+	div.multi-step.numbered ol > li.current .wrap:before		{ color:#fff; }
+
+	/* Fine tune the arrows and the gaps between the steps, again */
+	div.multi-step.three-steps ol > li:before					{ left:32.2%; }
+	div.multi-step.three-steps ol > li + li:before				{ left:64.2%; }
+	div.multi-step.three-steps ol > li + li + li:before			{ left:98%; }
+
+	div.multi-step.four-steps ol > li:before					{ left:25.8%; }
+	div.multi-step.four-steps ol > li + li:before				{ left:49.4%; }
+	div.multi-step.four-steps ol > li + li + li:before			{ left:72.4%; }
+	div.multi-step.four-steps ol > li + li + li + li:before		{ left:98%; }
+
+	div.multi-step.five-steps ol > li:before					{ left:20.6%; }
+	div.multi-step.five-steps ol > li + li:before				{ left:39.4%; }
+	div.multi-step.five-steps ol > li + li + li:before			{ left:58.2%; }
+	div.multi-step.five-steps ol > li + li + li + li:before		{ left:77%; }
+	div.multi-step.five-steps ol > li + li + li + li + li:before{ left:98%; }
+}
+
+
+@media only screen and (min-width: 321px) and (max-width: 480px) {
+	div.multi-step												{ overflow:hidden; }
+
+	/* And another decrease in font size */
+	div.multi-step ol > li p									{ font-size:.8em; }
+
+	/* Loose the bolds, might get save some space, to keep the contents inside the “box” */
+	div.multi-step ol > li .title								{ font-weight:normal; word-break:break-all; -webkit-hyphens:auto; -moz-hyphens:auto; -ms-hyphens:auto; hyphens:auto; }
+
+	/* No room for subtitles! */
+	div.multi-step ol > li .subtitle							{ display:none; }
+
+	/* Make the steps more compact, try to keep the layout from falling apart! */
+	div.multi-step ol > li .wrap								{ min-height:1px; }
+
+	/* Five steps, with text, in less than 480 pixels, cannot really work, but please try to keep it -kind of- nice! */
+	div.multi-step.five-steps ol > li .title					{ max-height:4em; }
+
+	/* If we have numbers, loose the titles too! */
+	div.multi-step.numbered ol > li .title						{ display:none; }
+
+	/* Make the steps more compact */
+	div.multi-step.numbered ol > li .wrap						{ max-width:auto; padding:4px 4px 4px 32px; }
+
+	/* The number changes in style and shape */
+	div.multi-step.numbered ol > li .wrap:before				{ position:static; top:auto; left:auto; background:transparent; border:0; border-radius:0; width:auto; height:auto; color:#06c; font-size:1.2em; line-height:1; }
+
+	/* This is the active color of the title, from colors.css */
+	div.multi-step.numbered ol > li.current .wrap:before		{ color:#fff; }
+
+	/* Fine tune the arrows and the gaps between the steps, again */
+	div.multi-step.three-steps ol > li:before					{ left:34.4%; }
+	div.multi-step.three-steps ol > li + li:before				{ left:66.8%; }
+	div.multi-step.three-steps ol > li + li + li:before			{ left:98%; }
+
+	div.multi-step.four-steps ol > li:before					{ left:27%; }
+	div.multi-step.four-steps ol > li + li:before				{ left:51%; }
+	div.multi-step.four-steps ol > li + li + li:before			{ left:74.8%; }
+	div.multi-step.four-steps ol > li + li + li + li:before		{ left:98%; }
+
+	div.multi-step.five-steps ol > li:before					{ left:22.8%; }
+	div.multi-step.five-steps ol > li + li:before				{ left:41.6%; }
+	div.multi-step.five-steps ol > li + li + li:before			{ left:60.6%; }
+	div.multi-step.five-steps ol > li + li + li + li:before		{ left:79.6%; }
+	div.multi-step.five-steps ol > li + li + li + li + li:before{ left:98%; }
+}
+
+
+
+@media only screen and (min-width: 481px) and (max-width: 640px) {
+	/* Small decrease in font size */
+	div.multi-step ol > li p									{ font-size:.9em; }
+
+	/* Do your best to keep the contents inside the “box” */
+	div.multi-step ol > li .title								{ word-break:break-all; -webkit-hyphens:auto; -moz-hyphens:auto; -ms-hyphens:auto; hyphens:auto; }
+
+	/* No room for subtitles! */
+	div.multi-step ol > li .subtitle							{ display:none; }
+
+	/* No need to keep a minimum height */
+	div.multi-step ol > li .wrap								{ min-height:1px; }
+
+	/* The number is smaller, so I need less space for it */
+	div.multi-step.numbered ol > li .wrap						{ padding-left:52px; }
+
+	/* Make the number a little smaller */
+	div.multi-step.numbered ol > li .wrap:before				{ top:3px; width:20px; height:20px; line-height:18px; }
+
+	/* Fine tune the arrows and the gaps between the steps */
+	div.multi-step.three-steps ol > li:before					{ left:34%; }
+	div.multi-step.three-steps ol > li + li:before				{ left:67%; }
+	div.multi-step.three-steps ol > li + li + li:before			{ left:99%; }
+
+	div.multi-step.four-steps ol > li:before					{ left:26.2%; }
+	div.multi-step.four-steps ol > li + li:before				{ left:50.4%; }
+	div.multi-step.four-steps ol > li + li + li:before			{ left:74.7%; }
+	div.multi-step.four-steps ol > li + li + li + li:before		{ left:99%; }
+
+	div.multi-step.five-steps ol > li:before					{ left:21.4%; }
+	div.multi-step.five-steps ol > li + li:before				{ left:40.8%; }
+	div.multi-step.five-steps ol > li + li + li:before			{ left:60.1%; }
+	div.multi-step.five-steps ol > li + li + li + li:before		{ left:79.6%; }
+	div.multi-step.five-steps ol > li + li + li + li + li:before{ left:99%; }
+}

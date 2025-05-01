@@ -1,0 +1,79 @@
+.table-bordered,
+table-bordered>thead>tr>th, 
+.table-bordered>thead>tr>th, 
+table-bordered>tbody>tr>th, 
+.table-bordered>tbody>tr>th, 
+table-bordered>tfoot>tr>th, 
+.table-bordered>tfoot>tr>th, 
+table-bordered>thead>tr>td, 
+.table-bordered>thead>tr>td, 
+table-bordered>tbody>tr>td, 
+.table-bordered>tbody>tr>td, 
+table-bordered>tfoot>tr>td, 
+.table-bordered>tfoot>tr>td{
+	border: none;
+	
+}
+
+table-bordered>tbody>tr>td, 
+.table-bordered>tbody>tr>td,
+table-bordered>tbody>tr>th, 
+.table-bordered>tbody>tr>th{
+	border-top: 1px solid #ecf0f1;
+}
+
+table-bordered>thead>tr>th, 
+.table-bordered>thead>tr>th,
+table-bordered>thead>tr>td, 
+.table-bordered>thead>tr>td{
+	border-bottom: 2px solid #ecf0f1;
+}
+
+
+/* Pagination 
+*/
+.pagination {
+	margin: -3px 0 0;
+	border-radius: 50px;
+}
+
+.pagination > li > a,
+.pagination > li > span {
+	padding: 4px 10px;
+	margin: 1px;
+	font-size: 12px;
+	color: #515A5A;
+	background: transparent !important;
+}
+
+.pagination > li:hover > a,
+.pagination > li.active > a,
+.pagination > li.active:hover > a {
+	color: #fff;
+	border-radius: 3px !important;
+	background: #2c3e50 !important;
+	border-color: #212F3C;
+}
+
+/*------------------------------------------*/
+/*CHECKBOXES SWITCH*/
+.switch {
+	margin: 6px 0px 4px!important;
+}
+.switch span {
+/*    background-color: #f1416c!important;*/
+    width: 30px!important;
+	  height: 20px!important;
+	  -moz-border-radius: 20px!important;
+	  -webkit-border-radius: 20px!important;
+	  border-radius: 20px!important;
+}
+.switch input:checked + span {
+/*    background-color: #50cd89!important;*/
+}
+.switch input:checked + span:after {
+  left: 11px!important;
+}
+.switch span:after {
+  width: 16px!important;
+}
