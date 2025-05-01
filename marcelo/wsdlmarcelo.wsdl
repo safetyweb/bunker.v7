@@ -1,0 +1,263 @@
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://glo.prosegur.soa/prosegurCashTransaction" xmlns:pr0="http://glo.prosegur.soa/CashTransaction/CashTransactionRequest" xmlns:pr1="http://glo.prosegur.soa/CashTransaction/CashTransactionRequest" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" name="prosegurCashTransaction" targetNamespace="http://glo.prosegur.soa/prosegurCashTransaction">
+    <wsdl:types>
+        <xs:schema xmlns="http://glo.prosegur.soa/CashTransaction/CashTransactionRequest" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://glo.prosegur.soa/CashTransaction/CashTransactionRequest">
+            <xs:element name="CashTransactionResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="1" ref="Result"/>
+                        <xs:element minOccurs="0" ref="ErrorData">
+                            <xs:annotation>
+                                <xs:documentation>Optional list of pairs errorCode-errorDescrition</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element minOccurs="0" ref="AdditionalData">
+                            <xs:annotation>
+                                <xs:documentation>Optional list of pairs field-value</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="ErrorData">
+                <xs:complexType>
+                    <xs:sequence maxOccurs="unbounded" minOccurs="0">
+                        <xs:element ref="Error"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="AdditionalData">
+                <xs:complexType>
+                    <xs:sequence maxOccurs="unbounded" minOccurs="0">
+                        <xs:element ref="Data"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Result">
+                <xs:simpleType>
+                    <xs:annotation>
+                        <xs:documentation>Type of results: 0, E1001, E2001</xs:documentation>
+                    </xs:annotation>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="0"/>
+                        <xs:enumeration value="E1001"/>
+                        <xs:enumeration value="E2001"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="Error">
+                <xs:annotation>
+                    <xs:documentation>Optional list of pairs errorCode-errorDescrition</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="ErrorCode"/>
+                        <xs:element ref="ErrorDescription"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Data">
+                <xs:annotation>
+                    <xs:documentation>optional list of pairs field-value</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="Field"/>
+                        <xs:element ref="Value"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="ErrorCode" type="xs:string"/>
+            <xs:element name="ErrorDescription" type="xs:string"/>
+            <xs:element name="Field" type="xs:string"/>
+            <xs:element name="Value" type="xs:string"/>
+            <xs:element name="CashTransactionRequest">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="Device">
+                            <xs:annotation>
+                                <xs:documentation>Device information</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element ref="Client">
+                            <xs:annotation>
+                                <xs:documentation>Client information</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element maxOccurs="unbounded" ref="Transaction">
+                            <xs:annotation>
+                                <xs:documentation>Group of cash transactions done in the device</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element minOccurs="0" ref="AdditionalData">
+                            <xs:annotation>
+                                <xs:documentation>Optional list of pairs field-value</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Device">
+                <xs:annotation>
+                    <xs:documentation>Device information</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="CountryId"/>
+                        <xs:element ref="TimeZone"/>
+                        <xs:element ref="Delegation"/>
+                        <xs:element ref="DeviceId"/>
+                        <xs:element minOccurs="0" ref="DeviceName"/>
+                        <xs:element minOccurs="0" ref="DeviceType"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Client">
+                <xs:annotation>
+                    <xs:documentation>Client information</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="Customer"/>
+                        <xs:element ref="Teller"/>
+                        <xs:element minOccurs="0" ref="TellerName"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Transaction">
+                <xs:annotation>
+                    <xs:documentation>Group of cash transactions done in the device</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="TransType"/>
+                        <xs:element ref="TransactionId"/>
+                        <xs:element minOccurs="0" ref="ReceiptNumber"/>
+                        <xs:element ref="Date"/>
+                        <xs:element ref="Time"/>
+                        <xs:element maxOccurs="unbounded" ref="Totals"/>
+                        <xs:element maxOccurs="unbounded" ref="TransUnits"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:simpleType name="unitType">
+                <xs:annotation>
+                    <xs:documentation>Type of unit: AGGR, NOTE, COIN, CARD, CHECK</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="AGGR"/>
+                    <xs:enumeration value="NOTE"/>
+                    <xs:enumeration value="COIN"/>
+                    <xs:enumeration value="CARD"/>
+                    <xs:enumeration value="CHECK"/>
+                </xs:restriction>
+            </xs:simpleType>
+            <xs:simpleType name="boxType">
+                <xs:annotation>
+                    <xs:documentation>Type of Box: COINACCEPTOR, COINDISPENSER, NOTEDISPENSER, NOTEACCEPTOR, DROPSAFE, TRANSPORTBOX, NOTESREJECTED, COINRECYCLER, NOTERECYCLER, CARDREADER, CHECKREADER</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="COINACCEPTOR"/>
+                    <xs:enumeration value="COINDISPENSER"/>
+                    <xs:enumeration value="NOTEDISPENSER"/>
+                    <xs:enumeration value="NOTEACCEPTOR"/>
+                    <xs:enumeration value="DROPSAFE"/>
+                    <xs:enumeration value="TRANSPORTBOX"/>
+                    <xs:enumeration value="NOTESREJECTED"/>
+                    <xs:enumeration value="COINRECYCLER"/>
+                    <xs:enumeration value="NOTERECYCLER"/>
+                    <xs:enumeration value="CARDREADER"/>
+                    <xs:enumeration value="CHECKREADER"/>
+                </xs:restriction>
+            </xs:simpleType>
+            <xs:simpleType name="tType">
+                <xs:annotation>
+                    <xs:documentation>Type of Transaction: CASHIN, CASHOUT, SHIPIN, SHIPOUT, MOVEIN, MOVEOUT, BBALANCE, EBALANCE</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="CASHIN"/>
+                    <xs:enumeration value="CASHOUT"/>
+                    <xs:enumeration value="SHIPIN"/>
+                    <xs:enumeration value="SHIPOUT"/>
+                    <xs:enumeration value="MOVEIN"/>
+                    <xs:enumeration value="MOVEOUT"/>
+                    <xs:enumeration value="BBALANCE"/>
+                    <xs:enumeration value="EBALANCE"/>
+                </xs:restriction>
+            </xs:simpleType>
+            <xs:element name="CountryId" type="xs:string"/>
+            <xs:element name="TimeZone" type="xs:string"/>
+            <xs:element name="Delegation" type="xs:string"/>
+            <xs:element name="DeviceId" type="xs:string"/>
+            <xs:element name="DeviceName" type="xs:string"/>
+            <xs:element name="DeviceType" type="xs:string"/>
+            <xs:element name="Customer" type="xs:string"/>
+            <xs:element name="Teller" type="xs:string"/>
+            <xs:element name="TellerName" type="xs:string"/>
+            <xs:element name="TransType" type="tType"/>
+            <xs:element name="TransactionId" type="xs:string"/>
+            <xs:element name="ReceiptNumber" type="xs:string"/>
+            <xs:element name="Date" type="xs:string"/>
+            <xs:element name="Time" type="xs:string"/>
+            <xs:element name="Totals">
+                <xs:complexType>
+                    <xs:sequence maxOccurs="unbounded">
+                        <xs:element ref="Total"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="TransUnits">
+                <xs:complexType>
+                    <xs:sequence maxOccurs="unbounded">
+                        <xs:element ref="Mix"/>
+                    </xs:sequence>
+                    <xs:attribute name="Boxname" type="boxType"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Total">
+                <xs:complexType>
+                    <xs:attribute name="Amount" type="xs:long"/>
+                    <xs:attribute name="Currency" type="xs:string"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Mix">
+                <xs:complexType>
+                    <xs:attribute name="BarCode" type="xs:string"/>
+                    <xs:attribute name="Currency" type="xs:string"/>
+                    <xs:attribute name="Denomination" type="xs:string"/>
+                    <xs:attribute name="NumItems" type="xs:int"/>
+                    <xs:attribute name="Total" type="xs:long"/>
+                    <xs:attribute name="Type" type="unitType"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:schema>
+    </wsdl:types>
+    <wsdl:service name="prosegurCashTransaction_Service">
+        <wsdl:port binding="tns:prosegurCashTransaction_HTTP_Binding" name="prosegurCashTransaction_Endpoint">
+            <soap:address location="http://adm.bunker.mk/marcelo/teste.do/prosegur/prosegurCashTransaction"/>
+        </wsdl:port>
+    </wsdl:service>
+    <wsdl:portType name="prosegurCashTransaction_PortType">
+        <wsdl:operation name="prosegurCashTransaction">
+            <wsdl:input message="tns:CashTransactionRequest"/>
+            <wsdl:output message="tns:CashTransactionResponse"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="prosegurCashTransaction_HTTP_Binding" type="tns:prosegurCashTransaction_PortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="prosegurCashTransaction">
+            <soap:operation soapAction="/prosegur/prosegurCashTransaction" style="document"/>
+            <wsdl:input>
+                <soap:body parts="CashTransactionRequest" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body parts="CashTransactionResponse" use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:message name="CashTransactionRequest">
+        <wsdl:part element="pr0:CashTransactionRequest" name="CashTransactionRequest"/>
+    </wsdl:message>
+    <wsdl:message name="CashTransactionResponse">
+        <wsdl:part element="pr1:CashTransactionResponse" name="CashTransactionResponse"/>
+    </wsdl:message>
+</wsdl:definitions>
