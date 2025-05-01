@@ -1,0 +1,224 @@
+<?php
+ include '../../_system/_functionsMain.php';
+$conadmarquivo=$import_ibope->connAdm();
+$conadmwebtools=$connAdm->connAdm();
+
+$sqlpacero="SELECT * FROM CONFIGURACAO_ACESSO WHERE cod_parcomu='12' AND LOG_STATUS='S' order by cod_empresa desc";
+$parcerorw=mysqli_query($conadmwebtools, $sqlpacero);
+while ($parcerors=mysqli_fetch_assoc($parcerorw))
+{
+    $COD_EMPRESA[]=$parcerors['COD_EMPRESA'];
+    
+    
+}
+$sqlentregabilidade="SELECT idDisparo FROM entregabilidade GROUP BY idDisparo;";       
+$rwentregabilidade=mysqli_query($conadmarquivo, $sqlentregabilidade);
+while ($rsentregabilidade=mysqli_fetch_assoc($rwentregabilidade))
+{
+    $ididDisparo.=$rsentregabilidade['idDisparo'].',';   
+}
+
+$sqlleituras="SELECT idDisparo FROM  leituras GROUP BY idDisparo;";
+$rwleituras=mysqli_query($conadmarquivo, $sqlleituras);
+while ($rsleituras = mysqli_fetch_assoc($rwleituras)) {
+       $ididDisparo.=$rsleituras['idDisparo'].',';   
+}
+
+$sqloptout="SELECT * FROM  optout GROUP BY idDisparo;";
+$rwoptout= mysqli_query($conadmarquivo, $sqloptout);
+while ($rsoptout= mysqli_fetch_assoc($rwoptout))
+{
+     $ididDisparo.=$rsoptout['idDisparo'].',';  
+}    
+$ididDisparo= rtrim($ididDisparo,',');
+
+
+foreach ($COD_EMPRESA as $CODEMPRESA) 
+{ 
+ //if($CODEMPRESA==39){   
+            $contemporaria= connTemp($CODEMPRESA, '');               
+            //verificar se a campanha esta no arquivo importado                    
+    $sqlcontrole="SELECT * from controle_envio WHERE COD_DISPARO IN ($ididDisparo) and COD_EMPRESA=".$CODEMPRESA;
+    $rwcontrole= mysqli_query($conadmarquivo,$sqlcontrole);
+    while($rscontrole= mysqli_fetch_assoc($rwcontrole))
+    {
+
+        //capturar o codigo da campanha
+        $sqlcampanha="SELECT COD_CAMPANHA,COD_EMPRESA FROM campanha WHERE 
+                        COD_EXT_CAMPANHA='".$rscontrole['COD_CAMPANHA_EXT']."' AND cod_empresa='$CODEMPRESA'";
+        $rwcampanha= mysqli_fetch_assoc(mysqli_query($contemporaria, $sqlcampanha));
+
+         //capturar os dados para inserir ou update no relatorio
+        $sqlentregabilidade="SELECT e.txtEmail,
+                                     e.idDisparo,
+                                     e.idStatusEntregabilidade, 
+                                     e.idContatosMailing
+                             FROM entregabilidade e                                               
+                             WHERE e.idContatosMailing !='0' and e.idDisparo ='".$rscontrole['COD_DISPARO']."'";                           
+        $RSentregabilidade=mysqli_query($conadmarquivo, $sqlentregabilidade);
+        while($rwentregabilidade=mysqli_fetch_assoc($RSentregabilidade))
+        {   
+             //verificar se o if idContatosMailing
+             $sqlemail_ret="SELECT   COD_CAMPANHA,
+                                     COD_EMPRESA,
+                                     ID_DISPARO, 
+                                     DES_EMAILUS 
+                             FROM email_lista_ret 
+                           WHERE 
+                           COD_CAMPANHA='".$rwcampanha['COD_CAMPANHA']."' AND 
+                           COD_EMPRESA='$CODEMPRESA' AND 
+                           ID_DISPARO='".$rwentregabilidade['idDisparo']."' AND 
+                           DES_EMAILUS='".$rwentregabilidade['txtEmail']."'";
+            $rwemail_ret= mysqli_query($contemporaria, $sqlemail_ret);
+            if($rscountemail_ret=mysqli_num_rows($rwemail_ret)<=0)
+            {    
+               
+                
+                     //dados complementares do cliente
+                    $sqldadocliente= "SELECT l.COD_CLIENTE,l.NOM_CLIENTE,l.LOG_COMPARA,l.COD_SEXOPES,l.DAT_NASCIME,l.QTD_BLACKLIST FROM email_lista l                           
+                                     WHERE l.COD_CAMPANHA='".$rwcampanha['COD_CAMPANHA']."' AND 
+                                           l.COD_EMPRESA='$CODEMPRESA' AND 
+                                           l.DES_EMAILUS ='".$rwentregabilidade['txtEmail']."'";
+                     $rsdadocliente=mysqli_fetch_assoc(mysqli_query($contemporaria, $sqldadocliente));
+                     /*if($rsdadocliente['NOM_CLIENTE']=="")
+                     {
+                         unset($rsdadocliente);
+                         unset($sqldadocliente); 
+                           $sqldadocliente= "SELECT * FROM clientes l                           
+                                                                    WHERE l.COD_EMPRESA='$CODEMPRESA' AND 
+                                                                    l.DES_EMAILUS ='".$rwentregabilidade['txtEmail']."'";
+                     $rsdadocliente=mysqli_fetch_assoc(mysqli_query($contemporaria, $sqldadocliente));
+                     }*/    
+                     if($rsdadocliente['COD_CLIENTE']<=0){$COD_CLIENTE=0;}else{$COD_CLIENTE=$rsdadocliente['COD_CLIENTE'];}
+                     if($rsdadocliente['NOM_CLIENTE']<=0){$NOM_CLIENTE=0;}else{$NOM_CLIENTE=$rsdadocliente['NOM_CLIENTE'];}
+                     if($rsdadocliente['LOG_COMPARA']<=0){$LOG_COMPARA=0;}else{$LOG_COMPARA=$rsdadocliente['LOG_COMPARA'];}
+                     if($rsdadocliente['COD_SEXOPES']<=0){$COD_SEXOPES=0;}else{$COD_SEXOPES=$rsdadocliente['COD_SEXOPES'];}
+                     if($rsdadocliente['DAT_NASCIME']<=0){$DAT_NASCIME=0;}else{$DAT_NASCIME=$rsdadocliente['DAT_NASCIME'];}
+                     
+                      $sqlinsert="INSERT INTO email_lista_ret (  COD_CAMPANHA,                                                                                    
+                                                                  COD_EMPRESA,                                                                                     
+                                                                  DES_EMAILUS,                                                                                    
+                                                                  ID_DISPARO,
+                                                                  STATUS_ENVIO,
+                                                                  idContatosMailing,
+                                                                  COD_CLIENTE,
+                                                                  NOM_CLIENTE,
+                                                                  LOG_COMPARA,
+                                                                  COD_SEXOPES,
+                                                                  DAT_NASCIME
+                                                                  ) 
+                                                                VALUES 
+                                                                ('".$rwcampanha['COD_CAMPANHA']."',
+                                                                '".$CODEMPRESA."',
+                                                                '".$rwentregabilidade['txtEmail']."',
+                                                                '".$rwentregabilidade['idDisparo']."',
+                                                                '".$rwentregabilidade['idStatusEntregabilidade']."',   
+                                                                '".$rwentregabilidade['idContatosMailing']."',
+                                                                '".$COD_CLIENTE."',
+                                                                '".$NOM_CLIENTE."',
+                                                                '".$LOG_COMPARA."',  
+                                                                '".$COD_SEXOPES."',
+                                                                '".$DAT_NASCIME."'     
+                                                               );";  
+                    //  echo '<br>'.$sqlinsert.'<br>';
+                     $rsinsert=mysqli_query($contemporaria, $sqlinsert);
+            }  
+              
+                 //insert into Blacklist
+                 // 3 - Hardbounce 
+                 if($rwentregabilidade['idStatusEntregabilidade']=='3')
+                 {
+                   //verificar se ja existe no blacklist
+                   $sqlblacklist="SELECT COD_BLKLIST from blacklist_email WHERE DES_EMAIL='".$rwentregabilidade['txtEmail']."' AND cod_empresa='$CODEMPRESA'";
+                   $rwblacklist=mysqli_fetch_assoc(mysqli_query($contemporaria, $sqlblacklist));
+
+                     if($rwblacklist['COD_BLKLIST']=='' || $rwblacklist['COD_BLKLIST']=='0')
+                     {
+                         $sqlblacklist1="INSERT INTO blacklist_email (COD_EMPRESA, DES_EMAIL, COD_USUCADA, DAT_CADASTR) 
+                                                         VALUES ('$CODEMPRESA', '".$rwentregabilidade['txtEmail']."', '9999', '".date('Y-m-d h:i:s')."');";
+                         mysqli_query($contemporaria, $sqlblacklist1);
+                     }
+                }    
+        }
+    }
+      //proximo passo leitura e optout para fazer update pelo codigo idContatosMailing da base  email_lista_ret
+    
+    //1-- leituras
+    $sqlLeituras1="SELECT * from leituras";
+    echo '<br>'.$sqlLeituras1.'<br>';
+    $rwleituras= mysqli_query($conadmarquivo, $sqlLeituras1);
+    while($rsleituras= mysqli_fetch_assoc($rwleituras))
+    {
+         //verificar se o leitura existe na base de dados
+        $sqlemail_lista_ret="SELECT * FROM email_lista_ret WHERE idContatosMailing='".$rsleituras['idContatosMailing']."'";
+      // echo '<br>'.$sqlemail_lista_ret.'<br>';
+        $rsemail_lista_ret=mysqli_fetch_assoc(mysqli_query($contemporaria, $sqlemail_lista_ret));
+         if($rsemail_lista_ret['idContatosMailing']!='')
+        {
+            /*
+             dat_leitura,TIP_NAVEGADOR,TIP_MODELO,TIP_SISTEMA
+             */
+                $sqlupcontrole5="UPDATE email_lista_ret
+                                                    SET 
+                                                      dat_leitura='".$rsleituras['datLeitura']."',
+                                                      TIP_NAVEGADOR='".$rsleituras['txtNavegador']."',
+                                                      TIP_MODELO='".$rsleituras['txtModelo']."',
+                                                      TIP_SISTEMA='".$rsleituras['txtSistemaOperacional']."',
+                                                      COD_LEITURA='1'    
+                                WHERE ID_DISPARO='".$rsleituras['idDisparo']."' and idContatosMailing='".$rsleituras['idContatosMailing']."'";
+                   
+                          //echo'<br>'.$sqlupcontrole5.'<br>';             
+               
+                  mysqli_query($contemporaria, $sqlupcontrole5);
+        }    
+    }  
+    //2-- optout
+    $sqloptout1="SELECT * from optout";
+    $rwoptout1= mysqli_query($conadmarquivo, $sqloptout1);
+    while($rsoptout1= mysqli_fetch_assoc($rwoptout1))
+    {
+        //verificar se o leitura existe na base de dados
+        $sqlemail_lista_ret="SELECT * FROM email_lista_ret WHERE  idContatosMailing='".$rsoptout1['idContatosMailing']."'";
+        $rsemail_lista_ret=mysqli_fetch_assoc(mysqli_query($contemporaria, $sqlemail_lista_ret));
+        if($rsemail_lista_ret['idContatosMailing']!='')
+        {
+            /*
+              DAT_OPOUT,DES_MOTIVO,COD_OPTOUT_ATIVO
+             */
+                $sqlupcontrole5="UPDATE email_lista_ret
+                                                    SET 
+                                                      DAT_OPOUT='".$rsoptout1['datOptOut']."',
+                                                      DES_MOTIVO='".$rsoptout1['txtMotivo']."',
+                                                      COD_OPTOUT_ATIVO='1'
+                                WHERE idContatosMailing='".$rsoptout1['idContatosMailing']."'";
+                         //   echo'<br>'.$sqlupcontrole5.'<br>';
+               mysqli_query($contemporaria, $sqlupcontrole5);
+        } 
+        //marcar no cliente os OPT-OUT
+       
+       $sqlOPTOUCLI="SELECT c.cod_cliente from email_lista_ret r
+                        INNER JOIN clientes c ON c.DES_EMAILUS=r.DES_EMAILUS
+                        WHERE 
+                        r.COD_OPTOUT_ATIVO='1' 
+                        AND r.idContatosMailing='".$rsoptout1['idContatosMailing']."' 
+                        AND r.ID_DISPARO='".$rsoptout1['idDisparo']."' 
+                        AND c.LOG_EMAIL='S'";
+       $rsOPTOUCLI= mysqli_fetch_assoc(mysqli_query($contemporaria, $sqloptout1));
+       if($rsOPTOUCLI!="")
+       {    
+            $updateOPOUT="UPDATE clientes  SET LOG_EMAIL='N' WHERE  cod_cliente =".$rsOPTOUCLI['cod_cliente'];
+            mysqli_query($contemporaria, $updateOPOUT);
+
+       }    
+    }  
+  //  }   
+$diferenca="UPDATE controle_entrega_mail CEM
+                                    SET CEM.QTD_DIFERENCA = (
+                                            SELECT (EL.QTD_LISTA - CEM.QTD_CONTATOS) AS DIFERENCA
+                                            FROM email_lote EL
+                                            WHERE EL.COD_DISPARO_EXT = CEM.COD_DISPARO
+                                    )
+                                    WHERE CEM.COD_EMPRESA = $CODEMPRESA";
+ mysqli_query($contemporaria, $diferenca);
+
+}                                                                             

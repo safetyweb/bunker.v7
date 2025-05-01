@@ -1,0 +1,128 @@
+{
+	"Event": "cetBefore",
+	"Execution": "cetContinue",
+	"ID": "001007000485376",
+	"Operation": "cotEndSale",
+	"ParkingTicket": null,
+	"Pay": null,
+	"Response": "",
+	"Sale": {
+		"Discount": 0.0,
+		"DiscountCodes": [],
+		"Header": {
+			"AccountingDate": "2021-09-21T00:00:00",
+			"DateTimeIssue": "2021-09-21T10:18:49",
+			"IdDocument": 485376,
+			"IdInvoiceKey": "35210902485011000134590006788400308474571211",
+			"IdStore": 1,
+			"IdTerminal": 7,
+			"IdUser": 35,
+			"Identification": [
+				{
+					"Document": "29337032899",
+					"DocumentType": "cdtCPF",
+					"IdentificationType": "citReward",
+					"PartnerCode": 35
+				}
+			],
+			"Status": "sttValid"
+		},
+		"ID": "001007000485376",
+		"Increase": 0.0,
+		"Items": [
+			{
+				"BarCode": "7506339363883",
+				"CaptionPacking": "UN",
+				"Description": "ORAL-B CD 1 2 3 70GR ANTI CARIES",
+				"DiscountPrice": 3.96,
+				"IncreasePrice": 0.0,
+				"InternalCode": "50123",
+				"ItemNumber": 1,
+				"PackingQuantity": 1.0,
+				"PartitionDiscount": [
+					{
+						"DiscountAmount": 0.0,
+						"PartnerCode": 0,
+						"Price": 3.96,
+						"PromotionCode": 0
+					}
+				],
+				"PartitionIncrease": [],
+				"Quantity": 12.0,
+				"SellerCode": 159,
+				"Status": "sttValid",
+				"TotalPrice": 11.88,
+				"UnitPrice": 1.32
+			},
+			{
+				"BarCode": "7898291219958",
+				"CaptionPacking": "UN",
+				"Description": "MONANGE CARGA BEST 3 C/2",
+				"DiscountPrice": 0.0,
+				"IncreasePrice": 0.0,
+				"InternalCode": "64672",
+				"ItemNumber": 2,
+				"PackingQuantity": 1.0,
+				"PartitionDiscount": [],
+				"PartitionIncrease": [],
+				"Quantity": 1.0,
+				"SellerCode": 159,
+				"Status": "sttValid",
+				"TotalPrice": 4.89,
+				"UnitPrice": 4.89
+			},
+			{
+				"BarCode": "7898291219958",
+				"CaptionPacking": "UN",
+				"Description": "MONANGE CARGA BEST 3 C/2",
+				"DiscountPrice": 0.0,
+				"IncreasePrice": 0.0,
+				"InternalCode": "64672",
+				"ItemNumber": 3,
+				"PackingQuantity": 1.0,
+				"PartitionDiscount": [],
+				"PartitionIncrease": [],
+				"Quantity": 1.0,
+				"SellerCode": 159,
+				"Status": "sttValid",
+				"TotalPrice": 4.89,
+				"UnitPrice": 4.89
+			}
+		],
+		"Messages": {
+			"Customer": [],
+			"User": []
+		},
+		"PartitionDiscount": [],
+		"PartitionIncrease": [],
+		"PaymentChange": null,
+		"Payments": [
+			{
+				"AuthorizationCode": "",
+				"Discount": 0.0,
+				"ExpirationDateCard": "",
+				"FirstDigitCard": "",
+				"FlagCard": "",
+				"IdWallet": "",
+				"Increase": 0.0,
+				"InstallmentAmount": 0,
+				"ItemNumber": 1,
+				"LastDigitCard": "",
+				"NetworkCard": "",
+				"OwnerCard": "",
+				"PartitionDiscount": [],
+				"PartitionIncrease": [],
+				"PaymentNumber": 1,
+				"PaymentType": "cptMoney",
+				"Total": 21.66,
+				"TransactionCanceledCode": "",
+				"TransactionCode": "",
+				"TypeWallet": ""
+			}
+		],
+		"SolidaryChange": null,
+		"Total": 21.66,
+		"VouchersPrint": []
+	},
+	"Version": 1
+}

@@ -1,0 +1,163 @@
+<?php
+$cur0 = curl_init();
+         curl_setopt_array($cur0, array(
+           CURLOPT_URL => 'http://externo.bunker.mk/ibope_counicacao/schedule_diaaniver.php',
+           CURLOPT_RETURNTRANSFER => true,
+           CURLOPT_ENCODING => "",
+           CURLOPT_MAXREDIRS => 10,
+           CURLOPT_TIMEOUT => 18000,
+           CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+           CURLOPT_CUSTOMREQUEST => "POST",
+           CURLOPT_POSTFIELDS => "",
+           CURLOPT_HTTPHEADER => array(
+             "Postman-Token: ba34fc31-389a-447e-84e2-4d12b0e2982d",
+             "cache-control: no-cache"
+           ),
+         ));
+
+         $response = curl_exec($cur0);
+         $err = curl_error($cur0);
+
+         curl_close($cur0);
+
+         if ($err) {
+           echo "cURL Error #:" . $err;
+         } else {
+           echo $response;
+         }
+		 
+$curl = curl_init();
+         curl_setopt_array($curl, array(
+           CURLOPT_URL => 'http://externo.bunker.mk/ibope_counicacao/schedule_mesaniver.do',
+           CURLOPT_RETURNTRANSFER => true,
+           CURLOPT_ENCODING => "",
+           CURLOPT_MAXREDIRS => 10,
+           CURLOPT_TIMEOUT => 18000,
+           CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+           CURLOPT_CUSTOMREQUEST => "POST",
+           CURLOPT_POSTFIELDS => "",
+           CURLOPT_HTTPHEADER => array(
+             "Postman-Token: ba34fc31-389a-447e-84e2-4d12b0e2982d",
+             "cache-control: no-cache"
+           ),
+         ));
+
+         $response = curl_exec($curl);
+         $err = curl_error($curl);
+
+         curl_close($curl);
+
+         if ($err) {
+           echo "cURL Error #:" . $err;
+         } else {
+           echo $response;
+         }
+
+$cur2 = curl_init();
+         curl_setopt_array($cur2, array(
+           CURLOPT_URL => 'http://externo.bunker.mk/ibope_counicacao/schedule_semanaaniver.do',
+           CURLOPT_RETURNTRANSFER => true,
+           CURLOPT_ENCODING => "",
+           CURLOPT_MAXREDIRS => 10,
+           CURLOPT_TIMEOUT => 18000,
+           CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+           CURLOPT_CUSTOMREQUEST => "POST",
+           CURLOPT_POSTFIELDS => "",
+           CURLOPT_HTTPHEADER => array(
+             "Postman-Token: ba34fc31-389a-447e-84e2-4d12b0e2982d",
+             "cache-control: no-cache"
+           ),
+         ));
+
+         $response = curl_exec($cur2);
+         $err = curl_error($cur2);
+
+         curl_close($cur2);
+
+         if ($err) {
+           echo "cURL Error #:" . $err;
+         } else {
+           echo $response;
+         }
+
+         
+$cur3 = curl_init();
+         curl_setopt_array($cur3, array(
+           CURLOPT_URL => 'http://externo.bunker.mk/ibope_counicacao/schedule_cadastro.do',
+           CURLOPT_RETURNTRANSFER => true,
+           CURLOPT_ENCODING => "",
+           CURLOPT_MAXREDIRS => 10,
+           CURLOPT_TIMEOUT => 18000,
+           CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+           CURLOPT_CUSTOMREQUEST => "POST",
+           CURLOPT_POSTFIELDS => "",
+           CURLOPT_HTTPHEADER => array(
+             "Postman-Token: ba34fc31-389a-447e-84e2-4d12b0e2982d",
+             "cache-control: no-cache"
+           ),
+         ));
+
+         $response = curl_exec($cur3);
+         $err = curl_error($cur3);
+
+         curl_close($cur3);
+
+         if ($err) {
+           echo "cURL Error #:" . $err;
+         } else {
+           echo $response;
+         }
+         
+  /*      
+   $cur4 = curl_init();
+         curl_setopt_array($cur4, array(
+           CURLOPT_URL => 'http://externo.bunker.mk/ibope_counicacao/schedule_venda_imediatamente.do',
+           CURLOPT_RETURNTRANSFER => true,
+           CURLOPT_ENCODING => "",
+           CURLOPT_MAXREDIRS => 10,
+           CURLOPT_TIMEOUT => 18000,
+           CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+           CURLOPT_CUSTOMREQUEST => "POST",
+           CURLOPT_POSTFIELDS => "",
+           CURLOPT_HTTPHEADER => array(
+             "Postman-Token: ba34fc31-389a-447e-84e2-4d12b0e2982d",
+             "cache-control: no-cache"
+           ),
+         ));
+
+         $response = curl_exec($cur4);
+         $err = curl_error($cur4);
+
+         curl_close($cur3);
+
+         if ($err) {
+           echo "cURL Error #:" . $err;
+         } else {
+           echo $response;
+         }*/ 
+$curl = curl_init();
+         curl_setopt_array($curl, array(
+           CURLOPT_URL => 'http://externo.bunker.mk/ibope_counicacao/schedule_venda_uma_vez_dia.php',
+           CURLOPT_RETURNTRANSFER => true,
+           CURLOPT_ENCODING => "",
+           CURLOPT_MAXREDIRS => 10,
+           CURLOPT_TIMEOUT => 18000,
+           CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+           CURLOPT_CUSTOMREQUEST => "POST",
+           CURLOPT_POSTFIELDS => "",
+           CURLOPT_HTTPHEADER => array(
+             "Postman-Token: ba34fc31-389a-447e-84e2-4d12b0e2982d",
+             "cache-control: no-cache"
+           ),
+         ));
+
+         $response = curl_exec($curl);
+         $err = curl_error($curl);
+
+         curl_close($curl);
+
+         if ($err) {
+           echo "cURL Error #:" . $err;
+         } else {
+           echo $response;
+         }         

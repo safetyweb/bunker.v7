@@ -1,0 +1,355 @@
+<?php
+include '../../_system/_functionsMain.php';
+include '../../_system/ibope/FnIbotpe.php';
+include '../../_system/ibope/BuscarCampanha.php';
+include '../../_system/ftpIbope.php';
+
+echo 'INICIO \n\r<br>'.date('Y-m-d H:i:s');
+/*
+ agenda_mail
+ Enviar a cada evento   = 99
+ 1 vez no dia           = 1 VEZ AO DIA
+ 1 vez na semana        = 1 POR SEMANA
+ 1 vez ao mês           = UM VEZ POR MES
+ */
+$conadmmysql=$connAdm->connAdm();
+$datahoraatual=date('Y-m-d H:i:s');
+$horaatual=date('H:i:s');
+$numerotentativa=3;
+$MINLISTA=1;
+$PERMITENEGATIVO='S';
+$CONFIRMACAO='N';
+//busca de pareceiros comunicação
+$sqlpacero="SELECT * FROM CONFIGURACAO_ACESSO WHERE  cod_parcomu='12' AND LOG_STATUS='S' and COD_EMPRESA not in ('85','123','60')";
+$parcerorw=mysqli_query($conadmmysql, $sqlpacero);
+while ($parcerors=mysqli_fetch_assoc($parcerorw))
+{     
+   echo'busca de pareceiros comunicacao \r \n <br>';
+    //verifica se a empresa esta ativa
+    $empresaativa="SELECT cod_empresa,LOG_ATIVO,TIP_RETORNO FROM empresas WHERE cod_empresa=".$parcerors['COD_EMPRESA'];
+    $empresaatiivarw=mysqli_query($conadmmysql, $empresaativa);
+    while($empresaativars= mysqli_fetch_assoc($empresaatiivarw))
+    {
+		$tip_retorno = $empresaativars['TIP_RETORNO'];
+        if($tip_retorno == 1){$casasDec = 0;}else{$casasDec = 2;}
+	
+			unset($gatilhors);
+			unset($PCT_RESERVA);
+			unset($COD_PERSONAS);
+			unset($campanhars);  
+			unset($arraydados);
+			unset($dadosarquivo);
+			unset($arraydebitos);
+			unset($dadosProcessaMailing);
+			unset($des_campanha);
+			unset($newRow);
+			unset($linha);
+			unset($itemLinha); 
+        if($empresaativars['LOG_ATIVO']=='S')
+        {
+            echo 'verifica se a empresa esta ativa \r\n<br>' ; 
+            //conexão temporaria
+            $contempmysql=connTemp($parcerors['COD_EMPRESA'],'');
+            echo 'ABRE conexao teporaria\r\n <br>';
+           //iniciar o codigo principal aqui.
+           //verificar as configurações do gatilho
+            $gatilho="SELECT * FROM gatilho_email WHERE TIP_GATILHO= 'cadastro' AND cod_empresa=".$parcerors['COD_EMPRESA'];
+            $gatilhorw=mysqli_query($contempmysql, $gatilho);
+            while ($gatilhors= mysqli_fetch_assoc($gatilhorw))
+            {
+                echo 'Inicia o Gatilho \r\n <br>';
+                //verificar dados da  campanha
+                $campanhasql="SELECT * FROM campanha  WHERE cod_campanha='".$gatilhors['COD_CAMPANHA']."' AND cod_empresa=".$parcerors['COD_EMPRESA'];
+                $campanharw= mysqli_query($contempmysql, $campanhasql);
+                while ($campanhars= mysqli_fetch_assoc($campanharw))
+                {
+                           
+                    
+                    //verificar se esta ativa
+                    if($campanhars['LOG_ATIVO']=='S')
+                    { 
+                        echo'verificar se a campanha esta ativa \r\n<br>';
+                        //validade da campanha
+                        $datetimecampanha=$campanhars['DAT_FIM'].' '.$campanhars['HOR_FIM'];  
+                       echo'<br>campanha validade :'.$datetimecampanha;
+                       echo'<br>datahoraatual         :'.$datahoraatual.'<br>';
+                       
+                        if($datetimecampanha >= $datahoraatual)
+                        {   
+                            echo'verificar se a campanha esta valida \r\n<br>';
+                            //verifica status de dados do envio
+                            if($campanhars['LOG_PROCESSA']=="S")
+                            { 
+                                echo'verificar se na campanha LOG_PROCESSA =S \r\n<br>';
+                                if(isset($campanhars['COD_EXT_CAMPANHA']) || $campanhars['COD_EXT_CAMPANHA'] != '0' )
+                                {
+                                    //// Inicio TIP_MOMENTO == 99  
+                                    //Imediatamente na execução do schedule 5 min 
+                                  
+                                    if($gatilhors['TIP_MOMENTO']!='99')
+                                    {    
+                                        $horaexecutar= $gatilhors['TIP_MOMENTO'].':00:00';
+                                        echo '<br>'.$horaexecutar.'<br>';
+                                        $horamenor1= date('H:i:s', strtotime('-1 minute', strtotime($horaexecutar)));
+                                        $horamaior1= date('H:i:s', strtotime('+2 minute', strtotime($horaexecutar)));    
+                                        if(strtotime($horamenor1) <= strtotime($horaatual) && strtotime($horamaior1)>= strtotime($horaatual))
+                                        { 
+                                            $codperido=1;
+                                            echo'<br> time  ok <br>';
+                                        } else {
+                                            echo'<br> fora do time <br>';
+                                           $codperido=1;    
+                                        }
+                                    } else{
+                                        $codperido=1;
+                                    }
+                                   
+                                    if($codperido=='1')
+                                    {
+											
+                                                                    //capturar as variaveis
+                                                                     $tampletevariavel="SELECT   CP.DES_CAMPANHA, 
+                                                                                                 CP.DAT_INI, 
+                                                                                                 CP.HOR_INI,
+                                                                                                 CP.COD_EXT_CAMPANHA, 
+                                                                                                 TE.COD_EXT_TEMPLATE,
+                                                                                                 TE.DES_ASSUNTO,
+                                                                                                 MDE.DES_TEMPLATE AS HTML 
+                                                                     FROM CAMPANHA CP
+                                                                     INNER JOIN mensagem_email ECA ON ECA.COD_CAMPANHA = CP.COD_CAMPANHA
+                                                                     INNER JOIN TEMPLATE_EMAIL TE ON TE.COD_TEMPLATE = ECA.COD_TEMPLATE_EMAIL
+                                                                     INNER JOIN MODELO_EMAIL MDE ON MDE.COD_TEMPLATE = TE.COD_TEMPLATE
+                                                                     WHERE CP.COD_EMPRESA = '".$parcerors['COD_EMPRESA']."'
+                                                                     AND CP.COD_CAMPANHA = '".$gatilhors['COD_CAMPANHA']."'
+                                                                     AND ECA.LOG_PRINCIPAL='S'";
+                                                                     $html=mysqli_fetch_assoc(mysqli_query($contempmysql, $tampletevariavel));
+                                                                     //gera lista de variaveis
+                                                                     $tagsPersonaliza=procpalavras($html['DES_ASSUNTO'].$html['HTML'],$conadmmysql);
+                                                                     $tagsPersonaliza= '<#EMAIL>,'.$tagsPersonaliza;
+
+                                                                     //capturar os codigo da persona
+                                                                     $sqlpersona="SELECT * FROM email_parametros WHERE cod_empresa='".$parcerors['COD_EMPRESA']."' AND cod_campanha=".$gatilhors['COD_CAMPANHA'];
+                                                                     $rwpersonas=mysqli_query($contempmysql, $sqlpersona);
+                                                                     while($rscampanhas= mysqli_fetch_assoc($rwpersonas))
+                                                                     {
+                                                                         $lista = $rscampanhas['COD_LISTA'];
+                                                                         $COD_PERSONAS.=$rscampanhas['COD_PERSONAS'].',';
+                                                                         $PCT_RESERVA=$rscampanhas['PCT_RESERVA'];
+                                                                     }        
+                                                                     $COD_PERSONAS= rtrim($COD_PERSONAS,',');
+                                                                      echo'Inicio da geracao de arquivo\r\n <br>';
+                                                                     //Gerar a lista de clientes para o envio
+                                                                      //verificar as quantidade inicia programada
+                                                                    $sqlemail_fila="SELECT * FROM email_fila WHERE 
+                                                                                                TIP_FILA=2 AND
+                                                                                                TIP_GATILHO='".$gatilhors['TIP_GATILHO']."' AND 
+                                                                                                COD_EMPRESA=".$parcerors['COD_EMPRESA']." AND 
+                                                                                                COD_CAMPANHA=".$gatilhors['COD_CAMPANHA'].";";
+                                                                    $rwemail_fila= mysqli_query($contempmysql, $sqlemail_fila);
+                                                                    $contadorvolume=0;
+                                                                    while($rsemail_fila=mysqli_fetch_assoc($rwemail_fila))
+                                                                    {
+                                                                        //deletar os que estiverem na blacklist
+                                                                        // deletar os que não aceitam receber informação
+                                                                        $cod_clientews.=$rsemail_fila['COD_CLIENTE'].',';
+                                                                        $contadorvolume ++;
+                                                                        
+                                                                    }  
+                                                                    $cod_clientews=rtrim($cod_clientews,',');
+																	
+                                        if($contadorvolume >= $MINLISTA)
+                                        {
+                                        
+											
+                                                                   //gerar o arquivo
+                                                                   $des_campanha=$html['DES_CAMPANHA'];
+                                                                    $arraydados=array('cod_empresa'=>$parcerors['COD_EMPRESA'],
+                                                                                      'cod_campanha'=>$gatilhors['COD_CAMPANHA'],
+                                                                                      'contemp'=>connTemp($parcerors['COD_EMPRESA'],''),
+                                                                                      'TAGS'=>$tagsPersonaliza,
+                                                                                      'table_join'=>'email_fila',
+                                                                                      'blacklist_email'=>'AND C.DES_EMAILUS NOt IN ( SELECT DES_EMAIL FROM blacklist_email)',
+                                                                                      'LOG_EMAIL'=>'and C.LOG_EMAIL="S"',
+                                                                                      'TIP_FILA'=>'and EC.TIP_FILA="2"',
+                                                                                      'conadm'=>$conadmmysql
+                                                                          ); 
+																
+                                                                   $nomeRel = date("YmdHis")."_".$des_campanha."_trasction";
+                                                                   $nomeRel = $arraydados['cod_empresa'].'_'.$nomeRel.'.csv';     
+                                                                   $caminhoarquivo="../../_system/ibope/listas_envio/";                                                        
+                                                                   include '../../_system/ibope/geralistaenvio.php'; 
+																echo '<br>aqui 222<br>'.$sql.'<br>';	
+                                            //verifica se a lista tem dados
+											
+                                            if($linhas >=1)
+                                            {    
+                                                                   echo'Fim da geracao de arquivo\r\n <br>';
+                                                                   echo'Inicio envio FTP ibope \r\n <br>';
+                                                                   //ENVIAR FTP                                   
+                                                                   $dadosarquivo = array(
+                                                                                         'arqlocal'=>  $caminhoarquivo.$nomeRel,
+                                                                                          'nomearq'=> $nomeRel
+                                                                                           ); 
+
+                                                                   $retorno = ibopeftp($dadosarquivo);
+																   
+                                                        if($retorno['conexao_msg']=='connectado')
+                                                        {
+															
+                                                                       if($retorno['uploadcod']=='3')
+                                                                       {
+																		   
+                                                                            //Contabiliza debitos
+                                                                            $arraydebitos=array('quantidadeEmailenvio'=>$linhas,
+                                                                                                'COD_EMPRESA'=>$parcerors[COD_EMPRESA],
+                                                                                                'PERMITENEGATIVO'=>$PERMITENEGATIVO,
+                                                                                                'COD_CANALCOM'=>'1',
+                                                                                                'CONFIRMACAO'=>$CONFIRMACAO,
+                                                                                                'COD_CAMPANHA'=>$gatilhors['COD_CAMPANHA'],    
+                                                                                                'LOG_TESTE'=>'N',
+                                                                                                'DAT_CADASTR'=>date('Y-m-d H:i:s'),
+                                                                                                'CONNADM'=>$connAdm->connAdm()
+                                                                                                );  
+                                                                            $teste=FnDebitos($arraydebitos);
+                                                                            
+                                                                          echo'UPLOAD OK \r\n <br>';
+                                                                           mysqli_next_result($contempmysql);
+
+                                                                           $codlotsql="SELECT max(cod_lote)+1 as cod_lote from email_lote where cod_empresa=$parcerors[COD_EMPRESA] and cod_campanha=$gatilhors[COD_CAMPANHA]";
+                                                                           $rscod_lot=mysqli_fetch_assoc(mysqli_query($contempmysql, $codlotsql));
+
+
+                                                                           //ALTERA CONTROLE
+
+                                                                               $dat_ini = date("d/m/Y H:i",strtotime("+5 minutes"));
+
+                                                                               $dadosProcessaMailing=array(
+                                                                                                           'txtNome'=>$des_campanha.'_'.$parcerors[COD_EMPRESA],
+                                                                                                           'flgUploadArquivo'=> 1,
+                                                                                                           'txtSeparadorDadoArquivo'=>';',
+                                                                                                           'flgAtivo'=>1,      
+                                                                                                           'txtPersonalizacao'=> $tagsPersonaliza,    
+                                                                                                           'txtNomeArquivo'=>$nomeRel,
+                                                                                                           'idConfig'=>$html['COD_EXT_TEMPLATE'],
+                                                                                                           'idCampanha'=>$html['COD_EXT_CAMPANHA'],   
+                                                                                                           'datAgendamento'=>$dat_ini
+                                                                                                           );
+                                                                                echo 'Envio PARA o IBOPE\r\n <br>';
+                                                                                $retornoCad = cadastraEProcessaMailingV2 ($Userv2,$dadosProcessaMailing);
+
+                                                                                $status = $retornoCad['body']['envelope']['body']['cadastraeprocessamailingv2response']['cadastraeprocessamailingv2result']['status'];
+                                                                                $mailingid = $retornoCad['body']['envelope']['body']['cadastraeprocessamailingv2response']['cadastraeprocessamailingv2result']['mailingid'];
+                                                                                $sqlControle = "INSERT INTO EMAIL_LOTE(
+                                                                                                                        DAT_AGENDAMENTO,
+                                                                                                                        COD_CAMPANHA,
+                                                                                                                        COD_EMPRESA,
+                                                                                                                        COD_LOTE,
+                                                                                                                        COD_STATUSUP,
+                                                                                                                        NOM_ARQUIVO,
+                                                                                                                        DES_PATHARQ,
+                                                                                                                        COD_USUCADA,                                                                                                            
+                                                                                                                        QTD_LISTA,
+                                                                                                                        COD_PERSONAS,
+                                                                                                                        COD_LISTA,
+                                                                                                                        COD_MAILING_EXT,
+                                                                                                                        ID_CONTROLEIBOPE,
+                                                                                                                        LOG_ENVIO
+                                                                                                                    )VALUES(
+                                                                                                                        '".date('Y-m-d H:i:s')."',
+                                                                                                                        ".$gatilhors['COD_CAMPANHA'].",
+                                                                                                                        ".$parcerors['COD_EMPRESA'].",
+                                                                                                                        ".$rscod_lot['cod_lote'].",
+                                                                                                                        '3',
+                                                                                                                        '$nomeRel',
+                                                                                                                        '".$caminhoarquivo.$nomeRel."',
+                                                                                                                        9999,                                                                                                               
+                                                                                                                        '".$linhas."',
+                                                                                                                        '".$COD_PERSONAS."',    
+                                                                                                                        '".$lista."',
+                                                                                                                        '".$mailingid."',
+                                                                                                                        '1',
+                                                                                                                        'S'
+                                                                                                                        )";                                                       
+                                                                                mysqli_query($contempmysql, $sqlControle);
+
+                                                                                if($status == 'true'){ 
+                                                                                    Echo '<br>EMAIL ENVIADO<br>';
+                                                                                   if($cod_clientews!='')
+                                                                                    {
+                                                                                    $clientee ="TIP_FILA='2' and  COD_CLIENTE in($cod_clientews) AND" ;  
+                                                                                    }    
+                                                                                    $sqlemail_fila="DELETE FROM email_fila WHERE 
+                                                                                                TIP_GATILHO='".$gatilhors['TIP_GATILHO']."' AND
+                                                                                                COD_EMPRESA=".$parcerors['COD_EMPRESA']." AND
+                                                                                                $clientee    
+                                                                                                COD_CAMPANHA=".$gatilhors['COD_CAMPANHA'].";";
+                                                                                    echo '<br>'.$sqlemail_fila.'<br>';
+                                                                                    $rwemail_fila= mysqli_query($contempmysql, $sqlemail_fila);
+                                                                                   
+                                                                                   
+                                                                                }else{
+
+                                                                                    echo "<br>ERRO NO ENVIO<br>";
+                                                                               }
+                                                                            //===fim função iBOPE
+
+                                                                       }else{
+                                                                           echo'Erro no FTP';
+
+                                                                       }    
+                                                        }else{
+                                                          echo'Erro no FTP';
+                                                        } 
+                                            }else{
+                                              echo '<br>Não a dados na lista<br>';  
+                                            }            
+                                        }else{ echo '<br>Nao chegou no limite para geracao da lista!<br>';}                     
+                                    } 
+                               // fim TIP_MOMENTO == 99    
+                                }    
+                            }
+                        }else{
+                         //campanha fora da validade
+                         $UPgatilho_email="UPDATE gatilho_email SET LOG_STATUS='N' WHERE  TIP_GATILHO='cadastro' and COD_CAMPANHA='".$gatilhors['COD_CAMPANHA']."' AND cod_empresa=".$parcerors['COD_EMPRESA'];
+                         $updateste=mysqli_query($contempmysql, $UPgatilho_email);
+                         if(!$updateste){
+                           Echo 'erro no UPDATE: '.$UPgatilho_email;  
+                         }
+                          echo '<br>Campanha esta fora da validade<br>';  
+                        }    
+                    }    
+                }        
+            }        
+        }
+            /*
+             LEGENDA
+             ID_CONTROLEIBOPE = '1' não possui id disparo
+             ID_CONTROLEIBOPE = '2' já fez o disparo e update na base de dados  
+             */
+
+            //capturar o Id mailing da base de dados
+
+            $sqlidmailling=" SELECT * FROM  EMAIL_LOTE WHERE cod_empresa='".$parcerors['COD_EMPRESA']."' AND ID_CONTROLEIBOPE='1'; ";
+            $rwidmailling= mysqli_query($contempmysql, $sqlidmailling);
+            while ($rsidmailling= mysqli_fetch_assoc($rwidmailling))
+            {
+               $mailingidnovo=$rsidmailling['COD_MAILING_EXT'];              
+               $idDisparo1=BuscariDdisparo ($Userv2,$mailingidnovo);
+               echo 'DISPARO:'.$idDisparo1;    
+                    if($idDisparo1 !='')
+                    {    
+                            $sqlupdateidmailling="UPDATE email_lote 
+                                                        SET ID_CONTROLEIBOPE='2',
+                                                            COD_DISPARO_EXT='$idDisparo1'
+                                                  WHERE COD_CONTROLE='".$rsidmailling['COD_CONTROLE']."';";
+                            mysqli_query($contempmysql, $sqlupdateidmailling);
+                    }
+            } 
+    }     
+}
+mysqli_close($conadmmysql);
+mysqli_close($contempmysql);
+echo 'FIM \n\r<br>';
+echo 'time do schecule'.$horamaior .'>='. date('Y-m-d H:i').'<br>';
+echo date('Y-m-d').' '.trim($gatilhors['HOR_ESPECIF'].':00');
+

@@ -1,0 +1,306 @@
+<?php
+if($_GET['DATA']!='')
+    {        
+       $date= $_GET['DATA'];
+       $d1=date('d/m/Y', strtotime($date)); 
+       $data_del=date('Y-m-d', strtotime($date));
+       
+    }else{
+       $date=date('d-m-Y');  
+       $d1=date('d/m/Y', strtotime("-1 days",strtotime($date)));
+    }
+    include '../../_system/_functionsMain.php';  
+echo 'DATA INICIO DA EXECUCAO:'.date('Y-m-d');
+  $deletedados="  TRUNCATE TABLE cliqueslink;
+                TRUNCATE TABLE contatos;
+                TRUNCATE TABLE contatosmailing;
+                TRUNCATE TABLE disparo;
+                TRUNCATE TABLE disparomailing;
+                TRUNCATE TABLE entregabilidade;
+                TRUNCATE TABLE exclusaocontatodisparo;
+                TRUNCATE TABLE leituras;
+                TRUNCATE TABLE links;
+                TRUNCATE TABLE optout;";
+mysqli_multi_query($import_ibope->connAdm(), $deletedados);
+ 
+    ini_set("default_charset", "UTF-8");
+    $ftp_server = "ftp.dtmmkt.com.br";
+    $ftp_username   = "dtmsp\\effmail.marka";
+    $ftp_password   =  "A9tavMvH3Cmp";
+      
+    
+//===============================
+//
+$date1dia=str_replace('/', '_', $d1);
+// Abre a conexão com o servidor FTP
+$ftpconn = ftp_connect($ftp_server);
+$login = ftp_login($ftpconn, $ftp_username, $ftp_password);
+ftp_pasv($ftpconn, true);
+ftp_set_option($ftpconn, FTP_TIMEOUT_SEC, 7200);
+
+$lista = ftp_nlist($ftpconn, '/ftpdtmmail/Marka/Retornos/'.$date1dia);
+
+foreach ($lista as $item) 
+{  
+   
+        $nomearquivos=explode('/', $item); 
+        if (ftp_get($ftpconn, '/var/lib/mysql-files/'.$nomearquivos['5'], $item, FTP_ASCII)) {
+            echo "Successfully written to $local_file\n<br>";
+            
+                if( chmod ('/var/lib/mysql-files/'.$nomearquivos['5'], 0777))
+                {
+                echo 'Permissão modificada com sucesso.';
+                }
+                else
+                {
+                echo 'Não foi possível alterar permissão';
+                }
+        } else {
+            echo "There was a problem\n==".$nomearquivos['5'];
+            '<br>'.var_dump($ftpconn).'<br>';
+            
+            echo'<pre>';
+            print_r( error_get_last() );
+            echo'</pre>';
+            exit();
+        }
+}
+
+
+// Fecha conexão ftp
+ftp_close($ftpconn);
+$path = "/var/lib/mysql-files/";
+$diretorio = dir($path);
+
+while($arquivo_name = $diretorio -> read()){
+
+ $file = fopen('/var/lib/mysql-files/'.$arquivo_name, "r");   
+  
+        $arquivo = Array();
+        $campo = Array();
+       // $count  = 1;
+        while (($linha = fgetcsv($file, '24000', ";")) !== FALSE) {
+        
+          // $array[]=$column;
+            //if  ($count == 1)  {
+
+                $campo = $linha;
+                $nomdatabases=explode('_', $arquivo_name);
+                $nom_base= str_replace('.csv', '', $nomdatabases['3']);
+                
+             //INSERT INTO
+               /* foreach ($campo as $dadosnomecampo)
+                {    
+                    $nomecamposeparado.=$dadosnomecampo.",";                  
+                    $insert="insert into $nom_base (".trim($nomecamposeparado,',')." )values";
+                    $camposvalues="(".trim($nomecamposeparado,',')." )";
+                    
+                } 
+                
+            }else{
+               $arquivo[] =  array_combine($campo, $linha);
+                
+            }
+            $count++*/;
+           
+        }
+      
+        $sql =  '   LOAD DATA INFILE "/var/lib/mysql-files/'.$arquivo_name.'"
+                    IGNORE  INTO TABLE '.$nom_base.' 
+                    FIELDS TERMINATED BY ";"
+                    LINES TERMINATED BY "\n"
+                    IGNORE 1 LINES;' ; 
+                                     
+      $res = mysqli_query($import_ibope->connAdm(),$sql);       
+      
+/*
+foreach ($arquivo as $dados => $values)
+{   
+ 
+ 
+  
+    for($i = 0; $i < count($values); $i++){
+  
+          
+            $dadosinsert.="'".utf8_encode($values[key($values)])."',";
+            
+            if($nom_base=='disparoMailing')
+            {
+               
+                if(key($values)=='idDisparo' ||
+                   key($values)=="idCampanha"||
+                   key($values)=="datCriacao" ||
+                   key($values)=="idConfig")
+                {
+                   $COD_DISPARO=$values['idDisparo'];
+                   $COD_CAMPANHA_EXT=$values['idCampanha'];
+                   $DAT_ENVIO=trim(rtrim($values['datCriacao']));
+                   $idConfig=trim(rtrim($values['idConfig']));
+                }    
+            }
+           
+            
+            next($values);
+    }
+        
+            if($nom_base=='disparoMailing')
+            {
+               //verificar se o codigo ja existe 
+                $SQLCONTROLEDISP="SELECT count(COD_DISPARO) as COD_DISPARO from controle_envio WHERE COD_DISPARO=$COD_DISPARO";
+                echo $SQLCONTROLEDISP;
+                $rsdisp=mysqli_fetch_assoc(mysqli_query($conadmFull, $SQLCONTROLEDISP));
+                if($rsdisp['COD_DISPARO']<=0)
+                {    
+                    $insecoddisp="INSERT INTO controle_envio (COD_DISPARO,
+                                                              COD_CAMPANHA_EXT,                             
+                                                              DAT_ENVIO,
+                                                              ID_TEMPLATE
+                                                              )VALUES( 
+                                                               '$COD_DISPARO', 
+                                                               '$COD_CAMPANHA_EXT',
+                                                               '$DAT_ENVIO',    
+                                                               '$idConfig')";
+                                                             
+                    mysqli_query($conadmFull, $insecoddisp);
+                }
+            }
+        $insertva[]="(".trim($dadosinsert,',')." )";        
+        unset($dadosinsert);
+        mysqli_next_result($conadmFull);  
+        
+        $insertinto=$insert.implode(',', $insertva);
+        mysqli_query($conadmFull, $insertinto);
+        
+        mysqli_next_result($conadmFull);   
+        unset($insertva);    
+}*/
+       //deletar o arquivo ja processado
+       array_map('unlink', glob("/var/lib/mysql-files/".$arquivo_name));
+
+   //     unset($insert);
+  //      unset($insertinto);
+  //      unset($nomecamposeparado);
+   //     unset($arquivo);            
+       
+        echo '<br>'.$nom_base.'<br>';
+}
+$diretorio -> close();
+
+$disparoMailingsql='select * from disparoMailing';
+$disparoMailingrs= mysqli_query($import_ibope->connAdm(), $disparoMailingsql);
+while ($disparoMailingrw = mysqli_fetch_assoc($disparoMailingrs)) {   
+                   $COD_DISPARO=$disparoMailingrw['idDisparo'];
+                   $COD_CAMPANHA_EXT=$disparoMailingrw['idCampanha'];
+                   $DAT_ENVIO=trim(rtrim($disparoMailingrw['datCriacao']));
+                   $idConfig=trim(rtrim($disparoMailingrw['idConfig']));
+                   $idMaling=trim(rtrim($disparoMailingrw['idMaling']));
+         $SQLCONTROLEDISP="SELECT count(COD_DISPARO) as COD_DISPARO from controle_envio WHERE COD_DISPARO=".$COD_DISPARO.';';
+         $rsdisp=mysqli_fetch_assoc(mysqli_query($import_ibope->connAdm(), $SQLCONTROLEDISP));
+        
+         if($rsdisp['COD_DISPARO']<=0)
+         {    
+             $insecoddisp="INSERT INTO controle_envio (COD_DISPARO,
+                                                       COD_CAMPANHA_EXT,                             
+                                                       DAT_ENVIO,
+                                                       ID_TEMPLATE,
+                                                       idMaling
+                                                       )VALUES( 
+                                                        '$COD_DISPARO', 
+                                                        '$COD_CAMPANHA_EXT',
+                                                        '$DAT_ENVIO',    
+                                                        '$idConfig',
+                                                        '$idMaling')";             
+             mysqli_query($import_ibope->connAdm(), $insecoddisp);
+         }
+} 
+$conadmwebtools=$connAdm->connAdm();
+
+$sqlpacero="SELECT * FROM CONFIGURACAO_ACESSO WHERE  cod_parcomu='12' AND LOG_STATUS='S'";
+$parcerorw=mysqli_query($conadmwebtools, $sqlpacero);
+while ($parcerors=mysqli_fetch_assoc($parcerorw))
+{
+    $COD_EMPRESA[]=$parcerors['COD_EMPRESA'];
+  
+}   
+    foreach ($COD_EMPRESA as $CODEMPRESA) 
+    {
+            $contemporaria= connTemp($CODEMPRESA, '');   
+             
+            $sqlibope="SELECT * FROM Controle_envio WHERE COD_EMPRESA is null;";
+            $rwdisparomailing= mysqli_query($import_ibope->connAdm(), $sqlibope);
+            
+            while ($rsdisparomailing= mysqli_fetch_assoc($rwdisparomailing))
+            {
+               
+                $sqlcampnah="SELECT * from campanha WHERE COD_EXT_CAMPANHA='".$rsdisparomailing['COD_CAMPANHA_EXT']."'";
+                $rscampanha=mysqli_fetch_assoc(mysqli_query($contemporaria, $sqlcampnah)); 
+                $sqlupdate="UPDATE controle_envio SET COD_EMPRESA='".$rscampanha['COD_EMPRESA']."' WHERE  COD_CAMPANHA_EXT='".$rsdisparomailing['COD_CAMPANHA_EXT']."'";
+                mysqli_query($import_ibope->connAdm(), $sqlupdate);
+                
+            }       
+    }
+
+$curl = curl_init();
+         curl_setopt_array($curl, array(
+           CURLOPT_URL => 'http://externo.bunker.mk/ibope_counicacao/proc_arquivo.do?data='.$data_del,
+           CURLOPT_RETURNTRANSFER => true,
+           CURLOPT_ENCODING => "",
+           CURLOPT_MAXREDIRS => 100,
+           CURLOPT_TIMEOUT => 180000,
+           CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+           CURLOPT_CUSTOMREQUEST => "POST",
+           CURLOPT_POSTFIELDS => "",
+           CURLOPT_HTTPHEADER => array(
+             "Postman-Token: ba34fc31-389a-447e-84e2-4d12b0e2982d",
+             "cache-control: no-cache"
+           ),
+         ));
+
+         $response = curl_exec($curl);
+         $err = curl_error($curl);
+
+         curl_close($curl);
+
+         if ($err) {
+           echo "cURL Error #:" . $err.'proc_arquivo.do';
+         } else {
+           echo $response;
+         } 
+    
+         $curl1 = curl_init();
+         curl_setopt_array($curl1, array(
+           CURLOPT_URL => 'http://externo.bunker.mk/ibope_counicacao/PROC_REL_MAIL.do?data='.$data_del,
+           CURLOPT_RETURNTRANSFER => true,
+           CURLOPT_ENCODING => "",
+           CURLOPT_MAXREDIRS => 100,
+           CURLOPT_TIMEOUT => 180000,
+           CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+           CURLOPT_CUSTOMREQUEST => "POST",
+           CURLOPT_POSTFIELDS => "",
+           CURLOPT_HTTPHEADER => array(
+             "Postman-Token: ba34fc31-389a-447e-84e2-4d12b0e2982d",
+             "cache-control: no-cache"
+           ),
+         ));
+
+         $response1 = curl_exec($curl1);
+         $err1 = curl_error($curl1);
+
+         curl_close($curl1);
+
+         if ($err1) {
+           echo "cURL Error #:" . $err1.'PROC_REL_MAIL';
+         } else {
+           echo $response1;
+         }
+        
+   /*
+     if($_GET['DATA']!=''){          
+            $d11=date('d-m-Y', strtotime("+1 days",strtotime($date)));
+            echo '<br>'.$d11.'<br>'.$date.'<br>';
+               ?> 
+                 <meta http-equiv="refresh" content="15;url=http://externo.bunker.mk/ibope_counicacao/ftpget.do?DATA=<?php echo $d11;?>">
+                 <?php  
+    } 
+    */
+?>

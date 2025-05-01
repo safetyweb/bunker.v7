@@ -1,0 +1,438 @@
+<?php
+  include '../../_system/_functionsMain.php';
+
+$conadmarquivo=$import_ibope->connAdm();
+$conadmwebtools=$connAdm->connAdm();
+if($_GET['data']!='')
+{
+    $peridodelte=$_GET['data'];
+}  
+$sqlpacero="SELECT * FROM CONFIGURACAO_ACESSO WHERE  cod_parcomu='12' AND LOG_STATUS='S'";
+$parcerorw=mysqli_query($conadmwebtools, $sqlpacero);
+while ($parcerors=mysqli_fetch_assoc($parcerorw))
+{
+    $COD_EMPRESA[]=$parcerors['COD_EMPRESA']; 
+}  
+
+$sqidibop="SELECT DISP.idCampanha,DISP.idDisparo,DISP.datAgendamento FROM disparo DISP;";
+$rwidibope= mysqli_query($conadmarquivo, $sqidibop);
+while($rsidibope=mysqli_fetch_assoc($rwidibope))
+{
+    $inidCampanha.=$rsidibope['idCampanha'].',';
+    $iniidDisparo.=$rsidibope['idDisparo'].','; 
+}   
+
+$sqidibop2="SELECT DISP.idCampanha,DISP.idDisparo,DISP.idMaling,DISP.idConfig FROM disparomailing DISP;";
+$rwidibope2= mysqli_query($conadmarquivo, $sqidibop2);
+while($rsidibope2=mysqli_fetch_assoc($rwidibope2))
+{  
+   
+    $inidCampanha.=$rsidibope2['idCampanha'].',';
+    $iniidDisparo.=$rsidibope2['idDisparo'].','; 
+    $inidMaling.=$rsidibope2['idMaling'].','; 
+    $inidConfig.=$rsidibope2['idConfig'].','; 
+} 
+
+$sqidibop3="SELECT idDisparo FROM  entregabilidade  GROUP BY idDisparo;";
+$rwidibope3= mysqli_query($conadmarquivo, $sqidibop3);  
+while($rsidibope3=mysqli_fetch_assoc($rwidibope3)){  
+    $iniidDisparo.=$rsidibope3['idDisparo'].','; 
+} 
+
+$sqidibop4="SELECT idDisparo FROM  leituras GROUP BY idDisparo;";
+$rwidibope4= mysqli_query($conadmarquivo, $sqidibop4);
+while($rsidibope4=mysqli_fetch_assoc($rwidibope4)){
+    $iniidDisparo.=$rsidibope4['idDisparo'].','; 
+}
+
+$sqidibop5="SELECT idDisparo FROM  optout GROUP BY idDisparo;";
+$rwidibope5= mysqli_query($conadmarquivo, $sqidibop5);
+while($rsidibope5=mysqli_fetch_assoc($rwidibope5)){    
+    $iniidDisparo.=$rsidibope5['idDisparo'].','; 
+}
+
+$sqidibop6="SELECT idDisparo FROM  cliqueslink GROUP BY idDisparo;";
+$rwidibope6= mysqli_query($conadmarquivo, $sqidibop6);
+while($rsidibope6=mysqli_fetch_assoc($rwidibope6)){  
+    $iniidDisparo.=$rsidibope6['idDisparo'].','; 
+}
+
+$sqidibop7=" SELECT idDisparo FROM  exclusaocontatodisparo GROUP BY idDisparo;";
+$rwidibope7= mysqli_query($conadmarquivo, $sqidibop7);
+while($rsidibope7=mysqli_fetch_assoc($rwidibope7)){     
+    $iniidDisparo.=$rsidibope7['idDisparo'].','; 
+} 
+
+
+$inidCampanha=rtrim($inidCampanha,','); 
+$iniidDisparo=rtrim($iniidDisparo,',');
+$inidMaling=rtrim($inidMaling,',');
+$inidConfig=rtrim($inidConfig,',');
+
+$arraypuro=explode(',', $iniidDisparo);
+$arraypuro=array_unique($arraypuro);
+foreach ($arraypuro as $values){ $invalues.=$values.',';}    
+$iniidDisparo= rtrim($invalues,',');
+
+echo'<br>'.$iniidDisparo.'<br>';
+if($iniidDisparo=='')
+{
+    echo'Vazio todas as consultas';
+    exit();
+}    
+
+foreach ($COD_EMPRESA as $CODEMPRESA) 
+{
+// if($CODEMPRESA==39){   
+    echo '<br>'.$CODEMPRESA.'<br>';
+       $contemporaria= connTemp($CODEMPRESA, '');        
+         
+                
+        //verificar se a campanha esta no arquivo importado
+        $sqlibope="SELECT * FROM Controle_envio where cod_empresa=".$CODEMPRESA." and 
+                    COD_DISPARO in ($iniidDisparo)";
+        $rwdisparomailing= mysqli_query($conadmarquivo, $sqlibope);
+        while ($rsdisparomailing= mysqli_fetch_assoc($rwdisparomailing))
+        {
+                       
+                $sqlcampnah="SELECT * from campanha WHERE COD_EXT_CAMPANHA='".$rsdisparomailing['COD_CAMPANHA_EXT']."' and cod_empresa=".$CODEMPRESA;
+                $rscampanha=mysqli_fetch_assoc(mysqli_query($contemporaria, $sqlcampnah)); 
+                
+            /*
+             1- Inserir os totalizadores gerais do disparo na table controle_entrega_mail
+                Verificar se o resgitro ja existe na table controle_entrega_mail
+            */
+               $sqlcontrole="SELECT * from controle_entrega_mail WHERE  COD_EMPRESA='$CODEMPRESA' AND COD_DISPARO='".$rsdisparomailing['COD_DISPARO']."'";
+               
+               $rwcontrole=mysqli_query($contemporaria, $sqlcontrole);
+               if(mysqli_num_rows($rwcontrole)<=0)
+               {
+                   echo '<br>'.$sqlcontrole.'<br>';
+                   /*
+                    * inserir registros totais enviados para o IBOPE
+                    */
+                    $sqltot= "SELECT
+                                        DISP.idCampanha,
+                                        DISP.idDisparo,
+                                        DISP.datCriacao,
+                                         COUNT(*)  AS  qtd_contatos
+                                        FROM disparomailing DISP
+                                        inner JOIN contatosmailing   cont ON disp.idMaling=cont.idMailing 
+                                        WHERE DISP.idDisparo = '".$rsdisparomailing['COD_DISPARO']."'
+                                        GROUP BY  DISP.idDisparo,cont.idMailing; ";  
+                     $rwsqltot=mysqli_query($conadmarquivo, $sqltot);                         
+                     $rstotal=mysqli_fetch_assoc($rwsqltot);
+                     
+                   /*
+                    * quantidades de disparos e afins
+                    */  
+                    $totlidos="SELECT
+                                    ENTR.datCadastro,
+                                    ENTR.idDisparo,
+                                         (SELECT COUNT(*) from entregabilidade WHERE  idDisparo=ENTR.idDisparo) AS qtd_disparados,
+                                         (SELECT COUNT(*) from entregabilidade WHERE  idDisparo=ENTR.idDisparo AND idStatusEntregabilidade='1') AS qtd_sucesso,
+                                         (SELECT COUNT(*) from entregabilidade WHERE  idDisparo=ENTR.idDisparo AND idStatusEntregabilidade IN ('2','3')) AS qtd_falha,
+                                         (SELECT count(*) from entregabilidade WHERE  idDisparo=ENTR.idDisparo AND idStatusEntregabilidade='1' AND 
+                                                           idContatosMailing NOT IN (SELECT idContatosMailing FROM leituras)) AS qtd_nlidos,
+                                         (SELECT COUNT(*) from cliqueslink WHERE  idDisparo=ENTR.idDisparo) as qtd_cliques
+                                           FROM entregabilidade ENTR 
+                                    WHERE ENTR.idDisparo ='".$rsdisparomailing['COD_DISPARO']."'
+                                    GROUP BY  ENTR.idDisparo ;";
+                    $rstotlidos=mysqli_fetch_assoc(mysqli_query($conadmarquivo, $totlidos));
+                    /*Exclusões*/
+                     $SQLqtd_exclusao= "SELECT COUNT(*) AS qtd_exclusao FROM  exclusaocontatodisparo exc
+                                        WHERE exc.idDisparo='".$rsdisparomailing['COD_DISPARO']."'
+                                        GROUP BY exc.idDisparo";
+                    $rwqqtd_exclusao= mysqli_fetch_assoc(mysqli_query($conadmarquivo, $SQLqtd_exclusao));
+                    /*optout*/
+                     $sqlOPT="SELECT COUNT(*) as qtd_optout from optout OPT WHERE  OPT.idDisparo='".$rsdisparomailing['COD_DISPARO']."' group by OPT.idDisparo";
+                     $rsTOTALOPT=mysqli_fetch_assoc(mysqli_query($conadmarquivo, $sqlOPT));
+                     /*Quantidade de leituras*/                     
+                    $sqlLITE="SELECT COUNT(*) as  qtd_lidos from leituras LEIT WHERE  LEIT.idDisparo='".$rsdisparomailing['COD_DISPARO']."' group by LEIT.idDisparo";
+                    $rsTOTALLEIT=mysqli_fetch_assoc(mysqli_query($conadmarquivo, $sqlLITE)); 
+                    /*verificar se os dados estm nulos ou vazios */
+                    if($rsTOTALOPT['qtd_optout']==''){  $TOTALOPT='0';}else{$TOTALOPT=$rsTOTALOPT['qtd_optout'];}
+                    if($rsTOTALLEIT['qtd_lidos']==''){  $TOTALLEIT='0';}else{$TOTALLEIT=$rsTOTALLEIT['qtd_lidos'];}
+                    if($rstotlidos['qtd_cliques']==''){  $qtd_cliques='0';}else{$qtd_cliques=$rstotlidos['qtd_cliques'];}
+                    if($rstotlidos['qtd_nlidos']==''){  $qtd_nlidos='0';}else{ $qtd_nlidos=$rstotlidos['qtd_nlidos'];}
+                    if($rstotlidos['qtd_falha']==''){  $qtd_falha='0';}else{ $qtd_falha=$rstotlidos['qtd_falha'];}
+                    if($rstotlidos['qtd_sucesso']==''){  $qtd_sucesso='0';}else{ $qtd_sucesso=$rstotlidos['qtd_sucesso'];}
+                    if($rstotlidos['qtd_disparados']==''){  $qtd_disparados='0';}else{ $qtd_disparados=$rstotlidos['qtd_disparados'];}
+                    if($rwqqtd_exclusao['qtd_exclusao']==''){$qtd_exclusao='0';}else{$qtd_exclusao=$rwqqtd_exclusao['qtd_exclusao'];}
+                    if($rstotal['qtd_contatos']==''){$qtd_contatos='0';}else{$qtd_contatos=$rstotal['qtd_contatos'];}
+                    
+                    if($rstotal['datCriacao']==''){
+                        if($rstotlidos['datCadastro']=='')
+                        {    
+                            $datCriacao=date('d/m/Y H:i:s');
+                        }else{
+                            $datCriacao=$rstotlidos['datCadastro'];
+                        }
+                        }else{$datCriacao=$rstotal['datCriacao'];}
+                    
+                    if($rscampanha['COD_EXT_CAMPANHA']==''){$COD_EXT_CAMPANHA=0;}else{$COD_EXT_CAMPANHA=$rscampanha['COD_EXT_CAMPANHA'];}
+                    if( $rscampanha['COD_CAMPANHA']==''){$COD_CAMPANHA=0;}else{$COD_CAMPANHA=$rscampanha['COD_CAMPANHA'];}
+                   
+                    /*inserindo registros na base de dados.*/
+                     $sqlinserttot= "INSERT INTO controle_entrega_mail 
+                                                                 (cod_empresa, 
+                                                                 cod_campanha_ext,
+                                                                 cod_campanha, 
+                                                                 dat_cadastr, 
+                                                                 dat_envio,
+                                                                 qtd_disparados,
+                                                                 qtd_sucesso,
+                                                                 qtd_falha,
+                                                                 qtd_lidos, 
+                                                                 qtd_nlidos, 
+                                                                 qtd_optout, 
+                                                                 qtd_cliques,
+                                                                 cod_disparo,
+                                                                 id_templete,
+                                                                 qtd_contatos,
+                                                                 qtd_exclusao
+                                                                 ) 
+                                                                 VALUES 
+                                                                 ($CODEMPRESA,
+                                                                 '".$COD_EXT_CAMPANHA."', 
+                                                                 '".$COD_CAMPANHA."', 
+                                                                 now(), 
+                                                                 '".$datCriacao."', 
+                                                                 '".$qtd_disparados."', 
+                                                                 '".$qtd_sucesso."', 
+                                                                 '".$qtd_falha."',
+                                                                 '".$TOTALLEIT."', 
+                                                                 '".$qtd_nlidos."', 
+                                                                 '".$TOTALOPT."',
+                                                                 '".$qtd_cliques."',
+                                                                 '".$rsdisparomailing['COD_DISPARO']."',
+                                                                 '".$rsdisparomailing['ID_TEMPLATE']."',
+                                                                 '".$qtd_contatos."',
+                                                                 '".$qtd_exclusao."');";
+                               
+                                $inserterro=mysqli_query($contemporaria, $sqlinserttot);
+                                if(!$inserterro)
+                                {
+                                  echo '<br>ERRO :'.$sqlinserttot.'<br>';  
+                                }else{
+                                    echo '<br>OK :'.$sqlinserttot.'<br>'; 
+                                }
+                               unset($sqlinserttot); 
+               }else{
+                     $sqlcontrolesoma="SELECT * from controle_entrega_mail WHERE  COD_EMPRESA='$CODEMPRESA' AND COD_DISPARO='".$rsdisparomailing['COD_DISPARO']."'";
+                      $rwcontrolesoma= mysqli_fetch_assoc(mysqli_query($contemporaria, $sqlcontrolesoma));
+              
+                     /*
+                    * quantidades de disparos e afins
+                    */  
+                    $totlidos="SELECT
+                                    ENTR.idDisparo,
+                                         (SELECT COUNT(*) from entregabilidade WHERE  idDisparo=ENTR.idDisparo) AS qtd_disparados,
+                                         (SELECT COUNT(*) from entregabilidade WHERE  idDisparo=ENTR.idDisparo AND idStatusEntregabilidade='1') AS qtd_sucesso,
+                                         (SELECT COUNT(*) from entregabilidade WHERE  idDisparo=ENTR.idDisparo AND idStatusEntregabilidade IN ('2','3')) AS qtd_falha,
+                                         (SELECT count(*) from entregabilidade WHERE  idDisparo=ENTR.idDisparo AND idStatusEntregabilidade='1' AND 
+                                                           idContatosMailing NOT IN (SELECT idContatosMailing FROM leituras)) AS qtd_nlidos,
+                                         (SELECT COUNT(*) from cliqueslink WHERE  idDisparo=ENTR.idDisparo) as qtd_cliques
+                                           FROM entregabilidade ENTR 
+                                    WHERE ENTR.idDisparo ='".$rsdisparomailing['COD_DISPARO']."'
+                                    GROUP BY  ENTR.idDisparo ;";
+                    $rstotlidos=mysqli_fetch_assoc(mysqli_query($conadmarquivo, $totlidos));
+                    /*Exclusões*/
+                     $SQLqtd_exclusao= "SELECT COUNT(*) AS qtd_exclusao FROM  exclusaocontatodisparo exc
+                                        WHERE exc.idDisparo='".$rsdisparomailing['COD_DISPARO']."'
+                                        GROUP BY exc.idDisparo";
+                    $rwqqtd_exclusao= mysqli_fetch_assoc(mysqli_query($conadmarquivo, $SQLqtd_exclusao));
+                    /*optout*/
+                     $sqlOPT="SELECT COUNT(*) as qtd_optout from optout OPT WHERE  OPT.idDisparo='".$rsdisparomailing['COD_DISPARO']."' group by OPT.idDisparo";
+                     $rsTOTALOPT=mysqli_fetch_assoc(mysqli_query($conadmarquivo, $sqlOPT));
+                     /*Quantidade de leituras*/                     
+                    $sqlLITE="SELECT COUNT(*) as  qtd_lidos from leituras LEIT WHERE  LEIT.idDisparo='".$rsdisparomailing['COD_DISPARO']."' group by LEIT.idDisparo";
+                    $rsTOTALLEIT=mysqli_fetch_assoc(mysqli_query($conadmarquivo, $sqlLITE)); 
+                    /*verificar se os dados estm nulos ou vazios */
+                    if($rsTOTALOPT['qtd_optout']==''){  $TOTALOPT='0';}else{$TOTALOPT=$rsTOTALOPT['qtd_optout'];}
+                    if($rsTOTALLEIT['qtd_lidos']==''){  $TOTALLEIT='0';}else{$TOTALLEIT=$rsTOTALLEIT['qtd_lidos'];}
+                    if($rstotlidos['qtd_cliques']==''){  $qtd_cliques='0';}else{$qtd_cliques=$rstotlidos['qtd_cliques'];}
+                    if($rstotlidos['qtd_nlidos']==''){  $qtd_nlidos='0';}else{ $qtd_nlidos=$rstotlidos['qtd_nlidos'];}
+                    if($rstotlidos['qtd_falha']==''){  $qtd_falha='0';}else{ $qtd_falha=$rstotlidos['qtd_falha'];}
+                    if($rstotlidos['qtd_sucesso']==''){  $qtd_sucesso='0';}else{ $qtd_sucesso=$rstotlidos['qtd_sucesso'];}
+                    if($rstotlidos['qtd_disparados']==''){  $qtd_disparados='0';}else{ $qtd_disparados=$rstotlidos['qtd_disparados'];}
+                    if($rwqqtd_exclusao['qtd_exclusao']==''){$qtd_exclusao='0';}else{$qtd_exclusao=$rwqqtd_exclusao['qtd_exclusao'];}
+/*
+                    $qtd_disparados1=$qtd_disparados + $rwcontrolesoma['qtd_disparados'];
+                    $qtd_sucesso1=$qtd_sucesso + $rwcontrolesoma['qtd_sucesso'];
+                    $qtd_falha1=$qtd_falha + $rwcontrolesoma['qtd_falha'];  
+                    $qtd_nlidos1=$qtd_nlidos + $rwcontrolesoma['qtd_nlidos']; 
+                    $qtd_cliques1=$qtd_cliques + $rwcontrolesoma['qtd_cliques'];
+                    $qtd_lidos1=$TOTALLEIT + $rwcontrolesoma['qtd_lidos']; 
+                    $qtd_exclusao1=$rwqqtd_exclusao['qtd_exclusao'] + $rwcontrolesoma['qtd_exclusao']; 
+                    $qtd_optout1=$TOTALOPT + $rwcontrolesoma['qtd_optout'];
+                    
+                        echo '<br>entrou no Insert<br>';  
+                       if($qtd_disparados1 > '0')
+                       {
+                          
+                            $sqlupcontrole0="UPDATE controle_entrega_mail
+                                                SET qtd_disparados='$qtd_disparados1',
+                                                    dat_atualizacao='".date('Y-m-d H:i:s')."'
+                                                  WHERE  cod_empresa='$CODEMPRESA' AND cod_disparo='".$rsdisparomailing['COD_DISPARO']."'";
+                            //echo'<br>'.$sqlupcontrole0.'<br>';
+                           // mysqli_query($contemporaria, $sqlupcontrole0);
+                            
+                       } 
+                       if($qtd_sucesso1 > '0')
+                       {
+                            
+                           
+                            $sqlupcontrole1="UPDATE controle_entrega_mail                                          
+                                              SET  qtd_sucesso='$qtd_sucesso1',
+                                                    dat_atualizacao='".date('Y-m-d H:i:s')."'
+                                                  WHERE  cod_empresa='$CODEMPRESA' AND cod_disparo='".$rsdisparomailing['COD_DISPARO']."'";
+                            //echo'<br>'.$sqlupcontrole1.'<br>';
+                          // mysqli_query($contemporaria, $sqlupcontrole1);
+                            
+                       }    
+                       if($qtd_falha1 >'0')
+                       {                           
+                          
+                           $sqlupcontrole2="UPDATE controle_entrega_mail
+                                                SET qtd_falha='$qtd_falha1',
+                                                    dat_atualizacao='".date('Y-m-d H:i:s')."'
+                                                  WHERE  cod_empresa='$CODEMPRESA' AND cod_disparo='".$rsdisparomailing['COD_DISPARO']."'";
+                           //echo'<br>'.$sqlupcontrole2.'<br>';
+                           //mysqli_query($contemporaria, $sqlupcontrole2);
+                           
+                       }  
+                       if($qtd_nlidos1>'0')
+                       {
+                            
+                          
+                            $sqlupcontrole3="UPDATE controle_entrega_mail
+                                                SET qtd_nlidos='$qtd_nlidos1',
+                                                    dat_atualizacao='".date('Y-m-d H:i:s')."'
+                                                   WHERE  cod_empresa='$CODEMPRESA' AND cod_disparo='".$rsdisparomailing['COD_DISPARO']."'";
+                            //echo'<br>'.$sqlupcontrole3.'<br>';
+                           // mysqli_query($contemporaria, $sqlupcontrole3);
+                            
+                       }
+                       if($qtd_cliques1>'0')
+                       {
+                            
+                            $sqlupcontrole4="UPDATE controle_entrega_mail
+                                                SET qtd_cliques='$qtd_cliques1',
+                                                    dat_atualizacao='".date('Y-m-d H:i:s')."'
+                                                  WHERE  cod_empresa='$CODEMPRESA' AND cod_disparo='".$rsdisparomailing['COD_DISPARO']."'";
+                            //echo'<br>'.$sqlupcontrole4.'<br>';
+                            //mysqli_query($contemporaria, $sqlupcontrole4);
+                            
+                       }  
+                       if($qtd_lidos1 >'0')
+                       {
+                           
+                           
+                            $sqlupcontrole5="UPDATE controle_entrega_mail
+                                                SET qtd_lidos='$qtd_lidos1',
+                                                    dat_atualizacao='".date('Y-m-d H:i:s')."'
+                                                  WHERE  cod_empresa='$CODEMPRESA' AND cod_disparo='".$rsdisparomailing['COD_DISPARO']."'";
+                            //echo'<br>'.$sqlupcontrole5.'<br>';
+                            //mysqli_query($contemporaria, $sqlupcontrole5);
+                       } 
+                       if($qtd_exclusao1>'0')
+                       {
+                          
+                          
+                           $sqlupcontrole6="UPDATE controle_entrega_mail
+                                                SET qtd_exclusao='$qtd_exclusao1',
+                                                    dat_atualizacao='".date('Y-m-d H:i:s')."'
+                                                  WHERE  cod_empresa='$CODEMPRESA' AND cod_disparo='".$rsdisparomailing['COD_DISPARO']."'";
+                           //echo'<br>'.$sqlupcontrole6.'<br>';
+                           //mysqli_query($contemporaria, $sqlupcontrole6);
+                           
+                       }    
+                        if($qtd_optout1>'0')
+                       {
+                            
+                            $sqlupcontrole7="UPDATE controle_entrega_mail
+                                                SET  qtd_optout='$qtd_optout1',
+                                                    dat_atualizacao='".date('Y-m-d H:i:s')."'
+                                                  WHERE  cod_empresa='$CODEMPRESA' AND cod_disparo='".$rsdisparomailing['COD_DISPARO']."'";
+                            //echo'<br>'.$sqlupcontrole7.'<br>';
+                            // mysqli_query($contemporaria, $sqlupcontrole7);
+                        }  */
+                         $sqltot= "SELECT
+                                        DISP.idCampanha,
+                                        DISP.idDisparo,
+                                        DISP.datCriacao,
+                                         COUNT(*)  AS  qtd_contatos
+                                        FROM disparomailing DISP
+                                        inner JOIN contatosmailing   cont ON disp.idMaling=cont.idMailing 
+                                        WHERE DISP.idDisparo = '".$rsdisparomailing['COD_DISPARO']."'
+                                        GROUP BY  DISP.idDisparo,cont.idMailing; ";  
+                     $rwsqltot=mysqli_query($conadmarquivo, $sqltot);                         
+                     $rstotal=mysqli_fetch_assoc($rwsqltot);
+                    if($rstotal['qtd_contatos']==''){$qtd_contatos='0';}else{$qtd_contatos=$rstotal['qtd_contatos'];}
+                    if($rscampanha['COD_EXT_CAMPANHA']==''){$COD_EXT_CAMPANHA=0;}else{$COD_EXT_CAMPANHA=$rscampanha['COD_EXT_CAMPANHA'];}
+                    if( $rscampanha['COD_CAMPANHA']==''){$COD_CAMPANHA=0;}else{$COD_CAMPANHA=$rscampanha['COD_CAMPANHA'];}
+                    if($rstotal['datCriacao']==''){$datCriacao=date('d/m/Y H:i:s');}else{$datCriacao=$rstotal['datCriacao'];}
+                    //deletar na data atual se ja existir
+                    if($peridodelte!='')
+                    {    
+                        $verificaseexiste="SELECT * from controle_entrega_mail WHERE COD_EMPRESA=$CODEMPRESA AND cod_disparo='".$rsdisparomailing['COD_DISPARO']."' and  DAT_CADASTR>='".$peridodelte." 00:00:00' LIMIT 100;";
+                        echo 'verifica regra delete<br>'.$verificaseexiste.'<br>';
+                        $verexis=mysqli_query($contemporaria, $verificaseexiste);
+                        if(mysqli_num_rows($verexis)>=1)
+                        {
+                            $deltedisparo="DELETE FROM controle_entrega_mail WHERE  COD_EMPRESA=$CODEMPRESA AND cod_disparo='".$rsdisparomailing['COD_DISPARO']."' and  DAT_CADASTR>='".$peridodelte." 00:00:00';";
+                            echo 'deletedispor antes de inserir se ja existir no dia<br>'.$deltedisparo.'<br>';
+                           // mysqli_query($contemporaria, $deltedisparo);
+                        }   
+                    }
+                    $inserlinha="insert into controle_entrega_mail (
+                                                                cod_empresa, 
+                                                                cod_campanha_ext,
+                                                                cod_campanha, 
+                                                                dat_cadastr, 
+                                                                dat_envio,
+                                                                id_templete,
+                                                                cod_disparo,
+                                                                qtd_contatos,
+                                                                qtd_disparados,
+                                                                qtd_sucesso,
+                                                                qtd_falha,
+                                                                qtd_nlidos,
+                                                                qtd_cliques,
+                                                                qtd_lidos,
+                                                                qtd_exclusao,
+                                                                qtd_optout)
+                                                                VALUES
+                                                                (
+                                                                $CODEMPRESA,
+                                                                $COD_EXT_CAMPANHA,
+                                                                $COD_CAMPANHA,
+                                                                now(),
+                                                                '".$datCriacao."',
+                                                                '".$rsdisparomailing['ID_TEMPLATE']."',
+                                                                '".$rsdisparomailing['COD_DISPARO']."',
+                                                                '".$qtd_contatos."',    
+                                                                '".$qtd_disparados."',
+                                                                '".$qtd_sucesso."',
+                                                                '".$qtd_falha."',
+                                                                '".$qtd_nlidos."',
+                                                                '".$qtd_cliques."',
+                                                                '".$TOTALLEIT."',
+                                                                '".$qtd_exclusao."', 
+                                                                '".$TOTALOPT."'
+                                                                )";
+                     $testesql=mysqli_query($contemporaria, $inserlinha);
+                     if(!$testesql)
+                     {
+                         echo 'Insert linha a linha<br>'.$inserlinha.'<br>';
+                     }    
+                                                        
+                   //fim do UPdate
+                    unset($inserlinha);   
+               }                    
+        } 
+   
+//}    
+}
+unset($COD_EMPRESA);
