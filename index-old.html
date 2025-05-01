@@ -1,0 +1,193 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Login</title>
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/full-slider.css" rel="stylesheet">
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script>
+    $('.carousel').carousel({
+        interval: 5000 //changes the speed
+    })
+    </script>
+	
+    <script type="text/javascript" src="js/plugins/trianglify.min.js"></script>	
+	
+	<script type='text/javascript'>
+	window.onload=function(){
+	function addTriangleTo(target) {
+		var dimensions = target.getClientRects()[0];
+		var pattern = Trianglify({
+			width: dimensions.width, 
+			height: dimensions.height,			
+			x_colors: 'random'
+		});
+		target.style['background-image'] = 'url(' + pattern.png() + ')';
+	}
+	addTriangleTo(document.getElementById('fullScreen'));
+	}//]]> 
+
+	var w = window.innerWidth;
+	var h = window.innerHeight;
+	</script>	
+	
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+
+  <style type="text/css">
+  	
+	.carousel-caption {
+	  position: absolute;
+	  right: 0;
+	  top: 20px;
+	  left: 0;
+	  z-index: 10;
+	  padding-top: 20px;
+	  padding-bottom: 20px;
+	  color: #fff;
+	  text-align: center;
+	  text-shadow: 0 1px 2px rgba(0, 0, 0, .6);
+	}
+	
+	.colorgraph {
+	  height: 1px;
+	  border-top: 0;
+	  background: #c4e17f;
+	  border-radius: 5px;
+	  background-image: -webkit-linear-gradient(left, #c4e17f, #c4e17f 12.5%, #f7fdca 12.5%, #f7fdca 25%, #fecf71 25%, #fecf71 37.5%, #f0776c 37.5%, #f0776c 50%, #db9dbe 50%, #db9dbe 62.5%, #c49cde 62.5%, #c49cde 75%, #669ae1 75%, #669ae1 87.5%, #62c2e4 87.5%, #62c2e4);
+	  background-image: -moz-linear-gradient(left, #c4e17f, #c4e17f 12.5%, #f7fdca 12.5%, #f7fdca 25%, #fecf71 25%, #fecf71 37.5%, #f0776c 37.5%, #f0776c 50%, #db9dbe 50%, #db9dbe 62.5%, #c49cde 62.5%, #c49cde 75%, #669ae1 75%, #669ae1 87.5%, #62c2e4 87.5%, #62c2e4);
+	  background-image: -o-linear-gradient(left, #c4e17f, #c4e17f 12.5%, #f7fdca 12.5%, #f7fdca 25%, #fecf71 25%, #fecf71 37.5%, #f0776c 37.5%, #f0776c 50%, #db9dbe 50%, #db9dbe 62.5%, #c49cde 62.5%, #c49cde 75%, #669ae1 75%, #669ae1 87.5%, #62c2e4 87.5%, #62c2e4);
+	  background-image: linear-gradient(to right, #c4e17f, #c4e17f 12.5%, #f7fdca 12.5%, #f7fdca 25%, #fecf71 25%, #fecf71 37.5%, #f0776c 37.5%, #f0776c 50%, #db9dbe 50%, #db9dbe 62.5%, #c49cde 62.5%, #c49cde 75%, #669ae1 75%, #669ae1 87.5%, #62c2e4 87.5%, #62c2e4);
+	}
+
+	.shadowTxt{
+	text-shadow: 0 3px 3px rgba(0,0,0,.4);
+	}
+	
+	.shadow{
+	box-shadow: 0 0 5px rgba(255, 255, 255, .4);
+	}
+
+	.btn span:nth-of-type(1)  {        		
+		display: none;
+	}
+	.btn span:last-child  {            	
+		display: block;		
+	}
+
+	.btn.active  span:nth-of-type(1)  {            	
+		display: block;		
+	}
+	
+	.btn.active span:last-child  {            	
+		display: none;			
+	}
+
+	.btn-custom { text-align: left;}
+	.btn-label {position: relative;left: -12px;display: inline-block;padding: 6px 12px;background: rgba(0,0,0,0.15);border-radius: 3px 0 0 3px;}
+	.btn-labeled {padding-top: 0;padding-bottom: 0;}
+	body {background-color: #cecece;}
+	
+  </style>	
+	
+</head>
+
+<body>
+
+    <!-- Full Page Image Background Carousel Header -->
+    <header id="myCarousel" class="carousel slide">
+
+
+        <!-- Wrapper for Slides -->
+        <div class="carousel-inner">
+		
+            <div class="item active">
+                <!-- Set the first background image using inline CSS below. -->
+                <div class="fill" id="fullScreen"></div>
+                <div class="carousel-caption">
+							
+					<div class="container">
+
+					<div class="row" style="margin-top:20px">
+						<div class="col-xs-12 col-sm-8 col-md-1">
+						</div>
+						<div class="col-xs-12 col-sm-8 col-md-4 col-sm-offset-2 col-md-offset-3">
+							<form role="form" method="post" action="action.php">
+								<fieldset>
+									<!--<h2><img src="images/logo.png"></h2>-->
+									<h2><img src="media\clientes\marka_white_big.png" width="80%"></h2>
+									<hr class="colorgraph shadow">
+									<div class="form-group">
+										<input type="email" name="email" id="email" class="form-control input-lg shadow" placeholder="Usuário">
+									</div>
+									<div class="form-group">
+										<input type="password" name="password" id="password" class="form-control input-lg shadow" placeholder="Senha">
+									</div>
+									<span class="button-checkbox">
+									<div class="row">
+										<div class="col-xs-6 col-sm-6 col-md-6">
+											<div class="btn-group" data-toggle="buttons">
+												<label class="btn btn-xs btn-default shadow active">				
+													<span class="">
+														<i class="glyphicon glyphicon-ok"></i> Manter logado
+													</span>
+													<input type="checkbox" autocomplete="off" checked>
+													<span class="">
+														<i class="glyphicon glyphicon-ban-circle"></i> Não manter logado
+													</span>
+												</label>
+											</div>										
+										</div>
+										<div class="col-xs-6 col-sm-6 col-md-6">
+											<button type="button" class="btn btn-xs btn-default shadow active" data-color="info"><i class="glyphicon glyphicon-star-empty" aria-hidden="true"></i> Esqueci a senha</button>
+										</div>
+									</div>
+									</span>
+									<hr class="colorgraph shadow">			
+
+									<div class="row">
+										<div class="col-xs-6 col-sm-6 col-md-6">										
+											<input type="reset" class="btn btn-lg btn-info btn-block shadow" value="Op's, errei">
+										</div>
+										<div class="col-xs-6 col-sm-6 col-md-6">
+										    <input type="submit" class="btn btn-lg btn-success btn-block shadow" value="Login">											
+										</div>
+									</div>
+									
+								</fieldset>								
+							</form>
+						</div>
+						<div class="col-xs-12 col-sm-8 col-md-1">
+
+						</div>
+						
+					</div>
+
+					</div>			
+				
+                    
+                </div>				
+            </div>
+			
+        </div>
+
+    </header>
+
+</body>
+
+</html>

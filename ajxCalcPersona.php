@@ -1,0 +1,562 @@
+﻿<?php
+$bl1_masculino = "";
+$bl1_feminino = "";
+$bl1_funcionario = "";
+$bl1_funcionafem = "";
+$bl1_juridico = "";
+$bl1_lognsexo = "";
+$bl1_idades = "";
+$idadeIni = "";
+$idadeFim = "";
+$bl1_logidade = "";
+$bl1_tpniver = "";
+$bl1_endereco = "";
+$bl1_celular = "";
+$bl1_email = "";
+$bl1_telefone = "";
+$bl1_log_fidelizado = "";
+$bl1_log_email = "";
+$bl1_log_sms = "";
+$bl1_log_telemark = "";
+$bl1_log_whatsapp = "";
+$bl1_log_push = "";
+$bl1_log_lgpd = "";
+$bl1_log_semlgpd = "";
+$Arr_BL1_ANIVERSARIO = "";
+$i = 0;
+$bl1_aniversario = "";
+$bl1_operaprofi = "";
+$Arr_BL1_PROFISSOES = "";
+$bl1_profissoes = "";
+$bl3_compras_ini = "";
+$bl3_compras_fim = "";
+$bl3_cadastros_ini = "";
+$bl3_cadastros_fim = "";
+$bl3_ucompras_ini = "";
+$bl3_ucompras_fim = "";
+$bl3_ucompdias_ini = "";
+$bl3_ucompdias_fim = "";
+$bl3_inativo_ini = "";
+$bl3_inativo_fim = "";
+$bl3_comprase_ini = "";
+$bl3_comprase_fim = "";
+$bl3_log_semcompr = "";
+$bl3_semcompr_ini = "";
+$bl3_semcompr_fim = "";
+$bl3_log_semresg = "";
+$bl3_semresg_ini = "";
+$bl3_semresg_fim = "";
+$bl3_qtd_retorno_ini = 0;
+$bl3_qtd_retorno_fim = 0;
+$bl3_log_resgate = "";
+$bl3_tip_resgate = "";
+$bl3_qtd_resgate = 0;
+$bl4_compra_min = "";
+$bl4_compra_max = "";
+$bl4_valortm_min = "";
+$bl4_valortm_max = "";
+$bl4_gastos_min = "";
+$bl4_gastos_max = "";
+$bl4_credito_min = "";
+$bl4_credito_max = "";
+$bl4_tip_resgate = "";
+$bl4_qtd_resgate_min = 0;
+$bl4_qtd_resgate = 0;
+$bl4_qtd_avencer = 0;
+$bl4_tip_avencer = "";
+$bl4_tip_saldo = "";
+$bl4_val_saldo_min = "";
+$bl4_val_saldo = "";
+$bl5_unive_origem = "";
+$bl5_unive_todos = "";
+$bl5_unipref = "";
+$bl5_unive_origem_ref = "";
+$Arr_BL5_COD_UNIVE = "";
+$Arr_BL5_COD_UNIVEO = "";
+$bl5_cod_unive = "";
+$Arr_BL5_COD_ESTADOF = "";
+$bl5_cod_estadof = "";
+$cod_univend_master = "";
+$Arr_BL6_FREQ_CLIENTE = "";
+$bl6_freq_cliente = "";
+$Arr_BL6_FREQ_CLIENTE_U = "";
+$bl6_freq_cliente_u = "";
+$bl6_tip_ticket = "";
+$bl6_ticket_ini = "";
+$bl6_ticket_fim = "";
+$bl6_engaja_1 = "";
+$bl6_engaja_2 = "";
+$bl6_engaja_3 = "";
+$bl6_engaja_4 = "";
+$cod_persona = "";
+$hHabilitado = "";
+$hashForm = "";
+$procCalc = "";
+$sqlPersonas = "";
+$sqlPersonasquery = "";
+$qrCalcRegra = "";
+$totalIni = 0;
+
+
+
+include "_system/_functionsMain.php";
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+	//BLOCO 1
+	//homens
+	if (empty(@$_REQUEST['BL1_MASCULINO'])) {
+		$bl1_masculino = 'N';
+	} else {
+		$bl1_masculino = @$_REQUEST['BL1_MASCULINO'];
+	}
+	//mulheres
+	if (empty(@$_REQUEST['BL1_FEMININO'])) {
+		$bl1_feminino = 'N';
+	} else {
+		$bl1_feminino = @$_REQUEST['BL1_FEMININO'];
+	}
+	//funcionarios
+	if (empty(@$_REQUEST['BL1_FUNCIONARIO'])) {
+		$bl1_funcionario = 'N';
+	} else {
+		$bl1_funcionario = @$_REQUEST['BL1_FUNCIONARIO'];
+	}
+	if (empty(@$_REQUEST['BL1_FUNCIONAFEM'])) {
+		$bl1_funcionafem = 'N';
+	} else {
+		$bl1_funcionafem = @$_REQUEST['BL1_FUNCIONAFEM'];
+	}
+	//jurídico
+	if (empty(@$_REQUEST['BL1_JURIDICO'])) {
+		$bl1_juridico = 'N';
+	} else {
+		$bl1_juridico = @$_REQUEST['BL1_JURIDICO'];
+	}
+
+	if (empty(@$_REQUEST['BL1_LOGNSEXO'])) {
+		$bl1_lognsexo = 'N';
+	} else {
+		$bl1_lognsexo = @$_REQUEST['BL1_LOGNSEXO'];
+	}
+
+	//array - idades
+	$bl1_idades = explode(';', @$_POST['BL1_IDADES'][0]);
+	$idadeIni = $bl1_idades['0'];
+	$idadeFim = $bl1_idades['1'];
+	if (empty(@$_REQUEST['BL1_LOGIDADE'])) {
+		$bl1_logidade = 'N';
+	} else {
+		$bl1_logidade = @$_REQUEST['BL1_LOGIDADE'];
+	}
+	$bl1_tpniver = @$_REQUEST['BL1_TPNIVER'];
+	//endereço
+	if (empty(@$_REQUEST['BL1_ENDERECO'])) {
+		$bl1_endereco = 'N';
+	} else {
+		$bl1_endereco = @$_REQUEST['BL1_ENDERECO'];
+	}
+	//celular
+	if (empty(@$_REQUEST['BL1_CELULAR'])) {
+		$bl1_celular = 'N';
+	} else {
+		$bl1_celular = @$_REQUEST['BL1_CELULAR'];
+	}
+	//email
+	if (empty(@$_REQUEST['BL1_EMAIL'])) {
+		$bl1_email = 'N';
+	} else {
+		$bl1_email = @$_REQUEST['BL1_EMAIL'];
+	}
+	//telefone
+	if (empty(@$_REQUEST['BL1_TELEFONE'])) {
+		$bl1_telefone = 'N';
+	} else {
+		$bl1_telefone = @$_REQUEST['BL1_TELEFONE'];
+	}
+
+	//Participa Fidelização
+	if (empty(@$_REQUEST['BL1_LOG_FIDELIZADO'])) {
+		$bl1_log_fidelizado = 'N';
+	} else {
+		$bl1_log_fidelizado = @$_REQUEST['BL1_LOG_FIDELIZADO'];
+	}
+	//Recebe E-mail
+	if (empty(@$_REQUEST['BL1_LOG_EMAIL'])) {
+		$bl1_log_email = 'N';
+	} else {
+		$bl1_log_email = @$_REQUEST['BL1_LOG_EMAIL'];
+	}
+	//Recebe SMS
+	if (empty(@$_REQUEST['BL1_LOG_SMS'])) {
+		$bl1_log_sms = 'N';
+	} else {
+		$bl1_log_sms = @$_REQUEST['BL1_LOG_SMS'];
+	}
+	//Recebe Telemarketing
+	if (empty(@$_REQUEST['BL1_LOG_TELEMARK'])) {
+		$bl1_log_telemark = 'N';
+	} else {
+		$bl1_log_telemark = @$_REQUEST['BL1_LOG_TELEMARK'];
+	}
+	//Recebe Whatsapp
+	if (empty(@$_REQUEST['BL1_LOG_WHATSAPP'])) {
+		$bl1_log_whatsapp = 'N';
+	} else {
+		$bl1_log_whatsapp = @$_REQUEST['BL1_LOG_WHATSAPP'];
+	}
+	//Recebe Push
+	if (empty(@$_REQUEST['BL1_LOG_PUSH'])) {
+		$bl1_log_push = 'N';
+	} else {
+		$bl1_log_push = @$_REQUEST['BL1_LOG_PUSH'];
+	}
+	//Aceite LGPD
+	if (empty(@$_REQUEST['BL1_LOG_LGPD'])) {
+		$bl1_log_lgpd = 'N';
+	} else {
+		$bl1_log_lgpd = @$_REQUEST['BL1_LOG_LGPD'];
+	}
+	//Sem Aceite LGPD
+	if (empty(@$_REQUEST['BL1_LOG_SEMLGPD'])) {
+		$bl1_log_semlgpd = 'N';
+	} else {
+		$bl1_log_semlgpd = @$_REQUEST['BL1_LOG_SEMLGPD'];
+	}
+
+	//aniversario		
+	//array - aniversario
+	if (isset($_POST['BL1_ANIVERSARIO'])) {
+		$Arr_BL1_ANIVERSARIO = @$_POST['BL1_ANIVERSARIO'];
+		//print_r($Arr_BL1_ANIVERSARIO);			 
+		for ($i = 0; $i < count($Arr_BL1_ANIVERSARIO); $i++) {
+			$bl1_aniversario = $bl1_aniversario . $Arr_BL1_ANIVERSARIO[$i] . ";";
+		}
+		$bl1_aniversario = substr($bl1_aniversario, 0, -1);
+	} else {
+		$bl1_aniversario = "0";
+	}
+
+	//profissões
+	$bl1_operaprofi = fnLimpaCampoHtml(@$_REQUEST['BL1_OPERAPROFI']);
+	//array - profissões
+	if (isset($_POST['BL1_PROFISSOES'])) {
+		$Arr_BL1_PROFISSOES = @$_POST['BL1_PROFISSOES'];
+		//print_r($Arr_BL1_PROFISSOES);			 
+		for ($i = 0; $i < count($Arr_BL1_PROFISSOES); $i++) {
+			$bl1_profissoes = $bl1_profissoes . $Arr_BL1_PROFISSOES[$i] . ";";
+		}
+		$bl1_profissoes = substr($bl1_profissoes, 0, -1);
+	} else {
+		$bl1_profissoes = "0";
+	}
+
+
+	//BLOCO 2 - PRODUTOS (AUTOMÁTICO)
+
+	//BLOCO 3 - FREQUÊNCIA	
+	$bl3_compras_ini = fnLimpaCampo(@$_REQUEST['BL3_COMPRAS_INI']);
+	$bl3_compras_fim = fnLimpaCampo(@$_REQUEST['BL3_COMPRAS_FIM']);
+
+	$bl3_cadastros_ini = fnLimpaCampo(@$_REQUEST['BL3_CADASTROS_INI']);
+	$bl3_cadastros_fim = fnLimpaCampo(@$_REQUEST['BL3_CADASTROS_FIM']);
+
+	$bl3_ucompras_ini = fnLimpaCampo(@$_REQUEST['BL3_UCOMPRAS_INI']);
+	$bl3_ucompras_fim = fnLimpaCampo(@$_REQUEST['BL3_UCOMPRAS_FIM']);
+
+	$bl3_ucompdias_ini = fnLimpaCampo(@$_REQUEST['BL3_UCOMPDIAS_INI']);
+	$bl3_ucompdias_fim = fnLimpaCampo(@$_REQUEST['BL3_UCOMPDIAS_FIM']);
+
+	$bl3_inativo_ini = fnLimpaCampo(@$_REQUEST['BL3_INATIVO_INI']);
+	$bl3_inativo_fim = fnLimpaCampo(@$_REQUEST['BL3_INATIVO_FIM']);
+
+	$bl3_comprase_ini = fnLimpaCampo(@$_REQUEST['BL3_COMPRASE_INI']);
+	$bl3_comprase_fim = fnLimpaCampo(@$_REQUEST['BL3_COMPRASE_FIM']);
+
+	if (empty(@$_REQUEST['BL3_LOG_SEMCOMPR'])) {
+		$bl3_log_semcompr = 'N';
+	} else {
+		$bl3_log_semcompr = @$_REQUEST['BL3_LOG_SEMCOMPR'];
+	}
+	$bl3_semcompr_ini = fnLimpaCampo(@$_REQUEST['BL3_SEMCOMPR_INI']);
+	$bl3_semcompr_fim = fnLimpaCampo(@$_REQUEST['BL3_SEMCOMPR_FIM']);
+
+	if (empty(@$_REQUEST['BL3_LOG_SEMRESG'])) {
+		$bl3_log_semresg = 'N';
+	} else {
+		$bl3_log_semresg = @$_REQUEST['BL3_LOG_SEMRESG'];
+	}
+	$bl3_semresg_ini = fnLimpaCampo(@$_REQUEST['BL3_SEMRESG_INI']);
+	$bl3_semresg_fim = fnLimpaCampo(@$_REQUEST['BL3_SEMRESG_FIM']);
+
+	$bl3_qtd_retorno_ini = fnLimpaCampo(@$_REQUEST['BL3_QTD_RETORNO_INI']);
+	$bl3_qtd_retorno_fim = fnLimpaCampo(@$_REQUEST['BL3_QTD_RETORNO_FIM']);
+
+	if (empty(@$_REQUEST['BL3_LOG_RESGATE'])) {
+		$bl3_log_resgate = 'N';
+	} else {
+		$bl3_log_resgate = @$_REQUEST['BL3_LOG_RESGATE'];
+	}
+	$bl3_tip_resgate = fnLimpaCampo(@$_REQUEST['BL3_TIP_RESGATE']);
+	$bl3_qtd_resgate = fnLimpaCampo(@$_REQUEST['BL3_QTD_RESGATE']);
+
+	//BLOCO 4 - VALOR
+	$bl4_compra_min = fnLimpaCampo(@$_REQUEST['BL4_COMPRA_MIN']);
+	$bl4_compra_max = fnLimpaCampo(@$_REQUEST['BL4_COMPRA_MAX']);
+
+	$bl4_valortm_min = fnLimpaCampo(@$_REQUEST['BL4_VALORTM_MIN']);
+	$bl4_valortm_max = fnLimpaCampo(@$_REQUEST['BL4_VALORTM_MAX']);
+
+	$bl4_gastos_min = fnLimpaCampo(@$_REQUEST['BL4_GASTOS_MIN']);
+	$bl4_gastos_max = fnLimpaCampo(@$_REQUEST['BL4_GASTOS_MAX']);
+
+	$bl4_credito_min = fnLimpaCampo(@$_REQUEST['BL4_CREDITO_MIN']);
+	$bl4_credito_max = fnLimpaCampo(@$_REQUEST['BL4_CREDITO_MAX']);
+
+	$bl4_tip_resgate = fnLimpaCampo(@$_REQUEST['BL4_TIP_RESGATE']);
+	$bl4_qtd_resgate_min = fnLimpaCampo(@$_REQUEST['BL4_QTD_RESGATE_MIN']);
+	$bl4_qtd_resgate = fnLimpaCampo(@$_REQUEST['BL4_QTD_RESGATE']);
+
+	$bl4_qtd_avencer = fnLimpaCampo(@$_REQUEST['BL4_QTD_AVENCER']);
+	$bl4_tip_avencer = fnLimpaCampo(@$_REQUEST['BL4_TIP_AVENCER']);
+
+	$bl4_tip_saldo = fnLimpaCampo(@$_REQUEST['BL4_TIP_SALDO']);
+	$bl4_val_saldo_min = fnLimpaCampo(@$_REQUEST['BL4_VAL_SALDO_MIN']);
+	$bl4_val_saldo = fnLimpaCampo(@$_REQUEST['BL4_VAL_SALDO']);
+
+	//BLOCO 5 - GEO
+	if (empty(@$_REQUEST['BL5_UNIVE_ORIGEM'])) {
+		$bl5_unive_origem = 'N';
+	} else {
+		$bl5_unive_origem = @$_REQUEST['BL5_UNIVE_ORIGEM'];
+	}
+	if (empty(@$_REQUEST['BL5_UNIVE_TODOS'])) {
+		$bl5_unive_todos = 'N';
+	} else {
+		$bl5_unive_todos = @$_REQUEST['BL5_UNIVE_TODOS'];
+	}
+	if (empty(@$_REQUEST['BL5_UNIPREF'])) {
+		$bl5_unipref = 'N';
+	} else {
+		$bl5_unipref = @$_REQUEST['BL5_UNIPREF'];
+	}
+
+	if (!empty(@$_REQUEST['BL5_UNIVE_ORIGEM_V'])) {
+		$bl5_unive_origem_ref = "V";
+	} else if (!empty(@$_REQUEST['BL5_UNIVE_ORIGEM_O'])) {
+		$bl5_unive_origem_ref = "O";
+	} else if (!empty(@$_REQUEST['BL5_UNIVE_ORIGEM_C'])) {
+		$bl5_unive_origem_ref = "C";
+	} else {
+		$bl5_unive_origem_ref = 'N';
+	}
+
+	//array - lojas
+	if (isset($_POST['BL5_COD_UNIVE'])) {
+		$Arr_BL5_COD_UNIVE = @$_POST['BL5_COD_UNIVE'];
+		//print_r($Arr_BL5_COD_UNIVEO);			 
+		for ($i = 0; $i < count($Arr_BL5_COD_UNIVE); $i++) {
+			@$bl5_cod_unive = $bl5_cod_unive . $Arr_BL5_COD_UNIVE[$i] . ";";
+		}
+		$bl5_cod_unive =  rtrim($bl5_cod_unive, ';');
+	} else {
+		$bl5_cod_unive = "0";
+	}
+
+	//array - estados
+	if (isset($_POST['BL5_COD_ESTADOF'])) {
+		$Arr_BL5_COD_ESTADOF = @$_POST['BL5_COD_ESTADOF'];
+
+		for ($i = 0; $i < count($Arr_BL5_COD_ESTADOF); $i++) {
+			@$bl5_cod_estadof = @$bl5_cod_estadof . $Arr_BL5_COD_ESTADOF[$i] . ";";
+		}
+		$bl5_cod_estadof = rtrim($bl5_cod_estadof, ';');
+	} else {
+		$bl5_cod_estadof = "0";
+	}
+
+	$cod_univend_master = fnLimpaCampo(@$_REQUEST['COD_UNIVEND_MASTER']);
+
+	if ($bl5_cod_unive != "0") {
+		$bl5_cod_unive = $bl5_cod_unive . ";" . $cod_univend_master;
+	} else {
+		if ($cod_univend_master != '' && $cod_univend_master != 0) {
+			$bl5_cod_unive = $cod_univend_master;
+		}
+	}
+
+	$bl5_cod_unive = ltrim(rtrim($bl5_cod_unive, ';'), ';');
+	$bl5_cod_estadof = ltrim(rtrim($bl5_cod_estadof, ';'), ';');
+
+
+	//array - Categorização de clientes
+	if (isset($_POST['BL6_FREQ_CLIENTE'])) {
+		$Arr_BL6_FREQ_CLIENTE = @$_POST['BL6_FREQ_CLIENTE'];
+		//print_r($Arr_BL6_FREQ_CLIENTE);			 
+		for ($i = 0; $i < count($Arr_BL6_FREQ_CLIENTE); $i++) {
+			@$bl6_freq_cliente = @$bl6_freq_cliente . $Arr_BL6_FREQ_CLIENTE[$i] . ";";
+		}
+		$bl6_freq_cliente = rtrim($bl6_freq_cliente, ';');
+	} else {
+		$bl6_freq_cliente = "";
+	}
+
+	//array - Categoriação exclusiva
+	if (isset($_POST['BL6_FREQ_CLIENTE_U'])) {
+		$Arr_BL6_FREQ_CLIENTE_U = @$_POST['BL6_FREQ_CLIENTE_U'];
+		//print_r($Arr_BL6_FREQ_CLIENTE_U);
+		for ($i = 0; $i < count($Arr_BL6_FREQ_CLIENTE_U); $i++) {
+			@$bl6_freq_cliente_u = @$bl6_freq_cliente_u . $Arr_BL6_FREQ_CLIENTE_U[$i] . ";";
+		}
+		$bl6_freq_cliente_u = rtrim($bl6_freq_cliente_u, ';');
+	} else {
+		$bl6_freq_cliente_u = "";
+	}
+
+	$bl6_freq_cliente = ltrim(rtrim($bl6_freq_cliente, ';'), ';');
+	$bl6_freq_cliente_u = ltrim(rtrim($bl6_freq_cliente_u, ';'), ';');
+
+	$bl6_tip_ticket = fnLimpacampoZero(@$_REQUEST['BL6_TIP_TICKET']);
+	$bl6_ticket_ini = fnLimpaCampo(@$_REQUEST['BL6_TICKET_INI']);
+	$bl6_ticket_fim = fnLimpaCampo(@$_REQUEST['BL6_TICKET_FIM']);
+
+	if (empty(@$_REQUEST['BL6_ENGAJA_1'])) {
+		$bl6_engaja_1 = 'N';
+	} else {
+		$bl6_engaja_1 = @$_REQUEST['BL6_ENGAJA_1'];
+	}
+	if (empty(@$_REQUEST['BL6_ENGAJA_2'])) {
+		$bl6_engaja_2 = 'N';
+	} else {
+		$bl6_engaja_2 = @$_REQUEST['BL6_ENGAJA_2'];
+	}
+	if (empty(@$_REQUEST['BL6_ENGAJA_3'])) {
+		$bl6_engaja_3 = 'N';
+	} else {
+		$bl6_engaja_3 = @$_REQUEST['BL6_ENGAJA_3'];
+	}
+	if (empty(@$_REQUEST['BL6_ENGAJA_4'])) {
+		$bl6_engaja_4 = 'N';
+	} else {
+		$bl6_engaja_4 = @$_REQUEST['BL6_ENGAJA_4'];
+	}
+
+	$cod_empresa = fnLimpaCampo(@$_REQUEST['COD_EMPRESA']);
+	$cod_persona = fnLimpaCampo(@$_REQUEST['COD_PERSONA']);
+	$opcao = @$_REQUEST['opcao'];
+	$hHabilitado = @$_REQUEST['hHabilitado'];
+	$hashForm = @$_REQUEST['hashForm'];
+
+	$procCalc = "T";
+
+	//fnEscreve($idadeIni);
+	//fnMostraForm();
+}
+
+$opcao = "S";
+
+$bl5_unive_origem = $bl5_unive_origem_ref;
+
+$sqlPersonas = "CALL SP_BUSCA_PERSONA_MASTER(
+										'" . $cod_persona . "', 
+										'" . $bl1_masculino . "', 
+										'" . $bl1_feminino . "',
+										'" . $bl1_funcionario . "',
+										'" . $bl1_funcionafem . "',
+										'" . $idadeIni . "',										
+										'" . $idadeFim . "',
+										'" . $bl1_logidade . "',
+                                        		'" . $bl1_tpniver . "',    
+										'" . $bl1_endereco . "',
+										'" . $bl1_celular . "',
+										'" . $bl1_email . "',
+										'" . $bl1_telefone . "',
+										'" . $bl1_aniversario . "',
+										'" . $bl1_operaprofi . "',
+										'" . $bl1_profissoes . "',
+										'" . $bl1_log_fidelizado . "',
+										'" . $bl1_log_email . "',
+										'" . $bl1_log_sms . "',
+										'" . $bl1_log_telemark . "',
+										'" . $bl1_log_whatsapp . "',
+										'" . $bl1_log_push . "',
+										'" . $bl1_log_lgpd . "',
+										'" . $bl1_log_semlgpd . "',
+										'" . $cod_empresa . "',
+										'" . $bl1_juridico . "',
+										'" . $bl1_lognsexo . "',
+										" . fnDataSqlNull($bl3_cadastros_ini) . ",
+										" . fnDataSqlNull($bl3_cadastros_fim) . ",
+										" . fnDataSqlNull($bl3_compras_ini) . ",
+										" . fnDataSqlNull($bl3_compras_fim) . ",
+										" . fnDataSqlNull($bl3_ucompras_ini) . ",
+										" . fnDataSqlNull($bl3_ucompras_fim) . ",
+										'" . fnValorSql(@$bl3_ucompdias_ini) . "',
+										'" . fnValorSql(@$bl3_ucompdias_fim) . "',
+										'" . fnValorSql(@$bl3_inativo_ini) . "',
+										'" . fnValorSql(@$bl3_inativo_fim) . "',
+										" . fnDataSqlNull($bl3_comprase_ini) . ",
+										" . fnDataSqlNull($bl3_comprase_fim) . ",
+										'" . $bl3_log_semcompr . "',
+										" . fnDataSqlNull($bl3_semcompr_ini) . ",
+										" . fnDataSqlNull($bl3_semcompr_fim) . ",
+										'" . $bl3_log_semresg . "',
+										" . fnDataSqlNull($bl3_semresg_ini) . ",
+										" . fnDataSqlNull($bl3_semresg_fim) . ",
+										'" . $bl3_log_resgate . "',
+										'" . $bl3_tip_resgate . "',
+										'" . fnValorSql($bl3_qtd_resgate) . "',
+										'" . fnValorSql($bl4_compra_min) . "',
+										'" . fnValorSql($bl4_compra_max) . "',
+										'" . fnValorSql($bl4_valortm_min) . "',
+										'" . fnValorSql($bl4_valortm_max) . "',
+										'" . fnValorSql($bl4_gastos_min) . "',
+										'" . fnValorSql($bl4_gastos_max) . "',
+										'" . fnValorSql($bl4_credito_min) . "',
+										'" . fnValorSql($bl4_credito_max) . "',
+										'" . $bl4_tip_resgate . "',
+										'" . fnValorSql($bl4_qtd_resgate_min) . "',
+										'" . fnValorSql($bl4_qtd_resgate) . "',
+										'" . fnValorSql($bl4_qtd_avencer) . "',
+										'" . $bl4_tip_avencer . "',
+										'" . $bl4_tip_saldo . "',
+										'" . fnValorSql($bl4_val_saldo_min) . "',
+										'" . fnValorSql($bl4_val_saldo) . "',
+										'" . $bl5_cod_unive . "',
+										'" . $bl5_unive_origem . "',
+										'" . $bl5_unive_todos . "',
+										'" . $bl5_unipref . "',
+										'" . fnValorSql($bl3_qtd_retorno_ini) . "',
+										'" . fnValorSql($bl3_qtd_retorno_fim) . "',										
+										'" . @$bl5_cod_estadof . "',
+										'" . $bl6_engaja_1 . "',
+										'" . $bl6_engaja_2 . "',
+										'" . $bl6_engaja_3 . "',
+										'" . $bl6_engaja_4 . "',
+										'" . @$bl6_freq_cliente . "',
+										'" . @$bl6_freq_cliente_u . "',
+										'" . $bl6_tip_ticket . "',
+										'" . fnDataSql($bl6_ticket_ini) . "',
+										'" . fnDataSql($bl6_ticket_fim) . "',
+										'" . $opcao . "',
+										'S'
+										) ";
+
+// fnEscreve($sqlPersonas);
+
+$sqlPersonasquery = mysqli_query(connTemp($cod_empresa, ''), $sqlPersonas);
+if (!$sqlPersonasquery) {
+	// fnEscreve($sqlPersonas);
+	fnTestesql(connTemp($cod_empresa, ''), $sqlPersonas);
+}
+//fnTestesql(connTemp($cod_empresa,''),$sqlPersonas);
+$qrCalcRegra = mysqli_fetch_assoc($sqlPersonasquery);
+
+//$sqlPersonasquery= mysqli_fetch_row($sqlPersonasquery);
+//fnEscreve($sqlPersonasquery['0']);
+$totalIni = $qrCalcRegra['QTD_TOTCLI'];
+
+?>
+
+
+<div class="widget-int num-count" id="div_Total" style="text-align: center; font-size: 40px; padding-top: 10px;"><?php echo number_format($totalIni, 0, ",", "."); ?></div>
