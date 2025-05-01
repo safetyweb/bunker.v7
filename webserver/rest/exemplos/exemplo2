@@ -1,0 +1,65 @@
+{
+	"inserevenda": {
+		"fase": "fase6",
+		"venda": {
+			"id_vendapdv": "1-15811-93850",
+			"datahora": "2021-10-12 09:00:32",
+			"cartao": "00000000000",
+			"valortotalbruto": "37,4900",
+			"descontototalvalor": "0,00",
+			"valortotalliquido": "37,4900",
+			"valor_resgate": "0,00",
+			"cupomfiscal": {},
+			"formapagamento": "CONVENIO",
+			"indicador": {},
+			"codatendente": "7",
+			"codvendedor": "7",
+			"itens": {
+				"vendaitem": [
+					{
+						"id_item": "2",
+						"produto": "MEDICAMENTO",
+						"codigoproduto": "1763",
+						"quantidade": "1",
+						"valorbruto": "29,1400",
+						"descontovalor": "1,6400",
+						"valorliquido": "27,5000",
+						"ean": "1763",
+						"estoque": "-467",
+						"atributo1": "HPC",
+						"atributo2": "BONIFICADOS",
+						"atributo3": "UN",
+						"atributo4": "MEDICAMENTO",
+						"atributo5": "DIVERSOS",
+						"enviogenerico": {}
+					},
+					{
+						"id_item": "3",
+						"produto": "COCA COLA 2 LITROS",
+						"codigoproduto": "75067569",
+						"quantidade": "1",
+						"valorbruto": "9,9900",
+						"descontovalor": "0,00",
+						"valorliquido": "9,9900",
+						"ean": "7894900027013",
+						"estoque": "-26",
+						"atributo1": "HPC",
+						"atributo3": "UN",
+						"atributo4": "COCA COLA 2 LITROS",
+						"atributo5": "PLUGPHARMA",
+						"enviogenerico": {}
+					}
+				]
+			}
+		},
+		"dadoslogin": {
+			"login": "trier.rtotal",
+			"senha": "trier@mk",
+			"idloja": "97375",
+			"idmaquina": "22",
+			"idcliente": "251",
+			"codvendedor": "16",
+			"nomevendedor": "EDUARDO JOAQUIM"
+		}
+	}
+}

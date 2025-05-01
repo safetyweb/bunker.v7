@@ -1,0 +1,48 @@
+{
+	"inserevenda": {
+		"fase": "fase6",
+		"venda": {
+			"id_vendapdv": "1-15811-93850",
+			"datahora": "2021-10-12 09:00:32",
+			"cartao": "00000000000",
+			"valortotalbruto": "37,4900",
+			"descontototalvalor": "0,00",
+			"valortotalliquido": "37,4900",
+			"valor_resgate": "0,00",
+			"cupomfiscal": {},
+			"formapagamento": "CONVENIO",
+			"codatendente": "7",
+			"codvendedor": "7",
+			"itens": {
+						"vendaitem": [
+							{
+								"id_item": "2",
+								"produto": "MEDICAMENTO",
+								"codigoproduto": "1763",
+								"quantidade": "1",
+								"valorbruto": "29,1400",
+								"descontovalor": "1,6400",
+								"valorliquido": "27,5000",
+								"ean": "1763",
+								"estoque": "-467",
+								"atributo1": "HPC",
+								"atributo2": "BONIFICADOS",
+								"atributo3": "UN",
+								"atributo4": "MEDICAMENTO",
+								"atributo5": "DIVERSOS",
+								"enviogenerico": {}
+							}
+						]
+			}
+		},
+		"dadoslogin": {
+			"login": "trier.rtotal",
+			"senha": "trier@mk",
+			"idloja": "97375",
+			"idmaquina": "22",
+			"idcliente": "251",
+			"codvendedor": "16",
+			"nomevendedor": "EDUARDO JOAQUIM"
+		}
+	}
+}

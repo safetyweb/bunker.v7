@@ -1,0 +1,5 @@
+<?php
+function GiftGetConfig($dados) {
+    
+}
+

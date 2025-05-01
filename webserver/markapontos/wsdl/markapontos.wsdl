@@ -1,0 +1,517 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="markapontos" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" targetNamespace="markapontos" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Integração com MarkaPontos</wsdl:documentation>
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="markapontos">
+      <s:element name="validacliente">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="dados" type="tns:DadosCliente" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="DadosCliente">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="baseid" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="email" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="senha" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="validaclienteResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="validaclienteResult" type="tns:retornovalidacliente" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="retornovalidacliente">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="nome" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="grupocliente" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="id_grupopremio" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="grupopremio" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="cartao" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="saldopontos" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="mensagem" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="urlmovcompras" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="urlmovresgates" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="msgerro" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="listalojas">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="baseid" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="listalojasResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="listalojasResult" type="tns:retornolistalojas" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="retornolistalojas">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="lojas" type="tns:ArrayOfLoja" />
+          <s:element minOccurs="0" maxOccurs="1" name="msgerro" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfLoja">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="loja" nillable="true" type="tns:loja" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="loja">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="fantasia" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="endereco" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="numero" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="complemento" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="bairro" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="cidade" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="estado" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="cep" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="telefone" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="listaparceiros">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="baseid" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="listaparceirosResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="listaparceirosResult" type="tns:retornolistaparceiros" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="retornolistaparceiros">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="parceiros" type="tns:ArrayOfParceiro" />
+          <s:element minOccurs="0" maxOccurs="1" name="msgerro" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfParceiro">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="parceiro" nillable="true" type="tns:parceiro" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="parceiro">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="id_parceiro" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="nome" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="imglogo" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="emitepontos" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="trocapremios" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="qtdpremios" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="contato" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="telefone" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="email" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="listacategorias">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="baseid" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="listacategoriasResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="listacategoriasResult" type="tns:retornolistacategorias" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="retornolistacategorias">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="categorias" type="tns:ArrayOfCategoria" />
+          <s:element minOccurs="0" maxOccurs="1" name="msgerro" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfCategoria">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="categoria" nillable="true" type="tns:categoria" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="categoria">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="id_categoria" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="nome" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="listapremios">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="filtro" type="tns:filtropremio" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="filtropremio">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="baseid" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="id_categoria" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="categoria" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="id_parceiro" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="parceiro" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="id_grupopremio" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="grupopremio" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="id_premio" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="listapremiosResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="listapremiosResult" type="tns:retornolistapremios" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="retornolistapremios">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="premios" type="tns:ArrayOfPremio" />
+          <s:element minOccurs="0" maxOccurs="1" name="msgerro" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfPremio">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="premio" nillable="true" type="tns:premio" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="premio">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="id_premio" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="nome" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="pontos" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="categoria" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="parceiro" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="imagem" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="grupopremio" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="links">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="baseid" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="linksResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="linksResult" type="tns:retornolinks" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="retornolinks">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="oprograma" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="regulamento" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="cadastro" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="msgerro" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="resgatepremio">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="dados" type="tns:dadosresgatepremio" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="dadosresgatepremio">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="cliente" type="tns:DadosCliente" />
+          <s:element minOccurs="0" maxOccurs="1" name="pontos" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="premio" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="quantidade" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="resgatepremioResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="resgatepremioResult" type="tns:retornoresgatepremio" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="retornoresgatepremio">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="autorizacao" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="saldo" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="msgerro" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="estornoresgate">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="dados" type="tns:dadosestornoresgate" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="dadosestornoresgate">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="baseid" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="email" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="autorizacao" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="estornoresgateResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="estornoresgateResult" type="tns:retornoestornoresgate" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="retornoestornoresgate">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="saldo" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="msgerro" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="validaclienteSoapIn">
+    <wsdl:part name="parameters" element="tns:validacliente" />
+  </wsdl:message>
+  <wsdl:message name="validaclienteSoapOut">
+    <wsdl:part name="parameters" element="tns:validaclienteResponse" />
+  </wsdl:message>
+  <wsdl:message name="listalojasSoapIn">
+    <wsdl:part name="parameters" element="tns:listalojas" />
+  </wsdl:message>
+  <wsdl:message name="listalojasSoapOut">
+    <wsdl:part name="parameters" element="tns:listalojasResponse" />
+  </wsdl:message>
+  <wsdl:message name="listaparceirosSoapIn">
+    <wsdl:part name="parameters" element="tns:listaparceiros" />
+  </wsdl:message>
+  <wsdl:message name="listaparceirosSoapOut">
+    <wsdl:part name="parameters" element="tns:listaparceirosResponse" />
+  </wsdl:message>
+  <wsdl:message name="listacategoriasSoapIn">
+    <wsdl:part name="parameters" element="tns:listacategorias" />
+  </wsdl:message>
+  <wsdl:message name="listacategoriasSoapOut">
+    <wsdl:part name="parameters" element="tns:listacategoriasResponse" />
+  </wsdl:message>
+  <wsdl:message name="listapremiosSoapIn">
+    <wsdl:part name="parameters" element="tns:listapremios" />
+  </wsdl:message>
+  <wsdl:message name="listapremiosSoapOut">
+    <wsdl:part name="parameters" element="tns:listapremiosResponse" />
+  </wsdl:message>
+  <wsdl:message name="linksSoapIn">
+    <wsdl:part name="parameters" element="tns:links" />
+  </wsdl:message>
+  <wsdl:message name="linksSoapOut">
+    <wsdl:part name="parameters" element="tns:linksResponse" />
+  </wsdl:message>
+  <wsdl:message name="resgatepremioSoapIn">
+    <wsdl:part name="parameters" element="tns:resgatepremio" />
+  </wsdl:message>
+  <wsdl:message name="resgatepremioSoapOut">
+    <wsdl:part name="parameters" element="tns:resgatepremioResponse" />
+  </wsdl:message>
+  <wsdl:message name="estornoresgateSoapIn">
+    <wsdl:part name="parameters" element="tns:estornoresgate" />
+  </wsdl:message>
+  <wsdl:message name="estornoresgateSoapOut">
+    <wsdl:part name="parameters" element="tns:estornoresgateResponse" />
+  </wsdl:message>
+  <wsdl:portType name="http_x003A__x002F__x002F_cartaofidelidade.com_x002F_Soap">
+    <wsdl:operation name="validacliente">
+      <wsdl:input message="tns:validaclienteSoapIn" />
+      <wsdl:output message="tns:validaclienteSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="listalojas">
+      <wsdl:input message="tns:listalojasSoapIn" />
+      <wsdl:output message="tns:listalojasSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="listaparceiros">
+      <wsdl:input message="tns:listaparceirosSoapIn" />
+      <wsdl:output message="tns:listaparceirosSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="listacategorias">
+      <wsdl:input message="tns:listacategoriasSoapIn" />
+      <wsdl:output message="tns:listacategoriasSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="listapremios">
+      <wsdl:input message="tns:listapremiosSoapIn" />
+      <wsdl:output message="tns:listapremiosSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="links">
+      <wsdl:input message="tns:linksSoapIn" />
+      <wsdl:output message="tns:linksSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="resgatepremio">
+      <wsdl:input message="tns:resgatepremioSoapIn" />
+      <wsdl:output message="tns:resgatepremioSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="estornoresgate">
+      <wsdl:input message="tns:estornoresgateSoapIn" />
+      <wsdl:output message="tns:estornoresgateSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="http_x003A__x002F__x002F_cartaofidelidade.com_x002F_Soap" type="tns:http_x003A__x002F__x002F_cartaofidelidade.com_x002F_Soap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="validacliente">
+      <soap:operation soapAction="markapontos/validacliente" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="listalojas">
+      <soap:operation soapAction="markapontos/listalojas" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="listaparceiros">
+      <soap:operation soapAction="markapontos/listaparceiros" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="listacategorias">
+      <soap:operation soapAction="markapontos/listacategorias" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="listapremios">
+      <soap:operation soapAction="markapontos/listapremios" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="links">
+      <soap:operation soapAction="markapontos/links" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="resgatepremio">
+      <soap:operation soapAction="markapontos/resgatepremio" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="estornoresgate">
+      <soap:operation soapAction="markapontos/estornoresgate" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="http_x003A__x002F__x002F_cartaofidelidade.com_x002F_Soap12" type="tns:http_x003A__x002F__x002F_cartaofidelidade.com_x002F_Soap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="validacliente">
+      <soap12:operation soapAction="markapontos/validacliente" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="listalojas">
+      <soap12:operation soapAction="markapontos/listalojas" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="listaparceiros">
+      <soap12:operation soapAction="markapontos/listaparceiros" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="listacategorias">
+      <soap12:operation soapAction="markapontos/listacategorias" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="listapremios">
+      <soap12:operation soapAction="markapontos/listapremios" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="links">
+      <soap12:operation soapAction="markapontos/links" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="resgatepremio">
+      <soap12:operation soapAction="markapontos/resgatepremio" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="estornoresgate">
+      <soap12:operation soapAction="markapontos/estornoresgate" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="http_x003A__x002F__x002F_cartaofidelidade.com_x002F_">
+    <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Integração com MarkaPontos</wsdl:documentation>
+    <wsdl:port name="http_x003A__x002F__x002F_cartaofidelidade.com_x002F_Soap" binding="tns:http_x003A__x002F__x002F_cartaofidelidade.com_x002F_Soap">
+      <soap:address location="http://ws.bunker.mk/markapontos/markapontos.do" />
+    </wsdl:port>
+    <wsdl:port name="http_x003A__x002F__x002F_cartaofidelidade.com_x002F_Soap12" binding="tns:http_x003A__x002F__x002F_cartaofidelidade.com_x002F_Soap12">
+      <soap12:address location="http://ws.bunker.mk/markapontos/markapontos.do" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

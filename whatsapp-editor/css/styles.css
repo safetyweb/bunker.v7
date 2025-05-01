@@ -1,0 +1,222 @@
+/* Estilos CSS */
+
+@import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap); 
+@import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap); 
+@import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap); 
+@import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap); 
+@import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap); 
+@import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap); 
+@import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap); 
+@import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap); 
+@import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap); 
+@import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap); 
+@import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap); 
+@import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap); 
+@import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap); 
+@import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap); 
+@import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap); 
+@import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap); 
+@import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap); 
+@import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap); 
+@import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap); 
+@import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap); 
+@import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap); 
+@import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap); 
+@import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap); 
+@import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap); 
+@import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap); 
+@import url(https://fonts.googleapis.com/css2?family=Inter&display=swap); 
+@import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap); 
+@import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap); 
+@import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap);
+*, card, .btn{
+  border-radius: 0.25rem;
+}
+
+body {
+  font-family: Inter, sans-serif!important;
+  background-color: #45a049 !important;
+  background-image: url('../img/whatsapp-wallpaper-default.jpg');
+  background-repeat: repeat;
+  background-blend-mode: multiply; /* Mistura a cor com a imagem */
+}
+
+.container{
+  border-radius: 0.25rem;
+}
+
+#janelaChat, #tabGeradas{
+  background-image: url('../img/whatsapp-wallpaper-default.jpg');
+/*  background-size: cover;*/
+  background-repeat: repeat;
+  background-position: center;
+/*  min-height: 300px;*/
+  height: auto;
+}
+
+.message{
+  background-color: #D9FDD3;
+  padding: 2px;
+  border-radius: 10px;
+  margin: 5px 10px;
+  font-family: SF Pro Text, SF Pro Icons, system, -apple-system, system-ui, BlinkMacSystemFont, Segoe UI, Helvetica Neue, Helvetica, Arial, Lucida Grande, Ubuntu, Cantarell, Fira Sans, sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 14.2px;
+  line-height: 19px;
+  color: rgb(17, 27, 33);
+  width: 336px;
+/*  float: right;*/
+}
+.message-text{
+  padding: 8px;
+}
+
+.message-text p{
+  margin-bottom: 0;
+}
+
+.message-img .img-responsive{
+  border-radius: 10px;
+}
+
+.card-body{
+  padding: 0 1rem!important;
+}
+
+.contact-image{
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.btn-default{
+  background-color: #95a5a6!important;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 0.25rem;
+  transition: .2s;
+  text-decoration: none;
+}
+
+.btn-default:hover {
+  background-color: #2d8532;
+  color: #fff;
+}
+/* Estilos para o a listagem dos modelos */
+
+.model-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.model-card {
+  background-color: #f0f0f0;
+  padding: 10px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s;
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.model-card p {
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.model-card .button {
+  margin-right: 5px;
+}
+
+.model-card .delete-button {
+  background-color: #ff0000;
+  color: #fff;
+}
+
+.model-card .copy-button {
+  background-color: #008de6;
+  color: #fff;
+}
+
+/* Estilos para o input de pesquisa */
+#emojiSearch {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+/* Estilos para a lista de emojis */
+.emoji-container {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.emoji-container button {
+  margin-right: 8px;
+  margin-bottom: 8px;
+  padding: 8px;
+  font-size: 20px;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+.emoji-container button:hover {
+  background-color: #f2f2f2;
+}
+
+/* Estilos para a barra de rolagem */
+.emoji-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.emoji-container::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+
+.emoji-container::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 4px;
+}
+
+.emoji-container::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+
+
+@media (min-width: 320px) and (max-width: 540px) {
+  .options {
+    display: flex;
+    flex-direction: column;
+    margin-right: 12px;
+  }
+
+  button {
+    margin-top: 12px;
+  }
+}
+
+@keyframes shine {
+  0% {
+      box-shadow: 0 0 10px rgba(22, 151, 65, 0.7);
+  }
+  50% {
+      box-shadow: 0 0 20px rgba(28, 230, 89, 0.7);
+  }
+  100% {
+      box-shadow: 0 0 10px rgba(78, 228, 98, 0.7);
+  }
+}
+
+.btn.btn-default.btn-highlight {
+  animation: shine 2s infinite;
+}
+

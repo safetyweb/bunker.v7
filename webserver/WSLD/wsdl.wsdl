@@ -1,0 +1,1841 @@
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
+                  xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" 
+                  xmlns:tns="Linker20" 
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+                  xmlns:s="http://www.w3.org/2001/XMLSchema" 
+                  xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" 
+                  xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" 
+                  targetNamespace="Linker20" 
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns="http://schemas.xmlsoap.org/wsdl/">
+<wsdl:types>
+        <s:schema elementFormDefault="qualified" targetNamespace="Linker20">
+            <s:element name="Criancas">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="cartao" type="s:string" />
+                        <s:element minOccurs="0" maxOccurs="1" name="dadosLogin" type="tns:LoginInfo" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="LoginInfo">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="1" name="login" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="senha" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="idloja" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="idmaquina" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="idcliente" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="codvendedor" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="nomevendedor" type="s:string" />
+                </s:sequence>
+            </s:complexType>
+            <s:element name="CriancasResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="CriancasResult" type="tns:RetornoCriancas" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="RetornoCriancas">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="1" name="msgerro" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="criancas" type="tns:ArrayOfCrianca" />
+                </s:sequence>
+            </s:complexType>
+            <s:complexType name="ArrayOfCrianca">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="unbounded" name="Crianca" nillable="true" type="tns:Crianca" />
+                </s:sequence>
+            </s:complexType>
+            <s:complexType name="Crianca">
+                <s:sequence>
+                    <s:element minOccurs="1" maxOccurs="1" name="id" type="s:int" />
+                    <s:element minOccurs="0" maxOccurs="1" name="nome" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="sexo" type="s:string" />
+                    <s:element minOccurs="1" maxOccurs="1" name="nascimento" type="s:dateTime" />
+                    <s:element minOccurs="0" maxOccurs="1" name="parentesco" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="excluir" type="s:string" />
+                </s:sequence>
+            </s:complexType>
+            <s:element name="CriancasSalvar">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="cartao" type="s:string" />
+                        <s:element minOccurs="0" maxOccurs="1" name="listaCriancas" type="tns:ArrayOfCrianca" />
+                        <s:element minOccurs="0" maxOccurs="1" name="dadosLogin" type="tns:LoginInfo" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:element name="CriancasSalvarResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="CriancasSalvarResult" type="s:string" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:element name="EstornoResgatePremio">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="estornoresgatedados" type="tns:EstornoResgatePremio" />
+                        <s:element minOccurs="0" maxOccurs="1" name="dadoslogin" type="tns:LoginInfo" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="EstornoResgatePremio">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="1" name="cartao" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="autorizacao" type="s:string" />
+                </s:sequence>
+            </s:complexType>
+            <s:element name="EstornoResgatePremioResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="EstornoResgatePremioResult" type="tns:RetornoEstornoResgatePremio" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="RetornoEstornoResgatePremio">
+                <s:complexContent mixed="false">
+                    <s:extension base="tns:RetornoPadrao" />
+                </s:complexContent>
+            </s:complexType>
+            <s:complexType name="RetornoPadrao">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="1" name="msgerro" type="s:string" />
+                </s:sequence>
+            </s:complexType>
+            <s:element name="ResgatePremio">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="resgatedados" type="tns:ResgatePremios" />
+                        <s:element minOccurs="0" maxOccurs="1" name="dadoslogin" type="tns:LoginInfo" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="ResgatePremios">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="1" name="cartao" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="premios" type="tns:ArrayOfResgatePremiosItem" />
+                </s:sequence>
+            </s:complexType>
+            <s:complexType name="ArrayOfResgatePremiosItem">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="unbounded" name="ResgatePremiosItem" nillable="true" type="tns:ResgatePremiosItem" />
+                </s:sequence>
+            </s:complexType>
+            <s:complexType name="ResgatePremiosItem">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="1" name="codpremio" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="quantidade" type="s:string" />
+                </s:sequence>
+            </s:complexType>
+            <s:element name="ResgatePremioResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="ResgatePremioResult" type="tns:RetornoResgatePremios" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="RetornoResgatePremios">
+                <s:complexContent mixed="false">
+                    <s:extension base="tns:RetornoPadrao">
+                        <s:sequence>
+                            <s:element minOccurs="0" maxOccurs="1" name="nome" type="s:string" />
+                            <s:element minOccurs="0" maxOccurs="1" name="cartao" type="s:string" />
+                            <s:element minOccurs="0" maxOccurs="1" name="saldo" type="s:string" />
+                            <s:element minOccurs="0" maxOccurs="1" name="premios" type="tns:ArrayOfRetornoResgatePremiosItem" />
+                        </s:sequence>
+                    </s:extension>
+                </s:complexContent>
+            </s:complexType>
+            <s:complexType name="ArrayOfRetornoResgatePremiosItem">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="unbounded" name="RetornoResgatePremiosItem" nillable="true" type="tns:RetornoResgatePremiosItem" />
+                </s:sequence>
+            </s:complexType>
+            <s:complexType name="RetornoResgatePremiosItem">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="1" name="autorizacao" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="codpremio" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="quantidade" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="pontos" type="s:string" />
+                </s:sequence>
+            </s:complexType>
+            <s:element name="CadastraFuncionario">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="funcionario" type="tns:CadastroFuncionario" />
+                        <s:element minOccurs="0" maxOccurs="1" name="dadoslogin" type="tns:LoginInfo" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="CadastroFuncionario">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="1" name="nome" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="codigo" type="s:string" />
+                </s:sequence>
+            </s:complexType>
+            <s:element name="CadastraFuncionarioResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="CadastraFuncionarioResult" type="tns:RetornoCadastroFuncionario" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="RetornoCadastroFuncionario">
+                <s:complexContent mixed="false">
+                    <s:extension base="tns:RetornoPadrao" />
+                </s:complexContent>
+            </s:complexType>
+            <s:element name="AtualizaPremio">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="premio" type="tns:CadastroPremio" />
+                        <s:element minOccurs="0" maxOccurs="1" name="dadoslogin" type="tns:LoginInfo" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="CadastroPremio">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="1" name="operacao" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="codigo" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="descricao" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="grupo" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="pontos" type="s:string" />
+                </s:sequence>
+            </s:complexType>
+            <s:element name="AtualizaPremioResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="AtualizaPremioResult" type="tns:RetornoCadastroPremio" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="RetornoCadastroPremio">
+                <s:complexContent mixed="false">
+                    <s:extension base="tns:RetornoPadrao">
+                        <s:sequence>
+                            <s:element minOccurs="0" maxOccurs="1" name="codigo" type="s:string" />
+                        </s:sequence>
+                    </s:extension>
+                </s:complexContent>
+            </s:complexType>
+            <s:element name="InserirCreditoExtra">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="creditoextra" type="tns:DadosCreditoExtra" />
+                        <s:element minOccurs="0" maxOccurs="1" name="dadoslogin" type="tns:LoginInfo" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="DadosCreditoExtra">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="1" name="id_vendapdv" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="datahora" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="cartao" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="valor" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="dataexpiracao" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="observacao" type="s:string" />
+                </s:sequence>
+            </s:complexType>
+            <s:element name="InserirCreditoExtraResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="InserirCreditoExtraResult" type="tns:RetornoCreditoExtra" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="RetornoCreditoExtra">
+                <s:complexContent mixed="false">
+                    <s:extension base="tns:RetornoPadrao" />
+                </s:complexContent>
+            </s:complexType>
+            <s:element name="ConsultaCadastroPorCPF">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="CPF" type="s:string" />
+                        <s:element minOccurs="0" maxOccurs="1" name="dadoslogin" type="tns:LoginInfo" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:element name="ConsultaCadastroPorCPFResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="ConsultaCadastroPorCPFResult" type="tns:FichadeCadastro" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="FichadeCadastro">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="1" name="nome" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="cartao" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="cpf" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="rg" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="cnpj" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="nomeportador" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="grupo" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="sexo" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="datanascimento" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="estadocivil" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="telresidencial" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="telcelular" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="telcomercial" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="email" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="profissao" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="clientedesde" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="tipocliente" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="endereco" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="numero" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="bairro" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="complemento" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="cidade" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="estado" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="cep" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="cartaotitular" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="bloqueado" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="motivo" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="dataalteracao" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="adesao" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="saldo" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="saldoresgate" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="codatendente" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="senha" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="msgerro" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="urlextrato" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="msgcampanha" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="retornodnamais" type="s:string" />
+                </s:sequence>
+            </s:complexType>
+            <s:element name="ConsultaCadastroPorCNPJ">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="CNPJ" type="s:string" />
+                        <s:element minOccurs="0" maxOccurs="1" name="dadoslogin" type="tns:LoginInfo" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:element name="ConsultaCadastroPorCNPJResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="ConsultaCadastroPorCNPJResult" type="tns:FichadeCadastro" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:element name="ConsultaCadastroPorCartao">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="cartao" type="s:string" />
+                        <s:element minOccurs="0" maxOccurs="1" name="dadoslogin" type="tns:LoginInfo" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:element name="ConsultaCadastroPorCartaoResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="ConsultaCadastroPorCartaoResult" type="tns:FichadeCadastro" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:element name="GetURLTktMania">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="CPFCARTAO" type="s:string" />
+                        <s:element minOccurs="0" maxOccurs="1" name="dadoslogin" type="tns:LoginInfo" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:element name="GetURLTktManiaResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="GetURLTktManiaResult" type="tns:RetornoGetURLTktMania" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="RetornoGetURLTktMania">
+                <s:complexContent mixed="false">
+                    <s:extension base="tns:RetornoPadrao">
+                        <s:sequence>
+                            <s:element minOccurs="0" maxOccurs="1" name="urltktmania" type="s:string" />
+                        </s:sequence>
+                    </s:extension>
+                </s:complexContent>
+            </s:complexType>
+            <s:element name="AtualizaCadastro">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="cliente" type="tns:FichadeCadastro" />
+                        <s:element minOccurs="0" maxOccurs="1" name="dadoslogin" type="tns:LoginInfo" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:element name="AtualizaCadastroResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="AtualizaCadastroResult" type="tns:RetornoAtualizaCadastro" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="RetornoAtualizaCadastro">
+                <s:complexContent mixed="false">
+                    <s:extension base="tns:RetornoPadrao" />
+                </s:complexContent>
+            </s:complexType>
+            <s:element name="CadastrarProduto">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="Produto" type="tns:Produto" />
+                        <s:element minOccurs="0" maxOccurs="1" name="dadoslogin" type="tns:LoginInfo" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="Produto">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="1" name="nome" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="codigo" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="grupo" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="subgrupo" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="marca" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="atributo1" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="atributo2" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="atributo3" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="atributo4" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="atributo5" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="atributo6" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="atributo7" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="atributo8" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="atributo9" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="atributo10" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="atributo11" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="atributo12" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="atributo13" type="s:string" />
+                </s:sequence>
+            </s:complexType>
+            <s:element name="CadastrarProdutoResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="CadastrarProdutoResult" type="tns:RetornoCadastrarProduto" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="RetornoCadastrarProduto">
+                <s:complexContent mixed="false">
+                    <s:extension base="tns:RetornoPadrao">
+                        <s:sequence>
+                            <s:element minOccurs="0" maxOccurs="1" name="codigo" type="s:string" />
+                        </s:sequence>
+                    </s:extension>
+                </s:complexContent>
+            </s:complexType>
+            <s:element name="ConsultaPreVenda">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="venda" type="tns:DadosdaVenda" />
+                        <s:element minOccurs="0" maxOccurs="1" name="dadoslogin" type="tns:LoginInfo" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="DadosdaVenda">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="1" name="id_vendapdv" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="datahora" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="cartao" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="valortotal" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="valor_resgate" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="cupom" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="formapagamento" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="cartaoamigo" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="pontosextras" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="naopontuar" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="codatendente" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="codvendedor" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="pontostotal" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="items" type="tns:ArrayOfVendaitem" />
+                </s:sequence>
+            </s:complexType>
+            <s:complexType name="ArrayOfVendaitem">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="unbounded" name="vendaitem" nillable="true" type="tns:vendaitem" />
+                </s:sequence>
+            </s:complexType>
+            <s:complexType name="vendaitem">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="1" name="id_item" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="produto" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="codigoproduto" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="quantidade" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="valor" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="naopontuar" type="s:string" />
+                </s:sequence>
+            </s:complexType>
+            <s:element name="ConsultaPreVendaResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="ConsultaPreVendaResult" type="tns:RetornoPreVenda" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="RetornoPreVenda">
+                <s:complexContent mixed="false">
+                    <s:extension base="tns:Processamento">
+                        <s:sequence>
+                            <s:element minOccurs="0" maxOccurs="1" name="nome" type="s:string" />
+                            <s:element minOccurs="0" maxOccurs="1" name="cartao" type="s:string" />
+                            <s:element minOccurs="0" maxOccurs="1" name="saldo" type="s:string" />
+                            <s:element minOccurs="0" maxOccurs="1" name="prevendapontos" type="s:string" />
+                            <s:element minOccurs="0" maxOccurs="1" name="proxpremio" type="s:string" />
+                            <s:element minOccurs="0" maxOccurs="1" name="pontosparaproxpremio" type="s:string" />
+                            <s:element minOccurs="0" maxOccurs="1" name="msgerro" type="s:string" />
+                        </s:sequence>
+                    </s:extension>
+                </s:complexContent>
+            </s:complexType>
+            <s:complexType name="Processamento" />
+            <s:element name="InserirVenda">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="venda" type="tns:DadosdaVenda" />
+                        <s:element minOccurs="0" maxOccurs="1" name="dadoslogin" type="tns:LoginInfo" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:element name="InserirVendaResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="InserirVendaResult" type="tns:RetornoVenda" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="RetornoVenda">
+                <s:complexContent mixed="false">
+                    <s:extension base="tns:Processamento">
+                        <s:sequence>
+                            <s:element minOccurs="0" maxOccurs="1" name="nome" type="s:string" />
+                            <s:element minOccurs="0" maxOccurs="1" name="cartao" type="s:string" />
+                            <s:element minOccurs="0" maxOccurs="1" name="saldo" type="s:string" />
+                            <s:element minOccurs="0" maxOccurs="1" name="saldoresgate" type="s:string" />
+                            <s:element minOccurs="0" maxOccurs="1" name="comprovante" type="s:string" />
+                            <s:element minOccurs="0" maxOccurs="1" name="comprovante_resgate" type="s:string" />
+                            <s:element minOccurs="0" maxOccurs="1" name="url" type="s:string" />
+                            <s:element minOccurs="0" maxOccurs="1" name="msgerro" type="s:string" />
+                        </s:sequence>
+                    </s:extension>
+                </s:complexContent>
+            </s:complexType>
+            <s:element name="EstornaVenda">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="id_vendapdv" type="s:string" />
+                        <s:element minOccurs="0" maxOccurs="1" name="dadoslogin" type="tns:LoginInfo" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:element name="EstornaVendaResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="EstornaVendaResult" type="tns:RetornoVenda" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:element name="EstornaVendaParcial">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="estorno" type="tns:DadosEstornoParcial" />
+                        <s:element minOccurs="0" maxOccurs="1" name="dadoslogin" type="tns:LoginInfo" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="DadosEstornoParcial">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="1" name="id_vendapdv" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="cartao" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="items" type="tns:ArrayOfEstornoItem" />
+                </s:sequence>
+            </s:complexType>
+            <s:complexType name="ArrayOfEstornoItem">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="unbounded" name="EstornoItem" nillable="true" type="tns:EstornoItem" />
+                </s:sequence>
+            </s:complexType>
+            <s:complexType name="EstornoItem">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="1" name="id_item" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="codigoproduto" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="quantidade" type="s:string" />
+                </s:sequence>
+            </s:complexType>
+            <s:element name="EstornaVendaParcialResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="EstornaVendaParcialResult" type="tns:RetornoEstornoParcial" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="RetornoEstornoParcial">
+                <s:complexContent mixed="false">
+                    <s:extension base="tns:Processamento">
+                        <s:sequence>
+                            <s:element minOccurs="0" maxOccurs="1" name="nome" type="s:string" />
+                            <s:element minOccurs="0" maxOccurs="1" name="cartao" type="s:string" />
+                            <s:element minOccurs="0" maxOccurs="1" name="saldo" type="s:string" />
+                            <s:element minOccurs="0" maxOccurs="1" name="comprovante" type="s:string" />
+                            <s:element minOccurs="0" maxOccurs="1" name="url" type="s:string" />
+                            <s:element minOccurs="0" maxOccurs="1" name="msgerro" type="s:string" />
+                        </s:sequence>
+                    </s:extension>
+                </s:complexContent>
+            </s:complexType>
+            <s:element name="ConfirmaAdesao">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="cartao" type="s:string" />
+                        <s:element minOccurs="0" maxOccurs="1" name="dadoslogin" type="tns:LoginInfo" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:element name="ConfirmaAdesaoResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="ConfirmaAdesaoResult" type="tns:RetornoConfirmaAdesao" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="RetornoConfirmaAdesao">
+                <s:complexContent mixed="false">
+                    <s:extension base="tns:RetornoPadrao" />
+                </s:complexContent>
+            </s:complexType>
+            <s:element name="CancelarCartao">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="cartao" type="s:string" />
+                        <s:element minOccurs="0" maxOccurs="1" name="dadoslogin" type="tns:LoginInfo" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:element name="CancelarCartaoResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="CancelarCartaoResult" type="tns:RetornoCancelarCartao" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="RetornoCancelarCartao">
+                <s:complexContent mixed="false">
+                    <s:extension base="tns:RetornoPadrao" />
+                </s:complexContent>
+            </s:complexType>
+            <s:element name="ValidaNumeroCartao">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="cartao" type="s:string" />
+                        <s:element minOccurs="0" maxOccurs="1" name="dadoslogin" type="tns:LoginInfo" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:element name="ValidaNumeroCartaoResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="ValidaNumeroCartaoResult" type="s:string" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:element name="TrocadeCartao">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="cartaoantigo" type="s:string" />
+                        <s:element minOccurs="0" maxOccurs="1" name="cartaonovo" type="s:string" />
+                        <s:element minOccurs="0" maxOccurs="1" name="motivo" type="s:string" />
+                        <s:element minOccurs="0" maxOccurs="1" name="dadoslogin" type="tns:LoginInfo" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:element name="TrocadeCartaoResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="TrocadeCartaoResult" type="s:string" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:element name="ListaProfissoes">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="dadoslogin" type="tns:LoginInfo" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:element name="ListaProfissoesResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="ListaProfissoesResult" type="tns:RetornoListaProfissoes" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="RetornoListaProfissoes">
+                <s:complexContent mixed="false">
+                    <s:extension base="tns:RetornoPadrao">
+                        <s:sequence>
+                            <s:element minOccurs="0" maxOccurs="1" name="profissoes" type="tns:ArrayOfProfissao" />
+                        </s:sequence>
+                    </s:extension>
+                </s:complexContent>
+            </s:complexType>
+            <s:complexType name="ArrayOfProfissao">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="unbounded" name="Profissao" nillable="true" type="tns:Profissao" />
+                </s:sequence>
+            </s:complexType>
+            <s:complexType name="Profissao">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="1" name="descricao" type="s:string" />
+                </s:sequence>
+            </s:complexType>
+            <s:element name="ListaTipoOcorrencia">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="dadoslogin" type="tns:LoginInfo" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:element name="ListaTipoOcorrenciaResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="ListaTipoOcorrenciaResult" type="tns:RetornoListaTipoOcorrencia" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="RetornoListaTipoOcorrencia">
+                <s:complexContent mixed="false">
+                    <s:extension base="tns:RetornoPadrao">
+                        <s:sequence>
+                            <s:element minOccurs="0" maxOccurs="1" name="tiposdeocorrencias" type="tns:ArrayOfTipoOcorrencia" />
+                        </s:sequence>
+                    </s:extension>
+                </s:complexContent>
+            </s:complexType>
+            <s:complexType name="ArrayOfTipoOcorrencia">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="unbounded" name="TipoOcorrencia" nillable="true" type="tns:TipoOcorrencia" />
+                </s:sequence>
+            </s:complexType>
+            <s:complexType name="TipoOcorrencia">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="1" name="id" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="descricao" type="s:string" />
+                </s:sequence>
+            </s:complexType>
+            <s:element name="InserirOcorrencia">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="Ocorrencia" type="tns:Ocorrencia" />
+                        <s:element minOccurs="0" maxOccurs="1" name="dadoslogin" type="tns:LoginInfo" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="Ocorrencia">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="1" name="id_tipoocorrencia" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="cartao" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="texto" type="s:string" />
+                </s:sequence>
+            </s:complexType>
+            <s:element name="InserirOcorrenciaResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="InserirOcorrenciaResult" type="tns:RetornoInserirOcorrencia" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="RetornoInserirOcorrencia">
+                <s:complexContent mixed="false">
+                    <s:extension base="tns:RetornoPadrao" />
+                </s:complexContent>
+            </s:complexType>
+            <s:element name="VerificaVenda">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="id_venda" type="s:string" />
+                        <s:element minOccurs="0" maxOccurs="1" name="dadoslogin" type="tns:LoginInfo" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:element name="VerificaVendaResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="VerificaVendaResult" type="tns:RetornoVerificaVenda" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="RetornoVerificaVenda">
+                <s:complexContent mixed="false">
+                    <s:extension base="tns:RetornoPadrao">
+                        <s:sequence>
+                            <s:element minOccurs="0" maxOccurs="1" name="vendainserida" type="s:string" />
+                            <s:element minOccurs="0" maxOccurs="1" name="id_venda" type="s:string" />
+                            <s:element minOccurs="0" maxOccurs="1" name="datahora" type="s:string" />
+                            <s:element minOccurs="0" maxOccurs="1" name="dataservidor" type="s:string" />
+                            <s:element minOccurs="0" maxOccurs="1" name="cartao" type="s:string" />
+                        </s:sequence>
+                    </s:extension>
+                </s:complexContent>
+            </s:complexType>
+            <s:element name="GiftGetConfig">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="dadoslogin" type="tns:LoginInfo" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:element name="GiftGetConfigResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="GiftGetConfigResult" type="tns:ConfigGift" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="ConfigGift">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="1" name="tipo" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="debito" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="uso" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="numeracao" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="pontuacaoextra" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="pontosextras" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="valormin" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="valormax" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="validademeses" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="senhaoperador" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="cupomobrigatorio" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="msgerro" type="s:string" />
+                </s:sequence>
+            </s:complexType>
+            <s:element name="GiftGetInfo">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="Numero" type="s:string" />
+                        <s:element minOccurs="0" maxOccurs="1" name="dadoslogin" type="tns:LoginInfo" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:element name="GiftGetInfoResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="GiftGetInfoResult" type="tns:DadosGift" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="DadosGift">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="1" name="descricao" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="datavenda" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="creditoinicial" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="qtdcreditos" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="valortotalcreditos" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="qtddebitos" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="valortotaldebitos" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="datavalidade" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="valorsaldo" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="cupomfiscal" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="mensagem" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="msgerro" type="s:string" />
+                </s:sequence>
+            </s:complexType>
+            <s:element name="GiftVenda">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="DadosGift" type="tns:DadosVendaGift" />
+                        <s:element minOccurs="0" maxOccurs="1" name="dadoslogin" type="tns:LoginInfo" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="DadosVendaGift">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="1" name="numero" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="valor" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="mensagem" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="id_operador" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="senha" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="cupomfiscal" type="s:string" />
+                </s:sequence>
+            </s:complexType>
+            <s:element name="GiftVendaResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="GiftVendaResult" type="tns:RetornoVendaGift" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="RetornoVendaGift">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="1" name="autorizacao" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="msgerro" type="s:string" />
+                </s:sequence>
+            </s:complexType>
+            <s:element name="GiftCredito">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="DadosGift" type="tns:DadosCreditoGift" />
+                        <s:element minOccurs="0" maxOccurs="1" name="dadoslogin" type="tns:LoginInfo" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="DadosCreditoGift">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="1" name="numero" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="valor" type="s:string" />
+                </s:sequence>
+            </s:complexType>
+            <s:element name="GiftCreditoResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="GiftCreditoResult" type="tns:RetornoCreditoGift" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="RetornoCreditoGift">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="1" name="autorizacao" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="msgerro" type="s:string" />
+                </s:sequence>
+            </s:complexType>
+            <s:element name="GiftDebito">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="DadosGift" type="tns:DadosDebitoGift" />
+                        <s:element minOccurs="0" maxOccurs="1" name="dadoslogin" type="tns:LoginInfo" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="DadosDebitoGift">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="1" name="numero" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="valor" type="s:string" />
+                </s:sequence>
+            </s:complexType>
+            <s:element name="GiftDebitoResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="GiftDebitoResult" type="tns:RetornoDebitoGift" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="RetornoDebitoGift">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="1" name="autorizacao" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="mensagem" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="msgerro" type="s:string" />
+                </s:sequence>
+            </s:complexType>
+            <s:element name="Echo">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="dados" type="tns:DadosEntrada" />
+                        <s:element minOccurs="0" maxOccurs="1" name="dadoslogin" type="tns:LoginInfo" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="DadosEntrada">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="1" name="ent1" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="ent2" type="s:string" />
+                </s:sequence>
+            </s:complexType>
+            <s:element name="EchoResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="EchoResult" type="tns:DadosSaida" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:complexType name="DadosSaida">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="1" name="sai1" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="sai2" type="s:string" />
+                </s:sequence>
+            </s:complexType>
+        </s:schema>
+    </wsdl:types>
+    <wsdl:message name="CriancasSoapIn">
+        <wsdl:part name="parameters" element="tns:Criancas" />
+    </wsdl:message>
+    <wsdl:message name="CriancasSoapOut">
+        <wsdl:part name="parameters" element="tns:CriancasResponse" />
+    </wsdl:message>
+    <wsdl:message name="CriancasSalvarSoapIn">
+        <wsdl:part name="parameters" element="tns:CriancasSalvar" />
+    </wsdl:message>
+    <wsdl:message name="CriancasSalvarSoapOut">
+        <wsdl:part name="parameters" element="tns:CriancasSalvarResponse" />
+    </wsdl:message>
+    <wsdl:message name="EstornoResgatePremioSoapIn">
+        <wsdl:part name="parameters" element="tns:EstornoResgatePremio" />
+    </wsdl:message>
+    <wsdl:message name="EstornoResgatePremioSoapOut">
+        <wsdl:part name="parameters" element="tns:EstornoResgatePremioResponse" />
+    </wsdl:message>
+    <wsdl:message name="ResgatePremioSoapIn">
+        <wsdl:part name="parameters" element="tns:ResgatePremio" />
+    </wsdl:message>
+    <wsdl:message name="ResgatePremioSoapOut">
+        <wsdl:part name="parameters" element="tns:ResgatePremioResponse" />
+    </wsdl:message>
+    <wsdl:message name="CadastraFuncionarioSoapIn">
+        <wsdl:part name="parameters" element="tns:CadastraFuncionario" />
+    </wsdl:message>
+    <wsdl:message name="CadastraFuncionarioSoapOut">
+        <wsdl:part name="parameters" element="tns:CadastraFuncionarioResponse" />
+    </wsdl:message>
+    <wsdl:message name="AtualizaPremioSoapIn">
+        <wsdl:part name="parameters" element="tns:AtualizaPremio" />
+    </wsdl:message>
+    <wsdl:message name="AtualizaPremioSoapOut">
+        <wsdl:part name="parameters" element="tns:AtualizaPremioResponse" />
+    </wsdl:message>
+    <wsdl:message name="InserirCreditoExtraSoapIn">
+        <wsdl:part name="parameters" element="tns:InserirCreditoExtra" />
+    </wsdl:message>
+    <wsdl:message name="InserirCreditoExtraSoapOut">
+        <wsdl:part name="parameters" element="tns:InserirCreditoExtraResponse" />
+    </wsdl:message>
+    <wsdl:message name="ConsultaCadastroPorCPFSoapIn">
+        <wsdl:part name="parameters" element="tns:ConsultaCadastroPorCPF" />
+    </wsdl:message>
+    <wsdl:message name="ConsultaCadastroPorCPFSoapOut">
+        <wsdl:part name="parameters" element="tns:ConsultaCadastroPorCPFResponse" />
+    </wsdl:message>
+    <wsdl:message name="ConsultaCadastroPorCNPJSoapIn">
+        <wsdl:part name="parameters" element="tns:ConsultaCadastroPorCNPJ" />
+    </wsdl:message>
+    <wsdl:message name="ConsultaCadastroPorCNPJSoapOut">
+        <wsdl:part name="parameters" element="tns:ConsultaCadastroPorCNPJResponse" />
+    </wsdl:message>
+    <wsdl:message name="ConsultaCadastroPorCartaoSoapIn">
+        <wsdl:part name="parameters" element="tns:ConsultaCadastroPorCartao" />
+    </wsdl:message>
+    <wsdl:message name="ConsultaCadastroPorCartaoSoapOut">
+        <wsdl:part name="parameters" element="tns:ConsultaCadastroPorCartaoResponse" />
+    </wsdl:message>
+    <wsdl:message name="GetURLTktManiaSoapIn">
+        <wsdl:part name="parameters" element="tns:GetURLTktMania" />
+    </wsdl:message>
+    <wsdl:message name="GetURLTktManiaSoapOut">
+        <wsdl:part name="parameters" element="tns:GetURLTktManiaResponse" />
+    </wsdl:message>
+    <wsdl:message name="AtualizaCadastroSoapIn">
+        <wsdl:part name="parameters" element="tns:AtualizaCadastro" />
+    </wsdl:message>
+    <wsdl:message name="AtualizaCadastroSoapOut">
+        <wsdl:part name="parameters" element="tns:AtualizaCadastroResponse" />
+    </wsdl:message>
+    <wsdl:message name="CadastrarProdutoSoapIn">
+        <wsdl:part name="parameters" element="tns:CadastrarProduto" />
+    </wsdl:message>
+    <wsdl:message name="CadastrarProdutoSoapOut">
+        <wsdl:part name="parameters" element="tns:CadastrarProdutoResponse" />
+    </wsdl:message>
+    <wsdl:message name="ConsultaPreVendaSoapIn">
+        <wsdl:part name="parameters" element="tns:ConsultaPreVenda" />
+    </wsdl:message>
+    <wsdl:message name="ConsultaPreVendaSoapOut">
+        <wsdl:part name="parameters" element="tns:ConsultaPreVendaResponse" />
+    </wsdl:message>
+    <wsdl:message name="InserirVendaSoapIn">
+        <wsdl:part name="parameters" element="tns:InserirVenda" />
+    </wsdl:message>
+    <wsdl:message name="InserirVendaSoapOut">
+        <wsdl:part name="parameters" element="tns:InserirVendaResponse" />
+    </wsdl:message>
+    <wsdl:message name="EstornaVendaSoapIn">
+        <wsdl:part name="parameters" element="tns:EstornaVenda" />
+    </wsdl:message>
+    <wsdl:message name="EstornaVendaSoapOut">
+        <wsdl:part name="parameters" element="tns:EstornaVendaResponse" />
+    </wsdl:message>
+    <wsdl:message name="EstornaVendaParcialSoapIn">
+        <wsdl:part name="parameters" element="tns:EstornaVendaParcial" />
+    </wsdl:message>
+    <wsdl:message name="EstornaVendaParcialSoapOut">
+        <wsdl:part name="parameters" element="tns:EstornaVendaParcialResponse" />
+    </wsdl:message>
+    <wsdl:message name="ConfirmaAdesaoSoapIn">
+        <wsdl:part name="parameters" element="tns:ConfirmaAdesao" />
+    </wsdl:message>
+    <wsdl:message name="ConfirmaAdesaoSoapOut">
+        <wsdl:part name="parameters" element="tns:ConfirmaAdesaoResponse" />
+    </wsdl:message>
+    <wsdl:message name="CancelarCartaoSoapIn">
+        <wsdl:part name="parameters" element="tns:CancelarCartao" />
+    </wsdl:message>
+    <wsdl:message name="CancelarCartaoSoapOut">
+        <wsdl:part name="parameters" element="tns:CancelarCartaoResponse" />
+    </wsdl:message>
+    <wsdl:message name="ValidaNumeroCartaoSoapIn">
+        <wsdl:part name="parameters" element="tns:ValidaNumeroCartao" />
+    </wsdl:message>
+    <wsdl:message name="ValidaNumeroCartaoSoapOut">
+        <wsdl:part name="parameters" element="tns:ValidaNumeroCartaoResponse" />
+    </wsdl:message>
+    <wsdl:message name="TrocadeCartaoSoapIn">
+        <wsdl:part name="parameters" element="tns:TrocadeCartao" />
+    </wsdl:message>
+    <wsdl:message name="TrocadeCartaoSoapOut">
+        <wsdl:part name="parameters" element="tns:TrocadeCartaoResponse" />
+    </wsdl:message>
+    <wsdl:message name="ListaProfissoesSoapIn">
+        <wsdl:part name="parameters" element="tns:ListaProfissoes" />
+    </wsdl:message>
+    <wsdl:message name="ListaProfissoesSoapOut">
+        <wsdl:part name="parameters" element="tns:ListaProfissoesResponse" />
+    </wsdl:message>
+    <wsdl:message name="ListaTipoOcorrenciaSoapIn">
+        <wsdl:part name="parameters" element="tns:ListaTipoOcorrencia" />
+    </wsdl:message>
+    <wsdl:message name="ListaTipoOcorrenciaSoapOut">
+        <wsdl:part name="parameters" element="tns:ListaTipoOcorrenciaResponse" />
+    </wsdl:message>
+    <wsdl:message name="InserirOcorrenciaSoapIn">
+        <wsdl:part name="parameters" element="tns:InserirOcorrencia" />
+    </wsdl:message>
+    <wsdl:message name="InserirOcorrenciaSoapOut">
+        <wsdl:part name="parameters" element="tns:InserirOcorrenciaResponse" />
+    </wsdl:message>
+    <wsdl:message name="VerificaVendaSoapIn">
+        <wsdl:part name="parameters" element="tns:VerificaVenda" />
+    </wsdl:message>
+    <wsdl:message name="VerificaVendaSoapOut">
+        <wsdl:part name="parameters" element="tns:VerificaVendaResponse" />
+    </wsdl:message>
+    <wsdl:message name="GiftGetConfigSoapIn">
+        <wsdl:part name="parameters" element="tns:GiftGetConfig" />
+    </wsdl:message>
+    <wsdl:message name="GiftGetConfigSoapOut">
+        <wsdl:part name="parameters" element="tns:GiftGetConfigResponse" />
+    </wsdl:message>
+    <wsdl:message name="GiftGetInfoSoapIn">
+        <wsdl:part name="parameters" element="tns:GiftGetInfo" />
+    </wsdl:message>
+    <wsdl:message name="GiftGetInfoSoapOut">
+        <wsdl:part name="parameters" element="tns:GiftGetInfoResponse" />
+    </wsdl:message>
+    <wsdl:message name="GiftVendaSoapIn">
+        <wsdl:part name="parameters" element="tns:GiftVenda" />
+    </wsdl:message>
+    <wsdl:message name="GiftVendaSoapOut">
+        <wsdl:part name="parameters" element="tns:GiftVendaResponse" />
+    </wsdl:message>
+    <wsdl:message name="GiftCreditoSoapIn">
+        <wsdl:part name="parameters" element="tns:GiftCredito" />
+    </wsdl:message>
+    <wsdl:message name="GiftCreditoSoapOut">
+        <wsdl:part name="parameters" element="tns:GiftCreditoResponse" />
+    </wsdl:message>
+    <wsdl:message name="GiftDebitoSoapIn">
+        <wsdl:part name="parameters" element="tns:GiftDebito" />
+    </wsdl:message>
+    <wsdl:message name="GiftDebitoSoapOut">
+        <wsdl:part name="parameters" element="tns:GiftDebitoResponse" />
+    </wsdl:message>
+    <wsdl:message name="EchoSoapIn">
+        <wsdl:part name="parameters" element="tns:Echo" />
+    </wsdl:message>
+    <wsdl:message name="EchoSoapOut">
+        <wsdl:part name="parameters" element="tns:EchoResponse" />
+    </wsdl:message>
+    <wsdl:portType name="http_x003A__x002F__x002F_marka.ws_x002F_Soap">
+        <wsdl:operation name="Criancas">
+            <wsdl:input message="tns:CriancasSoapIn" />
+            <wsdl:output message="tns:CriancasSoapOut" />
+        </wsdl:operation>
+        <wsdl:operation name="CriancasSalvar">
+            <wsdl:input message="tns:CriancasSalvarSoapIn" />
+            <wsdl:output message="tns:CriancasSalvarSoapOut" />
+        </wsdl:operation>
+        <wsdl:operation name="EstornoResgatePremio">
+            <wsdl:input message="tns:EstornoResgatePremioSoapIn" />
+            <wsdl:output message="tns:EstornoResgatePremioSoapOut" />
+        </wsdl:operation>
+        <wsdl:operation name="ResgatePremio">
+            <wsdl:input message="tns:ResgatePremioSoapIn" />
+            <wsdl:output message="tns:ResgatePremioSoapOut" />
+        </wsdl:operation>
+        <wsdl:operation name="CadastraFuncionario">
+            <wsdl:input message="tns:CadastraFuncionarioSoapIn" />
+            <wsdl:output message="tns:CadastraFuncionarioSoapOut" />
+        </wsdl:operation>
+        <wsdl:operation name="AtualizaPremio">
+            <wsdl:input message="tns:AtualizaPremioSoapIn" />
+            <wsdl:output message="tns:AtualizaPremioSoapOut" />
+        </wsdl:operation>
+        <wsdl:operation name="InserirCreditoExtra">
+            <wsdl:input message="tns:InserirCreditoExtraSoapIn" />
+            <wsdl:output message="tns:InserirCreditoExtraSoapOut" />
+        </wsdl:operation>
+        <wsdl:operation name="ConsultaCadastroPorCPF">
+            <wsdl:input message="tns:ConsultaCadastroPorCPFSoapIn" />
+            <wsdl:output message="tns:ConsultaCadastroPorCPFSoapOut" />
+        </wsdl:operation>
+        <wsdl:operation name="ConsultaCadastroPorCNPJ">
+            <wsdl:input message="tns:ConsultaCadastroPorCNPJSoapIn" />
+            <wsdl:output message="tns:ConsultaCadastroPorCNPJSoapOut" />
+        </wsdl:operation>
+        <wsdl:operation name="ConsultaCadastroPorCartao">
+            <wsdl:input message="tns:ConsultaCadastroPorCartaoSoapIn" />
+            <wsdl:output message="tns:ConsultaCadastroPorCartaoSoapOut" />
+        </wsdl:operation>
+        <wsdl:operation name="GetURLTktMania">
+            <wsdl:input message="tns:GetURLTktManiaSoapIn" />
+            <wsdl:output message="tns:GetURLTktManiaSoapOut" />
+        </wsdl:operation>
+        <wsdl:operation name="AtualizaCadastro">
+            <wsdl:input message="tns:AtualizaCadastroSoapIn" />
+            <wsdl:output message="tns:AtualizaCadastroSoapOut" />
+        </wsdl:operation>
+        <wsdl:operation name="CadastrarProduto">
+            <wsdl:input message="tns:CadastrarProdutoSoapIn" />
+            <wsdl:output message="tns:CadastrarProdutoSoapOut" />
+        </wsdl:operation>
+        <wsdl:operation name="ConsultaPreVenda">
+            <wsdl:input message="tns:ConsultaPreVendaSoapIn" />
+            <wsdl:output message="tns:ConsultaPreVendaSoapOut" />
+        </wsdl:operation>
+        <wsdl:operation name="InserirVenda">
+            <wsdl:input message="tns:InserirVendaSoapIn" />
+            <wsdl:output message="tns:InserirVendaSoapOut" />
+        </wsdl:operation>
+        <wsdl:operation name="EstornaVenda">
+            <wsdl:input message="tns:EstornaVendaSoapIn" />
+            <wsdl:output message="tns:EstornaVendaSoapOut" />
+        </wsdl:operation>
+        <wsdl:operation name="EstornaVendaParcial">
+            <wsdl:input message="tns:EstornaVendaParcialSoapIn" />
+            <wsdl:output message="tns:EstornaVendaParcialSoapOut" />
+        </wsdl:operation>
+        <wsdl:operation name="ConfirmaAdesao">
+            <wsdl:input message="tns:ConfirmaAdesaoSoapIn" />
+            <wsdl:output message="tns:ConfirmaAdesaoSoapOut" />
+        </wsdl:operation>
+        <wsdl:operation name="CancelarCartao">
+            <wsdl:input message="tns:CancelarCartaoSoapIn" />
+            <wsdl:output message="tns:CancelarCartaoSoapOut" />
+        </wsdl:operation>
+        <wsdl:operation name="ValidaNumeroCartao">
+            <wsdl:input message="tns:ValidaNumeroCartaoSoapIn" />
+            <wsdl:output message="tns:ValidaNumeroCartaoSoapOut" />
+        </wsdl:operation>
+        <wsdl:operation name="TrocadeCartao">
+            <wsdl:input message="tns:TrocadeCartaoSoapIn" />
+            <wsdl:output message="tns:TrocadeCartaoSoapOut" />
+        </wsdl:operation>
+        <wsdl:operation name="ListaProfissoes">
+            <wsdl:input message="tns:ListaProfissoesSoapIn" />
+            <wsdl:output message="tns:ListaProfissoesSoapOut" />
+        </wsdl:operation>
+        <wsdl:operation name="ListaTipoOcorrencia">
+            <wsdl:input message="tns:ListaTipoOcorrenciaSoapIn" />
+            <wsdl:output message="tns:ListaTipoOcorrenciaSoapOut" />
+        </wsdl:operation>
+        <wsdl:operation name="InserirOcorrencia">
+            <wsdl:input message="tns:InserirOcorrenciaSoapIn" />
+            <wsdl:output message="tns:InserirOcorrenciaSoapOut" />
+        </wsdl:operation>
+        <wsdl:operation name="VerificaVenda">
+            <wsdl:input message="tns:VerificaVendaSoapIn" />
+            <wsdl:output message="tns:VerificaVendaSoapOut" />
+        </wsdl:operation>
+        <wsdl:operation name="GiftGetConfig">
+            <wsdl:input message="tns:GiftGetConfigSoapIn" />
+            <wsdl:output message="tns:GiftGetConfigSoapOut" />
+        </wsdl:operation>
+        <wsdl:operation name="GiftGetInfo">
+            <wsdl:input message="tns:GiftGetInfoSoapIn" />
+            <wsdl:output message="tns:GiftGetInfoSoapOut" />
+        </wsdl:operation>
+        <wsdl:operation name="GiftVenda">
+            <wsdl:input message="tns:GiftVendaSoapIn" />
+            <wsdl:output message="tns:GiftVendaSoapOut" />
+        </wsdl:operation>
+        <wsdl:operation name="GiftCredito">
+            <wsdl:input message="tns:GiftCreditoSoapIn" />
+            <wsdl:output message="tns:GiftCreditoSoapOut" />
+        </wsdl:operation>
+        <wsdl:operation name="GiftDebito">
+            <wsdl:input message="tns:GiftDebitoSoapIn" />
+            <wsdl:output message="tns:GiftDebitoSoapOut" />
+        </wsdl:operation>
+        <wsdl:operation name="Echo">
+            <wsdl:input message="tns:EchoSoapIn" />
+            <wsdl:output message="tns:EchoSoapOut" />
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="http_x003A__x002F__x002F_marka.ws_x002F_Soap" type="tns:http_x003A__x002F__x002F_marka.ws_x002F_Soap">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+        <wsdl:operation name="Criancas">
+            <soap:operation soapAction="Linker20/Criancas" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="CriancasSalvar">
+            <soap:operation soapAction="Linker20/CriancasSalvar" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="EstornoResgatePremio">
+            <soap:operation soapAction="Linker20/EstornoResgatePremio" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="ResgatePremio">
+            <soap:operation soapAction="Linker20/ResgatePremio" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="CadastraFuncionario">
+            <soap:operation soapAction="Linker20/CadastraFuncionario" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="AtualizaPremio">
+            <soap:operation soapAction="Linker20/AtualizaPremio" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="InserirCreditoExtra">
+            <soap:operation soapAction="Linker20/InserirCreditoExtra" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="ConsultaCadastroPorCPF">
+            <soap:operation soapAction="Linker20/ConsultaCadastroPorCPF" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="ConsultaCadastroPorCNPJ">
+            <soap:operation soapAction="Linker20/ConsultaCadastroPorCNPJ" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="ConsultaCadastroPorCartao">
+            <soap:operation soapAction="Linker20/ConsultaCadastroPorCartao" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="GetURLTktMania">
+            <soap:operation soapAction="Linker20/GetURLTktMania" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="AtualizaCadastro">
+            <soap:operation soapAction="Linker20/AtualizaCadastro" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="CadastrarProduto">
+            <soap:operation soapAction="Linker20/CadastrarProduto" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="ConsultaPreVenda">
+            <soap:operation soapAction="Linker20/ConsultaPreVenda" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="InserirVenda">
+            <soap:operation soapAction="Linker20/InserirVenda" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="EstornaVenda">
+            <soap:operation soapAction="Linker20/EstornaVenda" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="EstornaVendaParcial">
+            <soap:operation soapAction="Linker20/EstornaVendaParcial" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="ConfirmaAdesao">
+            <soap:operation soapAction="Linker20/ConfirmaAdesao" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="CancelarCartao">
+            <soap:operation soapAction="Linker20/CancelarCartao" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="ValidaNumeroCartao">
+            <soap:operation soapAction="Linker20/ValidaNumeroCartao" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="TrocadeCartao">
+            <soap:operation soapAction="Linker20/TrocadeCartao" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="ListaProfissoes">
+            <soap:operation soapAction="Linker20/ListaProfissoes" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="ListaTipoOcorrencia">
+            <soap:operation soapAction="Linker20/ListaTipoOcorrencia" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="InserirOcorrencia">
+            <soap:operation soapAction="Linker20/InserirOcorrencia" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="VerificaVenda">
+            <soap:operation soapAction="Linker20/VerificaVenda" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="GiftGetConfig">
+            <soap:operation soapAction="Linker20/GiftGetConfig" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="GiftGetInfo">
+            <soap:operation soapAction="Linker20/GiftGetInfo" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="GiftVenda">
+            <soap:operation soapAction="Linker20/GiftVenda" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="GiftCredito">
+            <soap:operation soapAction="Linker20/GiftCredito" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="GiftDebito">
+            <soap:operation soapAction="Linker20/GiftDebito" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="Echo">
+            <soap:operation soapAction="Linker20/Echo" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="http_x003A__x002F__x002F_marka.ws_x002F_Soap12" type="tns:http_x003A__x002F__x002F_marka.ws_x002F_Soap">
+        <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+        <wsdl:operation name="Criancas">
+            <soap12:operation soapAction="Linker20/Criancas" style="document" />
+            <wsdl:input>
+                <soap12:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="CriancasSalvar">
+            <soap12:operation soapAction="Linker20/CriancasSalvar" style="document" />
+            <wsdl:input>
+                <soap12:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="EstornoResgatePremio">
+            <soap12:operation soapAction="Linker20/EstornoResgatePremio" style="document" />
+            <wsdl:input>
+                <soap12:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="ResgatePremio">
+            <soap12:operation soapAction="Linker20/ResgatePremio" style="document" />
+            <wsdl:input>
+                <soap12:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="CadastraFuncionario">
+            <soap12:operation soapAction="Linker20/CadastraFuncionario" style="document" />
+            <wsdl:input>
+                <soap12:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="AtualizaPremio">
+            <soap12:operation soapAction="Linker20/AtualizaPremio" style="document" />
+            <wsdl:input>
+                <soap12:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="InserirCreditoExtra">
+            <soap12:operation soapAction="Linker20/InserirCreditoExtra" style="document" />
+            <wsdl:input>
+                <soap12:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="ConsultaCadastroPorCPF">
+            <soap12:operation soapAction="Linker20/ConsultaCadastroPorCPF" style="document" />
+            <wsdl:input>
+                <soap12:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="ConsultaCadastroPorCNPJ">
+            <soap12:operation soapAction="Linker20/ConsultaCadastroPorCNPJ" style="document" />
+            <wsdl:input>
+                <soap12:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="ConsultaCadastroPorCartao">
+            <soap12:operation soapAction="Linker20/ConsultaCadastroPorCartao" style="document" />
+            <wsdl:input>
+                <soap12:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="GetURLTktMania">
+            <soap12:operation soapAction="Linker20/GetURLTktMania" style="document" />
+            <wsdl:input>
+                <soap12:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="AtualizaCadastro">
+            <soap12:operation soapAction="Linker20/AtualizaCadastro" style="document" />
+            <wsdl:input>
+                <soap12:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="CadastrarProduto">
+            <soap12:operation soapAction="Linker20/CadastrarProduto" style="document" />
+            <wsdl:input>
+                <soap12:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="ConsultaPreVenda">
+            <soap12:operation soapAction="Linker20/ConsultaPreVenda" style="document" />
+            <wsdl:input>
+                <soap12:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="InserirVenda">
+            <soap12:operation soapAction="Linker20/InserirVenda" style="document" />
+            <wsdl:input>
+                <soap12:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="EstornaVenda">
+            <soap12:operation soapAction="Linker20/EstornaVenda" style="document" />
+            <wsdl:input>
+                <soap12:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="EstornaVendaParcial">
+            <soap12:operation soapAction="Linker20/EstornaVendaParcial" style="document" />
+            <wsdl:input>
+                <soap12:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="ConfirmaAdesao">
+            <soap12:operation soapAction="Linker20/ConfirmaAdesao" style="document" />
+            <wsdl:input>
+                <soap12:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="CancelarCartao">
+            <soap12:operation soapAction="Linker20/CancelarCartao" style="document" />
+            <wsdl:input>
+                <soap12:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="ValidaNumeroCartao">
+            <soap12:operation soapAction="Linker20/ValidaNumeroCartao" style="document" />
+            <wsdl:input>
+                <soap12:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="TrocadeCartao">
+            <soap12:operation soapAction="Linker20/TrocadeCartao" style="document" />
+            <wsdl:input>
+                <soap12:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="ListaProfissoes">
+            <soap12:operation soapAction="Linker20/ListaProfissoes" style="document" />
+            <wsdl:input>
+                <soap12:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="ListaTipoOcorrencia">
+            <soap12:operation soapAction="Linker20/ListaTipoOcorrencia" style="document" />
+            <wsdl:input>
+                <soap12:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="InserirOcorrencia">
+            <soap12:operation soapAction="Linker20/InserirOcorrencia" style="document" />
+            <wsdl:input>
+                <soap12:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="VerificaVenda">
+            <soap12:operation soapAction="Linker20/VerificaVenda" style="document" />
+            <wsdl:input>
+                <soap12:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="GiftGetConfig">
+            <soap12:operation soapAction="Linker20/GiftGetConfig" style="document" />
+            <wsdl:input>
+                <soap12:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="GiftGetInfo">
+            <soap12:operation soapAction="Linker20/GiftGetInfo" style="document" />
+            <wsdl:input>
+                <soap12:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="GiftVenda">
+            <soap12:operation soapAction="Linker20/GiftVenda" style="document" />
+            <wsdl:input>
+                <soap12:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="GiftCredito">
+            <soap12:operation soapAction="Linker20/GiftCredito" style="document" />
+            <wsdl:input>
+                <soap12:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="GiftDebito">
+            <soap12:operation soapAction="Linker20/GiftDebito" style="document" />
+            <wsdl:input>
+                <soap12:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="Echo">
+            <soap12:operation soapAction="Linker20/Echo" style="document" />
+            <wsdl:input>
+                <soap12:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="http_x003A__x002F__x002F_marka.ws_x002F_">
+        <wsdl:port name="http_x003A__x002F__x002F_marka.ws_x002F_Soap" binding="tns:http_x003A__x002F__x002F_marka.ws_x002F_Soap">
+            <soap:address location="http://ws.bunker.mk/bridge/ws2/fidelidadebridge.do" />
+        </wsdl:port>
+        <wsdl:port name="http_x003A__x002F__x002F_marka.ws_x002F_Soap12" binding="tns:http_x003A__x002F__x002F_marka.ws_x002F_Soap12">
+            <soap12:address location="http://ws.bunker.mk/bridge/ws2/fidelidadebridge.do" />
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>
