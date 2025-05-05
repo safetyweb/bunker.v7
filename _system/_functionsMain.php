@@ -1,80 +1,8 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL & ~E_NOTICE);
 
-// function getClientIP()
-// {
-//     if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-//         // Retorna o primeiro IP da lista
-//         $ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-//         return trim($ips[0]);
-//     } elseif (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-//         return $_SERVER['HTTP_CLIENT_IP'];
-//     } elseif (!empty($_SERVER['REMOTE_ADDR'])) {
-//         return $_SERVER['REMOTE_ADDR'];
-//     }
-//     return 'IP não encontrado';
-// }
-// echo getClientIP();
-
-// if (getClientIp() ==  '177.104.209.219') {
-//     ini_set('display_errors', 1);
-//     ini_set('display_startup_errors', 1);
-//     error_reporting(E_ALL);
-// }
-
-
-
-clearstatcache();
-set_time_limit(300);
-//set_time_limit(30);
-//setlocale(LC_ALL, 'pt_BR.utf8');
-ignore_user_abort(true);
-ini_set("default_socket_timeout", 10);
-//ini_set('output_buffering','4092');
-//ini_set('memory_limit', '4096M');
-//ini_set('post_max_size', '2048M');
-//ini_set('max_input_vars', '3000');
-ini_set('default_week_format', '0');
-if (strpos($_SERVER['HTTP_HOST'], 'localhost') === false) {
-    ini_set('session.save_path', '/srv/www/htdocs/_system/tmp');
-}
-//ini_set("zlib.output_compression", 4096);
-//ini_set("zlib.output_compression_level", 9);
-//ini_set('max_execution_time', '990');
-//ini_set('max_input_time', '3600');
-//ini_set('max_input_nesting_level', '64');
-
-//@ini_set('innodb_lock_wait_timeout', '120');
-//@ini_set('upload_max_filesize', '2048M');
-
-// Has PHP been set with an upload_tmp_dir?
-if (ini_get('upload_tmp_dir')) {
-    $directories[] = ini_get('upload_tmp_dir');
-}
-
-// Determine based on operating system.
-if (substr(PHP_OS, 0, 3) == 'WIN') {
-    $directories[] = @$_ENV['TEMP'];
-    // Windows env var TEMP may not exist, so try other common locations too.
-    $directories[] = 'c:\\windows\\temp';
-    $directories[] = 'c:\\winnt\\temp';
-    if (function_exists('variable_get')) {
-        $directories[] = variable_get('file_directory_path', 'files') . '\\tmp';
-    }
-} else {
-    $directories[] = '/srv/www/htdocs/_system/tmp';
-}
-
-foreach ($directories as $directory) {
-    if (is_dir($directory)) {
-        // echo $directory;
-    }
-}
-
-//ini_set('session.save_handler', 'memcache');
-//ini_set('session.save_path', 'tcp://127.0.0.1:11211');
-//ini_set('memcache.allow_failover', '1');
-//ini_set('memcache.redundancy', '1');
-//ini_set('smemcache.session_redundancy', '2');
 
 
 //echo ini_get('mysqli.allow_persistent');
@@ -85,18 +13,8 @@ date_default_timezone_set('Etc/GMT+3');
 
 @ini_set('default_charset', 'UTF-8');
 
-//include 'Class_conn.php'; 
 require_once 'Class_conn.php';
-
-//desabilitar o case sensitive mysql
-//$nocase = "lower_case_table_names = 1";
-//mysqli_query($connAdm->connAdm(),$nocase);
-
-
 //---------LOG DATABASE
-
-
-
 function LOG_DB($connerro)
 {
 
@@ -139,68 +57,57 @@ function logwebservice($get)
 //
 
 //-------------ENCRYPT
-function fnEncode($pure_string)
-{
-    $dirty = array("+", "/", "=");
-    $clean = array("p£", "s£", "¢");
-    $iv_size = mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_ECB);
-    $_SESSION['iv'] = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-    $encrypted_string = mcrypt_encrypt(MCRYPT_BLOWFISH, '123456', utf8_encode($pure_string), MCRYPT_MODE_ECB, $iv_size);
-    $encrypted_string = base64_encode($encrypted_string);
-    return trim(str_replace($dirty, $clean, $encrypted_string));
-}
-//-----------FIM
-//
-//-------------DECRYPT       
-function fnDecode($encrypted_string)
-{
-    $dirty = array("+", "/", "=");
-    $clean = array("p£", "s£", "¢");
-    $iv_size = mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_ECB);
-    $string = base64_decode(str_replace($clean, $dirty, $encrypted_string));
-    $decrypted_string = mcrypt_decrypt(MCRYPT_BLOWFISH, '123456', $string, MCRYPT_MODE_ECB, $iv_size);
-    return trim($decrypted_string);
-}
-/*
 function make_openssl_blowfish_key($key)
 {
-    if("$key" === '')
+    if ("$key" === '')
         return $key;
 
-    $len = (16+2) * 4;
-    while(strlen($key) < $len) {
+    $len = (16 + 2) * 4;
+    while (strlen($key) < $len) {
         $key .= $key;
     }
     $key = substr($key, 0, $len);
     return $key;
 }
- 
+
 function fnEncode($str)
 {
-    $dirty = array("+", "/", "=","==");
-    $clean = array("p£", "s£", "¢","¢");
+    $dirty = array("+", "/", "=", "==");
+    $clean = array("p£", "s£", "¢", "¢");
 
     $blockSize = 8;
-    $len = strlen($str);
-    $paddingLen = intval(($len + $blockSize - 1) / $blockSize) * $blockSize - $len;
-    $padding = str_repeat("\0", $paddingLen);
-    $data = $str . $padding;
-    $key = make_openssl_blowfish_key('123456');
-    $encrypted = openssl_encrypt($data, 'BF-ECB', $key, OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING);
-    $encrypted= utf8_decode(base64_encode($encrypted));
-    return str_replace($dirty, $clean, $encrypted);
 
+    // Verifica se $str não é null antes de calcular o comprimento
+    $len = mb_strlen($str ?? '', 'UTF-8'); // Usando mb_strlen para strings multibyte
+
+    $paddingLen = ($blockSize - ($len % $blockSize)) % $blockSize; // Calcular o comprimento do padding
+    $padding = str_repeat("\0", $paddingLen); // Adicionar padding
+    $data = $str . $padding;
+
+    $key = make_openssl_blowfish_key('123456');
+
+    $encrypted = openssl_encrypt($data, 'BF-ECB', $key, OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING);
+
+    if ($encrypted === false) {
+        throw new Exception("Encryption failed: " . openssl_error_string());
+    }
+
+    $encoded = base64_encode($encrypted);
+    $encoded = mb_convert_encoding($encoded, 'ISO-8859-1', 'UTF-8');
+
+    return str_replace($dirty, $clean, $encoded);
 }
+
 function fnDecode($hex)
 {
-    $dirty = array("+", "/", "=","==");
-    $clean = array("p£", "s£", "¢","¢");
+    $dirty = array("+", "/", "=", "==");
+    $clean = array("p£", "s£", "¢", "¢");
+    // Substituir caracteres
+    $hex = base64_decode(str_replace($clean, $dirty, $hex ?? ''));
     $key = make_openssl_blowfish_key('123456');
-    $hex = base64_decode(str_replace($clean, $dirty, $hex));
     $decrypted = openssl_decrypt($hex, 'BF-ECB', $key, OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING);
     return rtrim($decrypted, "\0");
 }
-*/
 
 //------------FIM
 function fnNocachePage()
@@ -210,75 +117,13 @@ function fnNocachePage()
     $bname = 'Unknown';
     $platform = 'Unknown';
     $version = "";
-
-    /* 
-    if(preg_match('/MSIE/i',$u_agent) && !preg_match('/Opera/i',$u_agent))
-    {
-        $bname = 'Internet Explorer';
-        $ub = "MSIE";
-        header("Cache-Control: no-store, no-cache, must-revalidate");
-        header("Cache-Control: post-check=0, pre-check=0", false);
-        header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-    }
-    elseif(preg_match('/Firefox/i',$u_agent))
-    {
-        $bname = 'Mozilla Firefox';
-        $ub = "Firefox";
-        header("Cache-Control: no-store, no-cache, must-revalidate");
-        header("Cache-Control: post-check=0, pre-check=0", false);
-        header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-    }
-    elseif(preg_match('/Chrome/i',$u_agent))
-    {
-        $bname = 'Google Chrome';
-        $ub = "Chrome";
-        header("Cache-Control: no-store, no-cache, must-revalidate");
-        header("Cache-Control: post-check=0, pre-check=0", false);
-        header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-      
-    }
-    elseif(preg_match('/AppleWebKit/i',$u_agent))
-    {
-        $bname = 'AppleWebKit';
-        $ub = "Opera";
-    }
-    elseif(preg_match('/Safari/i',$u_agent))
-    {
-        $bname = 'Apple Safari';
-        $ub = "Safari";
-    }
-
-    elseif(preg_match('/Netscape/i',$u_agent))
-    {
-        $bname = 'Netscape';
-        $ub = "Netscape";
-    }
-    */
 }
-
-
 ///////////////////
 //---------Carrega a Pagina
 function carregaPagina($vf)
 {
     if ($vf == 'true') {
-        /*
-        $seconds_to_cache = 2;
-        $ts = gmdate("D, d M Y H:i:s", time() + $seconds_to_cache) . " GMT";
-        header("Expires: $ts");     
-        // Set a valid header so browsers pick it up correctly.
-        header('Content-type: text/html; charset=utf-8');
-        // Emulate the header BigPipe sends so we can test through Varnish.        
-        header('Surrogate-Control: BigPipe/1.0');        
-        header("Cache-Control: public, must-revalidate,max-age=$seconds_to_cache");
-        header("Pragma: cache");
-        header("Cache-Control: post-check=0, pre-check=0", false);
-        header("Last-Modified: $ts");
-        header("Cache-Control: max-age=$seconds_to_cache");*/
-        // ob_start();
-        // ob_end_clean();
-        //header("Connection: close\r\n");
-        // header("Content-Encoding: none\r\n");
+
 
         ob_end_clean();
         ob_start();
@@ -287,7 +132,7 @@ function carregaPagina($vf)
         // $length = strlen($content);
         //  header('Content-Length: '.$length);
         ob_end_flush();
-        ob_flush();
+        // ob_flush();
         flush();
         // ob_get_contents();
 
@@ -296,51 +141,59 @@ function carregaPagina($vf)
     }
 }
 
+
 function fnLimpaCampoEmail($campo, $adicionaBarras = false)
 {
+    // Remover palavras-chave perigosas
     $campo = preg_replace("/(from|alter table|select|drop|insert|delete|update|where|drop table|show tables|\*|\\\\)/i", "", $campo);
-    $campo = trim($campo); //limpa espaços vazio
-    $campo = strip_tags($campo); //tira tags html e php
-    if ($adicionaBarras || !get_magic_quotes_gpc())
+    $campo = trim($campo); // Limpa espaços vazios
+    $campo = strip_tags($campo); // Remove tags HTML e PHP
+
+    // Adicionar barras invertidas se necessário (para evitar injeções de SQL), apenas se as barras mágicas não estiverem ativadas
+    if ($adicionaBarras || !ini_get('magic_quotes_gpc'))
         $campo = addslashes($campo);
+
     return $campo;
 }
 
+
 function fnLimpaCampo($campo, $adicionaBarras = false)
 {
-    $campo = preg_replace("/(from|alter table|select|drop|insert|delete|update|where|drop table|show tables|#|\*|--|\\\\)/i", "", $campo);
-    $campo = trim(@$campo); //limpa espaços vazio
-    $campo = strip_tags($campo); //tira tags html e php
-    if ($adicionaBarras || !get_magic_quotes_gpc())
-        $campo = addslashes($campo);
+    if ($campo != "") {
+        $campo = preg_replace("/(from|alter table|select|drop|insert|delete|update|where|drop table|show tables|#|\*|--|\\\\)/i", "", $campo);
+
+        $campo = trim($campo); // Limpa espaços vazios
+        $campo = strip_tags($campo); // Remove tags HTML e PHP
+
+        if ($adicionaBarras || !ini_get('magic_quotes_gpc'))
+            $campo = addslashes($campo); // Adiciona barras invertidas se necessário
+    }
     return $campo;
 }
 function fnLimpaCampoNoTrim($campo, $adicionaBarras = false)
 {
     $campo = preg_replace("/(from|alter table|select|drop|insert|delete|update|where|drop table|show tables|#|\*|--|\\\\)/i", "", $campo);
-    // $campo = trim($campo);//limpa espaços vazio
-    $campo = strip_tags($campo); //tira tags html e php
-    if ($adicionaBarras || !get_magic_quotes_gpc())
-        $campo = addslashes($campo);
+    // $campo = trim($campo); // Não há mais necessidade de limpar espaços vazios
+    $campo = strip_tags($campo); // Remove tags HTML e PHP
+    if ($adicionaBarras || !ini_get('magic_quotes_gpc'))
+        $campo = addslashes($campo); // Adiciona barras invertidas se necessário
     return $campo;
 }
+
 function fnLimpaCampoHtml($campo, $adicionaBarras = false)
 {
     $campo = preg_replace("/(from|alter table|select|drop|insert|delete|update|where|drop table|show tables|\*|--|\\\\)/i", "", $campo);
-    $campo = trim($campo); //limpa espaços vazio
-    $campo = strip_tags($campo); //tira tags html e php
-    if ($adicionaBarras || !get_magic_quotes_gpc())
-        //$campo = addslashes($campo);
-        return $campo;
+    $campo = trim($campo); // Limpa espaços vazios
+    $campo = strip_tags($campo); // Remove tags HTML e PHP
+    if ($adicionaBarras || !ini_get('magic_quotes_gpc')) {
+        // $campo = addslashes($campo); // Comentado para tratar apenas tags HTML e PHP
+    }
+    return $campo;
 }
-function anti_injection($input)
-{
-    // Remove caracteres perigosos
-    $input = stripslashes($input);
-    $input = strip_tags($input, '<br><b><i>\n\r');
-    $input = htmlentities($input, ENT_QUOTES, 'UTF-8');
-    return $input;
-}
+
+
+
+
 function fnLimpaCampoZero($campo)
 {
 
@@ -382,11 +235,8 @@ function fnNocache($conn)
 
 function fncompress($conn, $timeseg)
 {
-    mysqli_options($conn, MYSQLI_OPT_CONNECT_TIMEOUT, $timeseg);
-
-    // Habilita compressão na conexão
-    // return mysqli_real_connect($conn, null, null, null, null, null, null, MYSQLI_CLIENT_COMPRESS);
-    return true;
+    return mysqli_options($conn, MYSQLI_OPT_CONNECT_TIMEOUT, $timeseg);
+    return mysqli_options($conn, MYSQLi_OPT_COMPRESS, 9);
 }
 
 function cache_query($conn, $timeseg)
@@ -440,7 +290,7 @@ function tempofinal($tempoinicial, $conn)
 {
     $tt = time() - $tempoinicial;
     $sqlinsert = "insert into log (DATA,LOG_COL) values ('" . DATE("H:i:s") . "','" . $tt . "seg');";
-    mysqli_query($conn, $sqlinsert);
+    mysqli_query($conn, $sqlinsert) or die(mysqli_error());
 }
 function REPLACE_STD_SET($BASE)
 {
@@ -460,7 +310,7 @@ function LIMPA_DOC($valor)
 }
 function fnLimpaDoc($valor)
 {
-    $valor = trim($valor);
+    @$valor = trim($valor);
     $valor = str_replace(".", "", $valor);
     $valor = str_replace(",", "", $valor);
     $valor = str_replace("-", "", $valor);
@@ -572,9 +422,11 @@ function date_time($str)
     $timestamp = strtotime($str);
     return $strcount = date('d/m/Y', $timestamp);
 }
-
 function fnDataSql($str)
 {
+    if (is_null($str)) {
+        return FALSE;
+    }
     $data = str_replace("/", "-", $str);
     $tp = strtotime($data);
     if ($tp === false) {
@@ -584,6 +436,8 @@ function fnDataSql($str)
     }
     return $strcount;
 }
+
+
 function fnmesanosql($str)
 {
     $data = str_replace("/", "-", $str);
@@ -595,6 +449,7 @@ function fnmesanosql($str)
     }
     return $strcount;
 }
+
 function fnDataSqlNull($datastr = FALSE)
 {
     if ($datastr != '') {
@@ -643,7 +498,7 @@ function fnDateRetorno($str)
         $data = str_replace("-", "/", $str);
         $datre = strtotime($data);
         $dateretorno = date('d/m/Y', $datre);
-    } elseif ($str == '31/12/1969') {
+    } elseif ($str = '31/12/1969') {
         $dateretorno = '';
     } else {
         $dateretorno = '';
@@ -658,24 +513,16 @@ function fnValor($Num, $Dec)
     } else {
         $Numero = $Num;
     }
-    /*
-   $valor1=number_format($Numero, $Dec, ',', '.'); // retorna R$100.000,50
-    return $valor1; //retorna o valor formatado para gravar no banco 
-   * 
-   */
-    if ($Dec == '0') {
-        //$valor = bcmul($Num, '100', $Dec); //Multiplicação - Parâmetros[valor, multiplicador, casas decimais] 
-        //$valor = bcdiv($valor, '100', $Dec); //Divisão - Parâmetros[valor, divisor, casas decimais] echo $valor; //Exibe "100.19" (String)
-        // $valor=number_format ($Numero,$Dec,",",".");
-        $valor = bcmul($Numero, '100', $Dec); //Multiplicação - Parâmetros[valor, multiplicador, casas decimais] 
-        $valor = bcdiv($valor, '100', $Dec); //Divisão - Parâmetros[valor, divisor, casas decimais] echo $valor; //Exibe "100.19" (String)
-        $valor = number_format($valor, $Dec, ",", ".");
-    } else {
-        $valor = bcmul($Numero, '100', $Dec); //Multiplicação - Parâmetros[valor, multiplicador, casas decimais] 
-        $valor = bcdiv($valor, '100', $Dec); //Divisão - Parâmetros[valor, divisor, casas decimais] echo $valor; //Exibe "100.19" (String)
-        $valor = number_format($valor, $Dec, ",", ".");
-    }
-    return  $valor;
+
+    $multiplicador = 100;
+    $resultado_multiplicacao = $Numero * $multiplicador; // Multiplicação
+
+    $divisor = 100;
+    $resultado_divisao = $resultado_multiplicacao / $divisor; // Divisão
+
+    $valor = number_format($resultado_divisao, $Dec, ",", "."); // Formatação do resultado
+
+    return $valor;
 }
 
 function fnValorSql($get_valor)
@@ -695,26 +542,32 @@ function fnValorSql($get_valor)
 
 function fnValorSQLEXtrato($Num, $Dec)
 {
-    $source = array('.', ',');
-    $replace = array('', '.');
-    $valor = str_replace($source, $replace, $Num);
-    $valor = bcmul($valor, '100', $Dec); //Multiplicação - Parâmetros[valor, multiplicador, casas decimais] 
-    $valor = bcdiv($valor, '100', $Dec); //Divisão - Parâmetros[valor, divisor, casas decimais] echo $valor; //Exibe "100.19" (String)
+    // Define the source and replace arrays for the str_replace function
+    $source = ['.', ','];
+    $replace = ['', '.'];
 
-    //echo $valor; //retorna o valor formatado para apresentação em tela  
+    // Replace '.' with '' and ',' with '.' in the input number
+    $valor = str_replace($source, $replace, $Num);
+
+    // Convert the string to a float
+    $valor = (float)$valor;
+
+    // Perform the multiplication
+    $valor *= 100;
+
+    // Ensure the number of decimal places by converting to string and formatting
+    $valor = number_format($valor, $Dec, '.', '');
+
+    // Perform the division
+    $valor /= 100;
+
+    // Ensure the final format with the correct number of decimal places
+    $valor = number_format($valor, $Dec, '.', '');
+
+    // Return the formatted value
     return $valor;
 }
-/*
-function fnValorSql($Num)
-{
-  if (empty($Num) || is_null($Num) ) {$Numero = 0;} else {$Numero = $Num;}		
-  $valor = str_replace(",", ".", $Numero); 
-  $valor = number_format ($valor,2,".",",");
-  $valor = str_replace(",", "", $valor); 
-  
-  return $valor; //retorna o valor formatado para gravar no banco 
-}
-*/
+
 function fnExecSql($conn, $SQLCOMMAND, $retornoquery, $retornoerro)
 {
     mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
@@ -786,11 +639,15 @@ function fnMostraForm()
 
 function fnCorrigeTelefone($telefone)
 {
+    // Remove todos os caracteres que não são números
     $telLimpo = preg_replace("/[^0-9]/", "", $telefone);
-    $telefoneNovo = $telLimpo[0];
-    if ($telefoneNovo == "0") {
+
+    // Verifica se $telLimpo não está vazio antes de acessar o índice 0
+    if (isset($telLimpo[0]) && $telLimpo[0] == "0") {
+        // Se o primeiro caractere for "0", remove-o
         $telefoneNovo = substr($telLimpo, 1);
     } else {
+        // Caso contrário, mantém o telefone limpo
         $telefoneNovo = $telLimpo;
     }
 
@@ -847,7 +704,7 @@ function fnCompletaDoc($cpfcnpj, $tipo)
 
 function recursive_array_search($needle, $haystack)
 {
-    if (!empty($haystack)) {
+    if ($haystack != "") {
         foreach ($haystack as $key => $value) {
             $current_key = $key;
             if ($needle === $value or (is_array($value) && recursive_array_search($needle, $value) !== false)) {
@@ -898,8 +755,8 @@ function fnMemInicial($conn, $opcao, $user, $DADOSPOST)
             $desc_mem = round($mem_usage / 1048576, 2) . " megabytes";
         }
 
-        $logqueryinsert = "insert into log_men (MEM_INICIAL,COD_PAGINA,PAGINA,DATA_HORA,COD_USUARIO,USUARIO,COD_EMPRESA,COD_EMPRESA_PAGE,REQUEST,`GET`,POST,OPCAO_FORM,IP,NAVEGADOR)"
-            . "values ('" . $desc_mem . "','" . $mod . "','" . @$_GET['mod'] . "','" . $datahora . "','0" . $cod_user . "','" . $user . "','" . $_SESSION["SYS_COD_EMPRESA"] . "','" . $cod_empresa_page . "','" . $request . "','" . $get . "','" . $post . "','" . $opcao_form . "','" . $ip . "','" . @$_SERVER['HTTP_USER_AGENT'] . "');";
+        $logqueryinsert = "insert into log_men (MEM_INICIAL,COD_PAGINA,PAGINA,DATA_HORA,COD_USUARIO,USUARIO,COD_EMPRESA,COD_EMPRESA_PAGE,REQUEST,GET,POST,OPCAO_FORM,IP,NAVEGADOR)"
+            . "values ('" . @$desc_mem . "','" . @$mod . "','" . @$_GET['mod'] . "','" . @$datahora . "','0" . @$cod_user . "','" . @$user . "','" . @$_SESSION["SYS_COD_EMPRESA"] . "','" . @$cod_empresa_page . "','" . @$request . "','" . @$get . "','" . @$post . "','" . @$opcao_form . "','" . @$ip . "','" . @$_SERVER['HTTP_USER_AGENT'] . "');";
         mysqli_query($conn, $logqueryinsert);
 
         return $logqueryinsert;
@@ -931,11 +788,11 @@ function fnMemInicial($conn, $opcao, $user, $DADOSPOST)
         $tempo_carregamento = microtime(TRUE);
         -$_SERVER['REQUEST_TIME'];
 
-        $SqlUpdate = "UPDATE log_men SET TP_CARGA_PAGINA='" . $tempo_carregamento . "',  MEM_FINAL='" . $desc_mem_f . "',ATIVO=1 WHERE  PAGINA='" . $_GET['mod'] . "' and ATIVO='0'";
-        mysqli_query($conn, $SqlUpdate);
+        $SqlUpdate = "UPDATE log_men SET TP_CARGA_PAGINA='" . $tempo_carregamento . "',  MEM_FINAL='" . $desc_mem_f . "',ATIVO=1 WHERE  PAGINA='" . @$_GET['mod'] . "' and ATIVO='0'";
+        mysqli_query($conn, $SqlUpdate) or die(mysqli_error());
 
-        $SqlUpdate = "UPDATE log_men SET TP_CARGA_PAGINA='" . $tempo_carregamento . "', MEM_PICO='" . $desc_mem_p . "',MEN_PICO=1 WHERE  PAGINA='" . $_GET['mod'] . "' and MEN_PICO='0'";
-        mysqli_query($conn, $SqlUpdate);
+        $SqlUpdate = "UPDATE log_men SET TP_CARGA_PAGINA='" . $tempo_carregamento . "', MEM_PICO='" . $desc_mem_p . "',MEN_PICO=1 WHERE  PAGINA='" . @$_GET['mod'] . "' and MEN_PICO='0'";
+        mysqli_query($conn, $SqlUpdate) or die(mysqli_error());
     }
 }
 
@@ -957,14 +814,13 @@ function getIPAddress()
 }
 function fn_url()
 {
-
     if (@$_SESSION["cod_url"] != 1) {
-
         $server = $_SERVER['SERVER_NAME'];
         $endereco = $_SERVER['REQUEST_URI'];
         $_SESSION["URL"] = $server . $endereco;
         $result = str_replace($server, " ", $_SESSION["URL"]);
         $_SESSION["URLLIMPO"] = $result;
+        return $result;
     } else {
     }
 }
@@ -983,7 +839,7 @@ function fnLogin()
 {
     if (!isset($_SESSION["usuario"])) {
 
-        require_once 'index.php';
+        include 'index.php';
     } else {
     }
 }
@@ -1006,51 +862,74 @@ function  fncomparaPerfil($perfilGeral, $cod_perfil, $cod_multemp, $cod_empresa,
             }
         }
     }
-
-
-    // return [$perfilGeral,$cod_perfil,$cod_multemp,$cod_empresa,$cod_sistema];
     return $retPER;
 }
-function fnDataFull($str)
+
+function fnDataFull($str = null)
 {
-    if (($timestamp = strtotime($str)) === false) {
-        $date = '';
-        return $date;
+    // Verifica se $str é null ou uma string vazia
+    if (is_null($str) || $str === '') {
+        return ''; // Retorna uma string vazia se $str for null ou vazio
+    }
+
+    // Converte a string para timestamp
+    $timestamp = strtotime($str);
+    if ($timestamp === false) {
+        return ''; // Retorna uma string vazia se a conversão falhar
     } else {
-        return date('d/m/Y H:i:s', $timestamp);
+        return date('d/m/Y H:i:s', $timestamp); // Retorna a data e hora formatadas
+    }
+}
+
+function fnDataShort($str = null)
+{
+    // Verifica se $str é null ou uma string vazia
+    if (is_null($str) || $str === '') {
+        return ''; // Retorna uma string vazia se $str for null ou vazio
+    }
+
+    // Converte a string para timestamp
+    $timestamp = strtotime($str);
+    if ($timestamp === false) {
+        return ''; // Retorna uma string vazia se a conversão falhar
+    } else {
+        return date('d/m/Y', $timestamp); // Retorna a data formatada
+    }
+}
+
+function fnFormatDate($data = null)
+{
+    // Verifica se $data é null ou uma string vazia
+    if (is_null($data) || $data === '') {
+        return ''; // Retorna uma string vazia se $data for null ou vazio
+    }
+
+    // Converte a string para timestamp
+    $timestamp = strtotime($data);
+    if ($timestamp === false) {
+        return ''; // Retorna uma string vazia se a conversão falhar
+    } else {
+        return date('d/m/Y', $timestamp); // Retorna a data formatada
+    }
+}
+
+function fnFormatDateTime($data = null)
+{
+    // Verifica se $data é null ou uma string vazia
+    if (is_null($data) || $data === '') {
+        return ''; // Retorna uma string vazia se $data for null ou vazio
+    }
+
+    // Converte a string para timestamp
+    $timestamp = strtotime($data);
+    if ($timestamp === false) {
+        return ''; // Retorna uma string vazia se a conversão falhar
+    } else {
+        return date('d/m/Y H:i:s', $timestamp); // Retorna a data e hora formatadas
     }
 }
 
 
-function fnDataShort($str)
-{
-    if (($timestamp = strtotime($str)) === false) {
-        $date = '';
-        return $date;
-    } else {
-        return date('d/m/Y', $timestamp);
-    }
-}
-
-function fnFormatDate($data)
-{
-    if (($timestamp = strtotime($data)) === false) {
-        $date = '';
-        return $date;
-    } else {
-        return date('d/m/Y', $timestamp);
-    }
-}
-function fnFormatDateTime($data)
-{
-    if (($timestamp = strtotime($data)) === false) {
-
-        $date = '';
-        return $date;
-    } else {
-        return date('d/m/Y H:i:s', $timestamp);
-    }
-}
 function fnCalculaporcento($vlinicial, $vlfinal)
 {
     $vl = ($vlinicial / $vlfinal) * 100;
@@ -1097,7 +976,7 @@ function fnupload($nom_cliente, $nomecampo)
 
 function fnDebug($param)
 {
-    if ($_SESSION['SYS_COD_EMPRESA'] == 2 && $_SESSION['SYS_COD_USUARIO'] == 127937) {
+    if ($_SESSION['SYS_COD_EMPRESA'] == 2) {
         if ($param == 'true') {
             ini_set('display_errors', 1);
             ini_set('display_startup_errors', 1);
@@ -1118,7 +997,6 @@ function fnDateDif($datainicial, $datafinal)
             $datafinal = $partes[3] . '-' . $partes[2] . '-' . $partes[1];
         }
     }
-
 
     // Define os valores a serem usados
 
@@ -1356,7 +1234,7 @@ function fnconsultaBase($conn, $CPF, $mepresa, $login, $conn2)
         return $arraycpf;
     }
 }
-require_once 'PHPMailer/class.phpmailer.php';
+//include 'PHPMailer/class.phpmailer.php';
 define('GUSER', 'fidelidade@markafidelizacao.com.br');    // <-- Insira aqui o seu GMail
 define('GPWD', 'Mud@r2015');        // <-- Insira aqui a senha do seu GMail
 
@@ -1490,8 +1368,10 @@ function fnAcentos($string)
 
     //replace
     $string = str_replace($what, $by, $string);
-    $string = utf8_decode(str_replace($what, $by, utf8_encode($string)));
-    $string = utf8_encode(str_replace($what, $by, utf8_decode($string)));
+
+    // Comentado por Lucas 22/05/2024
+    // $string = utf8_decode(str_replace($what, $by, utf8_encode($string)));
+    // $string = utf8_encode(str_replace($what, $by, utf8_decode($string)));
 
     //remove caracteres estranhos
     $string = preg_replace('/[^\p{L}\p{N}\s",.<>;:?!\/|[\]{}()\-_=+@#$%*]/u', ' ', $string);
@@ -1745,14 +1625,6 @@ function limitarTexto($texto, $limite)
     $texto = mb_strimwidth($texto, 0, $limite, "...");
     return $texto;
 }
-function limitarTextoComunicacao($texto, $limite)
-{
-    //$texto = substr($texto, 0, strrpos(substr($texto, 0, $limite), ' ')) . '...';
-    $texto = mb_strimwidth($texto, 0, $limite, "");
-    return $texto;
-}
-
-
 function fnLimitaTexto($texto, $limite)
 {
     //$texto = substr($texto, 0, strrpos(substr($texto, 0, $limite), ' ')) . '...';
@@ -1991,37 +1863,41 @@ function fnConsultaMULT($arraybusca)
     while ($dados = mysqli_fetch_assoc($result)) {
         $sql_buscadados = "SELECT CL.COD_CLIENTE 
                              FROM CLIENTES CL
-                             WHERE CL.COD_EMPRESA = $arraybusca[cod_empresa]
+                             WHERE CL.COD_EMPRESA = " . $arraybusca['cod_empresa'] . "
                              AND CL." . $dados['COLUMN_NAME'] . ' ' . $arraybusca['param_busca'] . " '" . $arraybusca['TextoConsulta'] . "'
                              ";
-        // fnEscreve($sql_buscadados);
+        //fnEscreve2($sql_buscadados);
         $dadosconsulta = mysqli_query($arraybusca['conn'], $sql_buscadados);
         if (mysqli_num_rows($dadosconsulta) >= 1) {
             while ($row_return = mysqli_fetch_assoc($dadosconsulta)) {
 
-                $arraycod_cliente .= $row_return['COD_CLIENTE'] . ',';
+                @$arraycod_cliente .= $row_return['COD_CLIENTE'] . ',';
             }
         }
     }
-    $arraycod_cliente = rtrim($arraycod_cliente, ',');
+    @$arraycod_cliente = rtrim($arraycod_cliente, ',');
 
-    $buscaoficial = "SELECT CL.*,
-                       $arraybusca[colunasAdicionais]
+    if (!empty($arraycod_cliente)) {
+
+        $buscaoficial = "SELECT CL.*,
+                       " . $arraybusca['colunasAdicionais'] . "
                        (SELECT A.NOM_CLIENTE FROM CLIENTES A WHERE A.COD_CLIENTE = CL.COD_INDICAD) AS NOM_INDICADOR
                        FROM CLIENTES CL
-                       $arraybusca[joinFiltros]
-                       WHERE CL.COD_EMPRESA = $arraybusca[cod_empresa]
+                       " . $arraybusca['joinFiltros'] . "
+                       WHERE CL.COD_EMPRESA = " . $arraybusca['cod_empresa'] . "
                        AND CL.COD_CLIENTE IN ($arraycod_cliente) 
                        GROUP BY CL.COD_CLIENTE
-                       $arraybusca[limite]";
+                       " . $arraybusca['limite'];
 
-    if ($arraybusca['tipo'] == 'consulta') {
 
-        $rsrw = mysqli_query($arraybusca['conn'], $buscaoficial);
-        while ($dadosrs = mysqli_fetch_assoc($rsrw)) {
-            $array_return['DADOS'][] = $dadosrs;
+        if ($arraybusca['tipo'] == 'consulta') {
+
+            $rsrw = mysqli_query($arraybusca['conn'], $buscaoficial);
+            while ($dadosrs = mysqli_fetch_assoc($rsrw)) {
+                $array_return['DADOS'][] = $dadosrs;
+            }
+            return $array_return;
         }
-        return $array_return;
     } else if ($arraybusca['tipo'] == 'count') {
 
         $rsrw = mysqli_query($arraybusca['conn'], $buscaoficial);
@@ -2042,12 +1918,12 @@ function fnConsultaMULT($arraybusca)
                          CL.COD_ESTADOF AS ESTADO,
                          (SELECT A.NOM_CLIENTE FROM CLIENTES A WHERE A.COD_CLIENTE = CL.COD_INDICAD) AS NOM_INDICADOR,       
                          CL.DAT_CADASTR,
-                         $arraybusca[colunasAdicionais]
+                         " . $arraybusca['colunasAdicionais'] . "
                          CL.NUM_CELULAR,
                          CL.NUM_TELEFON
                          FROM CLIENTES CL
-                         $arraybusca[joinFiltros]
-                         WHERE CL.COD_EMPRESA = $arraybusca[cod_empresa]
+                         " . $arraybusca['joinFiltros'] . "
+                         WHERE CL.COD_EMPRESA = " . $arraybusca['cod_empresa'] . "
                          AND CL.COD_CLIENTE IN ($arraycod_cliente) 
                          GROUP BY CL.COD_CLIENTE
                          ";
@@ -2124,8 +2000,6 @@ function procpalavrasV2($frase, $connadm, $COD_EMPRESA)
 
 function fnQualidadeCampos($conn, $COD_EMPRESA)
 {
-    $arraysqlcampo =  '';
-    $arraysql = '';
 
     $CAMPOSSQL = "select DISTINCT NOM_CAMPOOBG,KEY_CAMPOOBG,DES_CAMPOOBG,INTEGRA_CAMPOOBG.TIP_CAMPOOBG  from matriz_campo_integracao                         
                     inner join INTEGRA_CAMPOOBG on INTEGRA_CAMPOOBG.COD_CAMPOOBG=matriz_campo_integracao.COD_CAMPOOBG                         
@@ -2135,8 +2009,8 @@ function fnQualidadeCampos($conn, $COD_EMPRESA)
     $CAMPOQUERY = mysqli_query($conn, $CAMPOSSQL);
     while ($CAMPOROW = mysqli_fetch_assoc($CAMPOQUERY)) {
 
-        $arraysqlcampo .= $CAMPOROW['NOM_CAMPOOBG'] . ',';
-        $arraysql .= $CAMPOROW['DES_CAMPOOBG'] . ',';
+        @$arraysqlcampo .= $CAMPOROW['NOM_CAMPOOBG'] . ',';
+        @$arraysql .= $CAMPOROW['DES_CAMPOOBG'] . ',';
     }
     $arraysql = rtrim($arraysql, ',');
     $arraysqlcampo = rtrim($arraysqlcampo, ',');
@@ -2269,15 +2143,15 @@ function FnDebitos($arraydebitos, $consulta = false)
 
                 if ($QTDUPDATE >= $rssql['QTD_SALDO_ATUAL']) {
                     if ($QTDUPDATE1 == '1') {
-                        $updatesaldo = "UPDATE pedido_marka SET QTD_SALDO_ATUAL=QTD_SALDO_ATUAL-'$rssql[QTD_SALDO_ATUAL]' WHERE COD_EMPRESA ='" . $arraydebitos['COD_EMPRESA'] . "' AND COD_VENDA=$rssql[COD_VENDA]";
+                        $updatesaldo = "UPDATE pedido_marka SET QTD_SALDO_ATUAL=QTD_SALDO_ATUAL-'" . $rssql['QTD_SALDO_ATUAL'] . "' WHERE COD_EMPRESA ='" . $arraydebitos['COD_EMPRESA'] . "' AND COD_VENDA=" . $rssql['COD_VENDA'];
                         mysqli_query($arraydebitos['CONNADM'], $updatesaldo);
                     } else {
-                        $updatesaldo = "UPDATE pedido_marka SET QTD_SALDO_ATUAL=QTD_SALDO_ATUAL-'$rssql[QTD_SALDO_ATUAL]' WHERE COD_EMPRESA ='" . $arraydebitos['COD_EMPRESA'] . "' AND COD_VENDA=$rssql[COD_VENDA]";
+                        $updatesaldo = "UPDATE pedido_marka SET QTD_SALDO_ATUAL=QTD_SALDO_ATUAL-'" . $rssql['QTD_SALDO_ATUAL'] . "' WHERE COD_EMPRESA ='" . $arraydebitos['COD_EMPRESA'] . "' AND COD_VENDA=" . $rssql['COD_VENDA'];
                         mysqli_query($arraydebitos['CONNADM'], $updatesaldo);
                     }
                     $QTDUPDATE1 -= $rssql['QTD_SALDO_ATUAL'];
                 } else {
-                    $updatesaldo = "UPDATE pedido_marka SET QTD_SALDO_ATUAL=QTD_SALDO_ATUAL-'" . $QTDUPDATE1 . "' WHERE COD_EMPRESA ='" . $arraydebitos['COD_EMPRESA'] . "' AND COD_VENDA=$rssql[COD_VENDA]";
+                    $updatesaldo = "UPDATE pedido_marka SET QTD_SALDO_ATUAL=QTD_SALDO_ATUAL-'" . $QTDUPDATE1 . "' WHERE COD_EMPRESA ='" . $arraydebitos['COD_EMPRESA'] . "' AND COD_VENDA=" . $rssql['COD_VENDA'];
                     mysqli_query($arraydebitos['CONNADM'], $updatesaldo);
                     $QTDUPDATE1 -= $rssql['QTD_SALDO_ATUAL'];
                 }
@@ -2367,15 +2241,15 @@ function FnDebitos($arraydebitos, $consulta = false)
 
                         if ($QTDUPDATE1 >= $rssql['QTD_SALDO_ATUAL']) {
                             if ($QTDUPDATE1 == '1') {
-                                $updatesaldo = "UPDATE pedido_marka SET QTD_SALDO_ATUAL=QTD_SALDO_ATUAL-'$rssql[QTD_SALDO_ATUAL]' WHERE COD_EMPRESA ='" . $arraydebitos['COD_EMPRESA'] . "' AND COD_VENDA=$rssql[COD_VENDA]";
+                                $updatesaldo = "UPDATE pedido_marka SET QTD_SALDO_ATUAL=QTD_SALDO_ATUAL-'" . $rssql['QTD_SALDO_ATUAL'] . "' WHERE COD_EMPRESA ='" . $arraydebitos['COD_EMPRESA'] . "' AND COD_VENDA=" . $rssql['COD_VENDA'];
                                 mysqli_query($arraydebitos['CONNADM'], $updatesaldo);
                             } else {
-                                $updatesaldo = "UPDATE pedido_marka SET QTD_SALDO_ATUAL=QTD_SALDO_ATUAL-'$rssql[QTD_SALDO_ATUAL]' WHERE COD_EMPRESA ='" . $arraydebitos['COD_EMPRESA'] . "' AND COD_VENDA=$rssql[COD_VENDA]";
+                                $updatesaldo = "UPDATE pedido_marka SET QTD_SALDO_ATUAL=QTD_SALDO_ATUAL-'" . $rssql['QTD_SALDO_ATUAL'] . "' WHERE COD_EMPRESA ='" . $arraydebitos['COD_EMPRESA'] . "' AND COD_VENDA=" . $rssql['COD_VENDA'];
                                 mysqli_query($arraydebitos['CONNADM'], $updatesaldo);
                             }
                             $QTDUPDATE1 -= $rssql['QTD_SALDO_ATUAL'];
                         } else {
-                            $updatesaldo = "UPDATE pedido_marka SET QTD_SALDO_ATUAL=QTD_SALDO_ATUAL-'" . $QTDUPDATE1 . "' WHERE COD_EMPRESA ='" . $arraydebitos['COD_EMPRESA'] . "' AND COD_VENDA=$rssql[COD_VENDA]";
+                            $updatesaldo = "UPDATE pedido_marka SET QTD_SALDO_ATUAL=QTD_SALDO_ATUAL-'" . $QTDUPDATE1 . "' WHERE COD_EMPRESA ='" . $arraydebitos['COD_EMPRESA'] . "' AND COD_VENDA=" . $rssql['COD_VENDA'];
                             mysqli_query($arraydebitos['CONNADM'], $updatesaldo);
                             $QTDUPDATE1 -= $rssql['QTD_SALDO_ATUAL'];
                         }
@@ -2415,34 +2289,29 @@ function fnmasktelefone($number)
     // primeiro substr pega apenas o DDD e coloca dentro do (), segundo subtr pega os números do 3º até faltar 4, insere o hifem, e o ultimo pega apenas o 4 ultimos digitos
     return $number;
 }
-function fnScan($arquivo)
+
+function fnScan(array $arquivo): array
 {
-    //testando o antivirus
+    // testando o antivirus
     $socket = socket_create(AF_UNIX, SOCK_STREAM, 0);
-    if (socket_connect($socket, '/var/run/clamav/clamd-socket')) {
-        socket_send($socket, "PING", strlen(@$file) + 5, 0);
+    if (socket_connect($socket, '/var/run/clamav/clamd.ctl')) {
+        socket_send($socket, "PING", strlen($arquivo['CAMINHO_TMP']) + 5, 0);
         socket_recv($socket, $PING, 20000, 0);
         socket_close($socket);
         if (rtrim(trim($PING)) == 'PONG') {
             chmod($arquivo['CAMINHO_TMP'], 00644);
             $socket = socket_create(AF_UNIX, SOCK_STREAM, 0);
-            if (socket_connect($socket, '/var/run/clamav/clamd-socket')) {
+            if (socket_connect($socket, '/var/run/clamav/clamd.ctl')) {
                 $result = "";
                 socket_send($socket, "SCAN " . $arquivo['CAMINHO_TMP'], strlen($arquivo['CAMINHO_TMP']) + 5, 0);
                 socket_recv($socket, $result, 20000, 0);
                 $quebradelina = explode(':', $result);
 
                 if (rtrim(trim($quebradelina['1'])) == 'OK') {
-                    return array(
-                        'RESULTADO' => 0,
-                        'MSG' => 'N'
-                    );
+                    return ['RESULTADO' => 0, 'MSG' => 'N'];
                 } else {
-                    return array(
-                        'RESULTADO' => 1,
-                        'MSG' => $quebradelina['1']
-                    );
-                    unlink($arquivo['CAMINHO_TMP']);
+                    unlink($arquivo['CAMINHO_TMP']); // This line was moved up
+                    return ['RESULTADO' => 1, 'MSG' => $quebradelina['1']];
                 }
             }
             socket_close($socket);
@@ -2496,38 +2365,28 @@ function fnPrevisaoSAC($esteira = false, $qrUser = array(), $qrSac = array())
         return "";
     }
 
-    // Verificar se "INICIO" existe e possui um valor válido antes de dividir
-    if (isset($qrSac["INICIO"]) && !empty($qrSac["INICIO"]) && strpos($qrSac["INICIO"], " ") !== false) {
-        list($data, $hora) = explode(" ", $qrSac["INICIO"]);
-    } else {
-        return "";  // Retorna vazio caso "INICIO" não seja válido
-    }
-
-    // Verificar datas inválidas
+    list($data, $hora) = explode(" ", $qrSac["INICIO"]);
     if ($data == "1969-12-31" || $data == "0000-00-00" || $data == "") {
         return "";
     }
 
-    // Verificar se as horas de desenvolvimento são maiores que zero
-    if (@$qrUser["HOR_DEVDIAS"] <= 0 && @$qrUser["HOR_DEVFDS"] <= 0) {
+    if (@$qrUser["HOR_DEVDIAS"] <= 0 && $qrUser["HOR_DEVFDS"] <= 0) {
         return "";
     }
 
-    // Verificar a previsão
-    if (@$qrSac["DES_PREVISAO"] <= 0 || @$qrSac["DES_PREVISAO"] == "") {
+    if (@$qrSac["DES_PREVISAO"] <= 0 || $qrSac["DES_PREVISAO"] == "") {
         return "";
     }
 
-    $prev = @$qrSac["DES_PREVISAO"];
-    $dh = @$qrSac["INICIO"];
-    $dh_final = @$qrSac["INICIO"];
+    $prev = $qrSac["DES_PREVISAO"];
+    $dh = $qrSac["INICIO"];
+    $dh_final = $qrSac["INICIO"];
     $hr_util = @$qrUser["HOR_ENTRADA"];
     $hr_fds = @$qrUser["HOR_ENTRADA"];
     $qtd_hr_util = @$qrUser["HOR_DEVDIAS"];
     $qtd_hr_fds = @$qrUser["HOR_DEVFDS"];
     $c = 0;
     $dif = 0;
-
     while ($prev > 0) {
         $c++;
         $dif = 0;
@@ -2535,31 +2394,29 @@ function fnPrevisaoSAC($esteira = false, $qrUser = array(), $qrSac = array())
         $ano = date('Y', strtotime($dh));
         $feriado = fnFeriados($ano);
 
-        // Ignorar Sábados
+        //IGNORA SÁBADOS
         if ($w == 6) {
             $dh = date('Y-m-d', strtotime("+1 days", strtotime($dh))) . " $hr";
             continue;
         }
 
-        // Ignorar Feriados
-        if (@$feriado[date('Y-m-d', strtotime($dh))] != "") {
+        //IGNORA FERIADOS
+        if (@$feriado[date('Y-m-d', strtotime($dh))] <> "") {
             $dh = date('Y-m-d', strtotime("+1 days", strtotime($dh))) . " $hr";
             continue;
         }
 
-        // Ajustar hora e quantidade de horas para domingos ou dias úteis
         if ($w == 0) {
-            // Domingo
+            //DOMINGO
             $hr = $hr_fds;
             $qtd_hr = $qtd_hr_fds;
         } else {
-            // Dia útil
+            //DIA_UTIL
             $hr = $hr_util;
             $qtd_hr = $qtd_hr_util;
         }
 
         if ($c == 1) {
-            // Calcular diferença de horas no primeiro ciclo
             $dif = strtotime(date("Y-m-d " . $hora)) - strtotime(date("Y-m-d " . $hr));
             $dif = $dif / 60 / 60;
             if ($dif > 0) {
@@ -2568,12 +2425,18 @@ function fnPrevisaoSAC($esteira = false, $qrUser = array(), $qrSac = array())
         }
 
         $hr_sub = min($prev, $qtd_hr);
-        $dh_final = date('Y-m-d H:i:s', strtotime("+" . ($hr_sub * 60) . " minute", strtotime($dh)));
+        //echo "[$hr_sub / $prev / $qtd_hr - $dif / $qtd_hr_util]";
+        //echo $w;
+        $dh_final = date('Y-m-d H:i:s', strtotime("+" . ($hr_sub * 60) . " minute	", strtotime($dh)));
         $dh = date('Y-m-d', strtotime("+1 days", strtotime($dh))) . " $hr";
+        //echo $hr_sub."/";
         $prev = $prev - $hr_sub;
     }
-
+    //echo $inicio." + ".$qrSac["DES_PREVISAO"]." = ".$dh_final."<br>";
+    //echo @$qrUsu["HOR_ENTRADA"].";".@$qrUsu["HOR_DEVDIAS"].";".@$qrUsu["HOR_DEVFDS"];
     return $dh_final;
+    //return $dif;
+
 }
 function fnFeriados($ano = null)
 {
@@ -2762,7 +2625,7 @@ function Utf8_ansi($valor = '')
     return strtr($valor, $utf8_ansi2);
 }
 
-function Log_error_comand($connadm, $conntemp = false, $cod_empresa, $url, $MODULO, $COD_MODULO, $SQLCOMANDO, $usuario = false)
+function Log_error_comand($connadm, $conntemp = null, $cod_empresa, $url, $MODULO, $COD_MODULO, $SQLCOMANDO, $usuario = null)
 {
     require_once('_system/PHPMailer/class.phpmailer.php');
     require_once('externo/email/envio_sac.php');
@@ -3123,7 +2986,7 @@ function fnCompString($arrayWs, $cod_empresa, $cpf, $CONNADM, $conntmp)
 function fnLimpaArray($arr)
 {
     foreach ($arr as $key) {
-        @$cod = @$cod . fnLimpaCampo($key) . ",";
+        $cod = @$cod . fnLimpaCampo($key) . ",";
     }
     $cod = rtrim(ltrim(trim($cod), ","), ",");
     if ($cod == "") {
@@ -3131,7 +2994,7 @@ function fnLimpaArray($arr)
     }
     return $cod;
 }
-/*function fnscanV($dadosstrig)
+function fnscanV($dadosstrig)
 {
 
     foreach ($dadosstrig as $key => $value) {
@@ -3166,302 +3029,44 @@ function fnLimpaArray($arr)
             }
         }
     }
-}*/
-function fnscanV($dadosstrig)
-{
-    foreach ($dadosstrig as $key => $value) {
-        // Verifica se $value é um array e o converte para string se necessário
-        if (is_array($value)) {
-            $value = implode("\n", $value); // Converte array em string (cada elemento separado por uma nova linha)
-        }
-
-        $descriptors = array(
-            0 => array('pipe', 'r'), // Descritor de arquivo para a entrada
-            1 => array('pipe', 'w'), // Descritor de arquivo para a saída
-            2 => array('pipe', 'w'), // Descritor de arquivo para a saída de erro
-        );
-
-        $process = proc_open('clamdscan --fdpass -', $descriptors, $pipes);
-
-        if (is_resource($process)) {
-            // Envia o texto para o descritor de arquivo de entrada
-            fwrite($pipes[0], $value);
-            fclose($pipes[0]);
-
-            // Lê a saída do descritor de arquivo de saída
-            $output = stream_get_contents($pipes[1]);
-            fclose($pipes[1]);
-
-            // Lê a saída de erro do descritor de arquivo de saída de erro
-            $error = stream_get_contents($pipes[2]);
-            fclose($pipes[2]);
-
-            // Obtém o código de status do processo
-            $status = proc_close($process);
-
-            // Retorna a saída e o erro se houver status 1
-            if ($status == 1) {
-                return [$output, $error, $status];
-            }
-        }
-    }
-
-    // Retorna null se não houver status 1
-    return null;
 }
 
-
-function fnDadosMedicacao($ean)
-{
-    $url = 'https://consultaremedios.com.br/busca?termo=' . $ean;
-    $curl = curl_init();
-
-    curl_setopt_array($curl, array(
-        CURLOPT_URL => $url,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => '',
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 0,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => 'GET',
-    ));
-
-    $response = curl_exec($curl);
-
-    if (curl_errno($curl)) {
-        return ["error" => curl_error($curl)];
-    }
-
-    curl_close($curl);
-
-    $pattern = '/<script type="application\/ld\+json">(.+?)<\/script>/s';
-    preg_match($pattern, $response, $matches);
-
-    if (isset($matches[1])) {
-        $jsonContent = $matches[1];
-    } else {
-        return ["error" => "Erro ao extrair conteúdo!"];
-    }
-
-    $data = [];
-
-    $json = json_decode($jsonContent, true);
-
-    $data["name"] = $json["@graph"][4]["name"];
-    $data["url"] = $json["@graph"][4]["offers"]["url"];
-    $data["brand"] = $json["@graph"][4]["brand"]["name"];
-    $data["lowPrice"] = $json["@graph"][4]["offers"]["lowPrice"];
-    $data["highPrice"] = $json["@graph"][4]["offers"]["highPrice"];
-    $data["priceCurrency"] = $json["@graph"][4]["offers"]["priceCurrency"];
-    $data["description"] = $json["@graph"][4]["description"];
-    $data["image"] = $json["@graph"][4]["image"];
-    $data["sku"] = $json["@graph"][4]["sku"];
-
-    //echo "<pre>";
-    //print_r($json);
-    //echo "</pre>";
-
-    return $data;
-}
-//function generateRandomString($length = 10) {
-function generateRandomString($length = 6, $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
-{
-    //$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    $charactersLength = strlen($characters);
-    $randomString = '';
-    for ($i = 0; $i < $length; $i++) {
-        $randomString .= $characters[rand(0, $charactersLength - 1)];
-    }
-    return $randomString;
-}
-
-function readVouchersFromCSV($filename)
-{
-    if (!file_exists($filename)) {
-        return [];
-    }
-
-    $vouchers = [];
-    if (($handle = fopen($filename, "r")) !== FALSE) {
-        while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-            $vouchers[] = $data[0];
-        }
-        fclose($handle);
-    }
-
-    return $vouchers;
-}
-
-
-function generateUniqueVoucherCSV($length = 6, $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', $filename = '/srv/www/htdocs/_system/LOG_TXT/voucher.csv')
-{
-    $charactersLength = strlen($characters);
-    $randomString = '';
-
-    // $filename='./_system/LOG_TXT/voucher.txt';
-    $vouchers = readVouchersFromCSV($filename);
-
-    do {
-        $randomString = '';
-        for ($i = 0; $i < $length; $i++) {
-            $randomString .= $characters[rand(0, $charactersLength - 1)];
-        }
-    } while (in_array($randomString, $vouchers));
-
-    // Adiciona o novo voucher ao arquivo CSV
-    if (($handle = fopen($filename, "a")) !== FALSE) {
-        fputcsv($handle, [$randomString]);
-        fclose($handle);
-    }
-
-    return $randomString;
-}
-
-function gerar_chave($length = 32)
-{
-    // Gera uma chave segura de 32 bytes
-    return bin2hex(openssl_random_pseudo_bytes($length));
-}
-/*
-
-// Função de codificação
-function codificar($mensagem, $chave='0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef') {
-    // Cria um vetor de inicialização (IV)
-    $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
-    // Codifica a mensagem
-    $mensagem_codificada = openssl_encrypt($mensagem, 'aes-256-cbc', hex2bin($chave), 0, $iv);
-    // Retorna a mensagem codificada concatenada com o IV codificado em base64 URL-safe
-    return rtrim(strtr(base64_encode($mensagem_codificada . '::' . $iv), '+/', '-_'), '=');
-}
-
-// Função de decodificação
-function decodificar($mensagem_codificada, $chave='0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef') {
-    // Converte a base64 URL-safe de volta para base64 padrão
-    $mensagem_codificada = base64_decode(str_pad(strtr($mensagem_codificada, '-_', '+/'), strlen($mensagem_codificada) % 4, '=', STR_PAD_RIGHT));
-    // Separa a mensagem codificada e o IV
-    list($mensagem_codificada, $iv) = explode('::', $mensagem_codificada, 2);
-    // Decodifica a mensagem
-    return openssl_decrypt($mensagem_codificada, 'aes-256-cbc', hex2bin($chave), 0, $iv);
-}
-
-*/
 function codificar($string)
 {
-    // Remove espaços da string
     $string = str_replace(' ', '', $string);
-
     // Compacta a string usando gzip
     $stringCompactada = gzcompress($string, 9);
 
-    // Verifica se a compactação foi bem-sucedida
-    if ($stringCompactada === false) {
-        die("Erro: Não foi possível compactar a string.");
-    }
-
-    // Codifica em Base64 e substitui os caracteres '/&$%' por '-_#'
+    // Retorna a string compactada com caracteres indesejados substituídos
     return strtr(base64_encode($stringCompactada), '/&$%', '-_#');
 }
 
 function decodificar($stringCompactada)
 {
-    // Se a string estiver vazia, retorna uma string vazia
-    if (empty($stringCompactada)) {
-        return "";
-    }
-
-    // Se a string contiver caracteres fora do padrão esperado para Base64 customizado,
-    // assumimos que ela já está decodificada e a retornamos como está.
-    if (preg_match('/[^A-Za-z0-9\-_#]/', $stringCompactada)) {
-        return $stringCompactada;
-    }
-
-    // Converte os caracteres customizados de volta para os originais
+    // Substitui os caracteres indesejados no Base64 de volta para os originais
     $stringCompactada = strtr($stringCompactada, '-_#', '/&$%');
 
-    // Tenta decodificar a string Base64
-    $dadosDecodificados = base64_decode($stringCompactada);
-    if ($dadosDecodificados === false) {
-        error_log("Erro: Não foi possível decodificar a string Base64.");
-        return "";
-    }
+    // Converte a string compactada de base64 de volta para binário
+    $stringCompactada = base64_decode($stringCompactada);
 
-    // Tenta descompactar a string usando gzip
-    $stringDescompactada = gzuncompress($dadosDecodificados);
-    if ($stringDescompactada === false) {
-        error_log("Erro: Não foi possível descompactar a string.");
-        return "";
-    }
+    // Descompacta a string usando gzip
+    $stringDescompactada = gzuncompress($stringCompactada);
 
+    // Retorna a string descompactada
     return $stringDescompactada;
 }
 
-function fnFormatvalor($brl, $casasDecimais = 2)
+function fnBase64DecodeImg($mensagem_codificada, $chave = '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef')
 {
-    // Se já estiver no formato USD, retorna como float e formatado
-    if (preg_match('/^\d+\.{1}\d+$/', $brl))
-        return (float) number_format($brl, $casasDecimais, '.', '');
-    // Tira tudo que não for número, ponto ou vírgula
-    $brl = preg_replace('/[^\d\.\,]+/', '', $brl);
-    // Tira o ponto
-    $decimal = str_replace('.', '', $brl);
-    // Troca a vírgula por ponto
-    $decimal = str_replace(',', '.', $decimal);
-    return (float) number_format($decimal, $casasDecimais, '.', '');
-}
-/*function fnBase64DecodeImg($string) {
-                                        // Verifica se a string está vazia ou não é uma string
-    if (empty($string) || !is_string($string)) {
-        return $string;
+    if ($mensagem_codificada != "") {
+        $decodificada = decodificar($mensagem_codificada, $chave);
+        // Verifica se a decodificação foi bem-sucedida
+        if ($decodificada !== false) {
+            return $decodificada;
+        } else {
+            return $mensagem_codificada;
+        }
     }
-
-                                        // Verifica o tamanho da string
-    $length = strlen($string);
-    if ($length % 4 !== 0) {
-        return $string;
-    }
-
-                                        // Verifica se a string contém apenas caracteres válidos em uma codificação Base64
-    if (!preg_match('/^[A-Za-z0-9+\/]*={0,2}$/', $string)) {
-        return $string;
-    }
-
-                                        // Decodifica a string
-    $decoded = decodificar($string, true);
-    if ($decoded === false) {
-        return $string;
-    }
-
-                                        // Re-codifica a string decodificada e verifica se é igual à string original
-    if (decodificar($decoded) !== $string) {
-        return $string;
-    }
-
-                                        // Se a string passou todas as verificações, é uma string Base64 válida
-    return $decoded;
-}
-*/
-/*function fnBase64DecodeImg($mensagem_codificada)
-{
-    $decodificada = decodificar($mensagem_codificada);
-    // Verifica se a decodificação foi bem-sucedida
-    if ($decodificada !== false) {
-        return $decodificada;
-    } else {
-        return $mensagem_codificada;
-    }
-}*/
-function fnBase64DecodeImg($mensagem_codificada)
-{
-    // Se a mensagem estiver vazia, retorna null
-    if (empty($mensagem_codificada)) {
-        return null;
-    }
-
-    $decodificada = decodificar($mensagem_codificada);
-
-    // Retorna o valor decodificado se obtido; caso contrário, retorna o valor original
-    return ($decodificada !== false) ? $decodificada : $mensagem_codificada;
 }
 
 
