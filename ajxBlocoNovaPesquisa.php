@@ -22,7 +22,16 @@ switch ($opcao) {
 		$cod_cliente = fnEncode(fnLimpaCampoZero($_POST['COD_CLIENTE']));
 		$cod_pesquisa = fnEncode(fnLimpaCampoZero($_POST['COD_PESQUISA']));
 
-		echo file_get_contents("http://tinyurl.com/api-create.php?url=" . "https://" . $des_dominio . ".fidelidade.mk/pesquisa?idP=" . $cod_pesquisa . "&idc=" . $cod_cliente);
+		$url_original = "https://" . $des_dominio . ".fidelidade.mk/pesquisa?idP=" . $cod_pesquisa;
+		$sql = "SELECT * FROM TAB_ENCURTADOR WHERE URL_ORIGINAL = '$url_original' AND COD_EMPRESA = $cod_empresa";
+
+		$arrayQuery = mysqli_query($connAdm->connAdm(), $sql);
+		$qrResult = mysqli_fetch_assoc($arrayQuery);
+		$urlEncurtada = "https://tkt.far.br/" . short_url_encode($qrResult['id']) . "/" . fnDecode($cod_cliente);
+
+		echo $urlEncurtada;
+
+		// echo file_get_contents("http://tinyurl.com/api-create.php?url=" . "https://" . $des_dominio . ".fidelidade.mk/pesquisa?idP=" . $cod_pesquisa . "&idc=" . $cod_cliente);
 
 		break;
 

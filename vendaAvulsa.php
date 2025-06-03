@@ -1,4 +1,12 @@
 <?php
+
+if ($_SESSION['SYS_COD_EMPRESA'] == 2) {
+	echo fnDebug('true');
+	ini_set('display_errors', 1);
+	ini_set('display_startup_errors', 1);
+	error_reporting(E_ALL);
+}
+
 $hashLocal = "";
 $msgTipo = "";
 $msgRetorno = "";
@@ -139,6 +147,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$val_totprodu = fnLimpacampo(@$_REQUEST['VAL_TOTPRODU']);
 		$val_resgate = fnLimpacampo(@$_REQUEST['VAL_RESGATE']);
 		$val_desconto = fnLimpacampo(@$_REQUEST['VAL_DESCONTO']);
+		if ($_REQUEST['COD_LANCAMEN'] == 4) {
+			$val_desconto = fnLimpacampo(@$_REQUEST['VAL_GERENCIAL']);
+		}
 		$val_gerencial  = fnLimpacampo(@$_REQUEST['VAL_GERENCIAL']);
 		$val_totvenda = fnLimpacampo(@$_REQUEST['VAL_TOTVENDA']);
 		$val_lancamento = fnLimpacampo(@$_REQUEST['VAL_LANCAMENTO']);
@@ -159,7 +170,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		if ($tip_contabil == "RESG") {
 			$resgateCerto = $val_resgate;
 		} else {
-			$resgateCerto = $val_desconto;
+			$resgateCerto = 0;
 		}
 
 		$opcao = @$_REQUEST['opcao'];
@@ -393,8 +404,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 					'datahora' => date("Y-m-d H:i:s"),
 					'cartao' => $num_cgcecpf,
 					'valortotalbruto' => str_replace(".", "", fnValor($val_venda, 2)),
-					'descontototalvalor' => str_replace(".", "", fnValor($val_desconto, 2)),
-					'valortotalliquido' => str_replace(".", "", fnValor($val_venda, 2)),
+					'descontototalvalor' => str_replace(".", "", $val_desconto),
+					'valortotalliquido' => str_replace(".", "", fnValor($val_liqvenda, 2)),
 					'valor_resgate' => str_replace(".", "", fnValor($val_resgate, 2)),
 					// 'cupomfiscal'=>date("dmYHis"),
 					'cupomfiscal' => "$des_cupom",

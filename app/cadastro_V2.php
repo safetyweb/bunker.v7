@@ -502,7 +502,7 @@ if ($tip_envio == 1) {
 }
 
 if($cod_empresa == 219){
-	$log_cadtoken = 'N';
+	// $log_cadtoken = 'N';
 }
 
 ?>
@@ -853,6 +853,7 @@ if($cod_empresa == 219){
 
 		var nom_cliente = $("#NOM_CLIENTE").val(),
 			num_celular = $("#NUM_CELULAR").val(),
+			des_emailus = $("#DES_EMAILUS").val(),
 			cad_num_celular = $("#CAD_NUM_CELULAR").val(),
 			key_num_celular = $("#KEY_NUM_CELULAR").val(),
 			num_cgcecpf = $("#NUM_CGCECPF").val(),
@@ -867,6 +868,7 @@ if($cod_empresa == 219){
 				data: { 
 						NOM_CLIENTE: nom_cliente, 
 						NUM_CELULAR: num_celular, 
+						DES_EMAILUS: des_emailus, 
 						CAD_NUM_CELULAR: cad_num_celular, 
 						KEY_NUM_CELULAR: key_num_celular, 
 						NUM_CGCECPF: num_cgcecpf, 

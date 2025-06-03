@@ -80,18 +80,19 @@ function GeraToken($dadosenvio,$dadoslogin)
         curl_close($curl);
 
         if ($err) {
-          $msg= "cURL Error #:" . $err;
-          $arraycpf= array('msg' => $msg);
+			$msg= "cURL Error #:" . $err;
+			$arraycpf= array('msg' => $msg);
                             
         } else {
-			 $doc = new DOMDocument();
-			  libxml_use_internal_errors(true);
-			  $doc->loadHTML($response);
-			  libxml_clear_errors();
-			  $xml = $doc->saveXML($doc->documentElement);
-			  $xml = simplexml_load_string($xml);             
- 			  $array = json_decode(json_encode($xml), TRUE);
-              return $array;
+			$doc = new DOMDocument();
+			libxml_use_internal_errors(true);
+			$doc->loadHTML($response);
+			libxml_clear_errors();
+			$xml = $doc->saveXML($doc->documentElement);
+			$xml = simplexml_load_string($xml);             
+			$array = json_decode(json_encode($xml), TRUE);
+
+			return $array;
         }
 } 
 function ValidaToken($dadosenvio,$dadoslogin)

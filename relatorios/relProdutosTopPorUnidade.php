@@ -202,6 +202,20 @@ include "unidadesAutorizadas.php";
 										<label for="inputName" class="control-label">Sub Grupo do Produto</label>
 										<div id="divId_sub">
 											<select data-placeholder="Selecione o sub grupo" name="COD_SUBCATE" id="COD_SUBCATE" class="chosen-select-deselect">
+												<?php
+												if ($cod_categor != 0 && $cod_categor != "") {
+													$sql = "SELECT * FROM SUBCATEGORIA WHERE COD_CATEGOR = $cod_categor AND COD_EMPRESA = $cod_empresa AND (COD_EXCLUSA is null OR COD_EXCLUSA =0) order by DES_SUBCATE";
+													$arrayQuery = mysqli_query(connTemp($cod_empresa, ''), $sql);
+													$selectSub = "";
+													while ($qrListaSubcategoria = mysqli_fetch_assoc($arrayQuery)) {
+														$selectSub = ($cod_subcate == $qrListaSubcategoria['COD_SUBCATE']) ? "selected" : "";
+												?>
+														<option value='<?= $qrListaSubcategoria['COD_SUBCATE'] ?>' <?= $selectSub ?>><?= $qrListaSubcategoria['DES_SUBCATE'] ?></option>
+												<?php
+													}
+												}
+
+												?>
 												<option value="">&nbsp;</option>
 											</select>
 										</div>
@@ -362,8 +376,6 @@ include "unidadesAutorizadas.php";
 			                                                    ORDER BY QTD_PRODUTO DESC 
 			                                                    limit $inicio,$itens_por_pagina";
 
-										//fnEscreve($sql);
-
 										$arrayQuery = mysqli_query(connTemp($cod_empresa, ''), $sql);
 
 
@@ -397,8 +409,18 @@ include "unidadesAutorizadas.php";
 									<tfoot>
 										<tr>
 											<th colspan="100">
-												<a class="btn btn-info btn-sm exportarCSV" data-opcao="exportar"><i class="fa fa-file-excel" aria-hidden="true"></i> &nbsp; Exportar </a>
-												<a class="btn btn-info btn-sm exportarCSV" data-opcao="detalhes"><i class="fa fa-file-excel" aria-hidden="true"></i> &nbsp; Exportar (Detalhado)</a>
+												<div class="btn-group dropdown dropright">
+													<button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+														Exportar &nbsp;
+														<span class="fas fa-file-excel"></span>
+													</button>
+													<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+														<li><a href='javascript:void(0)' class='exportarCSV' data-opcao="exportar"><span class="fa fa-file-excel"></span>&nbsp; Exportar </a></li>
+														<li><a href='javascript:void(0)' class='exportarCSV' data-opcao="detalhes"><span class="fa fa-file-excel"></span>&nbsp; Exportar (Detalhado) </a></li>
+														<!-- <a class="exportarCSV" data-opcao="exportar"><i class="fa fa-file-excel" aria-hidden="true"></i> &nbsp; Exportar </a>
+														<a class="exportarCSV" data-opcao="detalhes"><i class="fa fa-file-excel" aria-hidden="true"></i> &nbsp; Exportar (Detalhado)</a> -->
+													</ul>
+												</div>
 											</th>
 										</tr>
 										<tr>

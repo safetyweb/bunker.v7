@@ -153,6 +153,31 @@ if ($des_dominio == "") {
 	$disableBtn = "disabled";
 }
 
+$tinyUrl =  file_get_contents("http://tinyurl.com/api-create.php?url=" . "https://" . $des_dominio . ".fidelidade.mk/pesquisa?idP=" . fnEncode($cod_pesquisa));
+if ($_SESSION['SYS_COD_EMPRESA'] == 2) {
+	$parte = explode("/", $tinyUrl);
+	$chave_encurtada = end($parte);
+	$url_original = "https://" . $des_dominio . ".fidelidade.mk/pesquisa?idP=" . fnEncode($cod_pesquisa);
+
+	$sql = "SELECT * FROM TAB_ENCURTADOR WHERE URL_ORIGINAL = '$url_original' AND COD_EMPRESA = $cod_empresa";
+	$arrayQuery = mysqli_query($connAdm->connAdm(), $sql);
+	if (mysqli_num_rows($arrayQuery) == 0) {
+		$titulo = "Pesquisa NPS - " . $des_pesquisa . " #" . $cod_pesquisa;
+		$funcao = fnEncurtador($titulo, $chave_encurtada, $tinyUrl, $url_original, 'NPS', $cod_empresa, $connAdm->connAdm(), $cod_campanha);
+		if ($funcao) {
+			$urlEncurtada = "tkt.far.br/" . $funcao;
+		} else {
+			$urlEncurtada = "";
+			$msgRetorno = "Ocorreu um erro ao encurtar a URL, se persistir entre em contato com o suporte.";
+			$msgTipo = 'alert-danger';
+			$tipoAlert = "alert-danger";
+		}
+	} else {
+		$qrResult = mysqli_fetch_assoc($arrayQuery);
+		$urlEncurtada = "tkt.far.br/" . short_url_encode($qrResult['id']);
+	}
+}
+
 ?>
 
 <!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"> -->
@@ -1315,12 +1340,12 @@ if ($des_dominio == "") {
 												</div>
 
 												<div class="col-xs-5">
-													<input type="text" id="linkPesquisa" class="form-control input-md pull-right text-center" value='https://<?= $des_dominio ?>.fidelidade.mk/pesquisa?idP=<?= fnEncode($cod_pesquisa) ?>' readonly>
-													<input type="hidden" id="LINK_SEMCLI" value='https://<?= $des_dominio ?>.fidelidade.mk/pesquisa?idP=<?= fnEncode($cod_pesquisa) ?>'>
+													<input type="text" id="linkPesquisa" class="form-control input-md pull-right text-center" value='<?= $urlEncurtada ?>' readonly>
+													<input type="hidden" id="LINK_SEMCLI" value='<?= $urlEncurtada ?>'>
 												</div>
 
 												<div class="col-xs-3">
-													<input type="text" id="COD_CLIENTE" class="form-control input-md pull-right text-center int" placeholder="Cód. Cliente" value='' onkeyup="shortenUrl($(this).val())">
+													<input type="text" id="COD_CLIENTE" class="form-control input-md pull-right text-center int" placeholder="Cód. Cliente" value="<?= $urlEncurtada ?>" onkeyup="shortenUrl($(this).val())">
 												</div>
 
 											</div>
@@ -1358,10 +1383,12 @@ if ($des_dominio == "") {
 													</script>
 												</div>
 
-												<?= file_get_contents("http://tinyurl.com/api-create.php?url=" . "https://" . $des_dominio . ".fidelidade.mk/pesquisa?idP=" . fnEncode($cod_pesquisa)) ?>
+												<?php
+												// echo $urlEncurtada; 
+												?>
 
 												<div class="col-md-6">
-													<a href='https://<?= $des_dominio ?>.fidelidade.mk/pesquisa?idP=<?= fnEncode($cod_pesquisa) ?>' id="btnLink" <?= $disableBtn ?> class="btn btn-default pull-right" target="_blank"><i class="fas fa-arrow-right" aria-hidden="true"></i>&nbsp; Acessar Pesquisa</a>
+													<a href='https://<?= $urlEncurtada ?>' id="btnLink" <?= $disableBtn ?> class="btn btn-default pull-right" target="_blank"><i class="fas fa-arrow-right" aria-hidden="true"></i>&nbsp; Acessar Pesquisa</a>
 												</div>
 
 											</div>
@@ -1950,7 +1977,7 @@ if ($des_dominio == "") {
 					method: 'POST',
 					url: 'ajxBlocoNovaPesquisa.do?opcao=shortenUrl',
 					data: {
-						COD_EMPRESA: 0,
+						COD_EMPRESA: '<?= fnEncode($cod_empresa); ?>',
 						COD_CLIENTE: cod_cliente,
 						COD_PESQUISA: <?= $cod_pesquisa ?>,
 						DES_DOMINIO: "<?= $des_dominio ?>"
@@ -1959,6 +1986,7 @@ if ($des_dominio == "") {
 						$('#linkPesquisa').val('Gerando link...');
 					},
 					success: function(data) {
+						console.log(data);
 						$('#linkPesquisa').val(data);
 						$('#btnLink').attr('href', data);
 					}

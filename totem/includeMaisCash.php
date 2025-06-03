@@ -1021,7 +1021,7 @@ if ($log_dat_nascime == 'S') {
 
 		if ($senha == "") {
 
-			$wizardSenha = "";
+			$wizardSenha = "int";
 
 			if ($tip_senha != "2") {
 				$wizardSenha = "pr-password";
@@ -1044,7 +1044,7 @@ if ($log_dat_nascime == 'S') {
 				<div class="form-group">
 					<label>&nbsp;</label>
 					<label for="inputName" class="control-label required">Confirme sua senha</label>
-					<input type="password" placeholder="Confirmar Senha" style="font-size: 36px;" class="form-control input-hg input-lg text-center <?= $classeSenha ?>" data-minlength-error="Mínimo de <?= $min_senha ?> caracteres." data-maxlength-error="Máximo de <?= $max_senha ?> caracteres." name="DES_SENHAUS_CONF" id="DES_SENHAUS_CONF" minlength="<?= $min_senha ?>" maxlength="<?= $max_senha ?>" data-match="#DES_SENHAUS" data-required-error="Campo obrigatório" data-match-error="Senhas diferentes" required>
+					<input type="password" placeholder="Confirmar Senha" style="font-size: 36px;" class="form-control input-hg input-lg text-center <?= $wizardSenha ?> <?= $classeSenha ?>" data-minlength-error="Mínimo de <?= $min_senha ?> caracteres." data-maxlength-error="Máximo de <?= $max_senha ?> caracteres." name="DES_SENHAUS_CONF" id="DES_SENHAUS_CONF" minlength="<?= $min_senha ?>" maxlength="<?= $max_senha ?>" data-match="#DES_SENHAUS" data-required-error="Campo obrigatório" data-match-error="Senhas diferentes" required>
 					<div class="help-block with-errors f12"></div>
 				</div>
 			</div>
@@ -1508,23 +1508,23 @@ if ($log_dat_nascime == 'S') {
 					<div class="col-md-12 text-center">
 						<a href="javascript:void(0)" name="EXC" id="EXC" tabindex="5" onclick='ajxDescadastra("<?= fnEncode($cod_cliente) ?>")' style="font-size: 16px;"><?= $txtDescad ?></a>
 					</div>
-				<?php
+					<?php
 				} else if ($cod_empresa == 19) {
 
-					if($isApp){
+					if ($isApp) {
 
-				?>
-					<div class="push20"></div>
-					<div class="col-md-12 text-center">
-						<a href="formularioDescadastro.php?key=<?= $_GET[key] ?>&idU=<?= $_GET[idU] ?>&t=<?= $rand ?>" name="EXC" id="EXC" tabindex="5"  style="font-size: 16px;"><?= $txtDescad ?></a>
-					</div>
-				<?php
-					}else{
-				?>
-					<div class="push20"></div>
-					<div class="col-md-12 text-center">
-						<a href="javascript:void(0)" name="EXC" id="EXC" tabindex="5" onclick='ajxDescadastraDq("<?= fnEncode($cod_cliente) ?>")' style="font-size: 16px;"><?= $txtDescad ?></a>
-					</div>
+					?>
+						<div class="push20"></div>
+						<div class="col-md-12 text-center">
+							<a href="formularioDescadastro.php?key=<?= $_GET["key"] ?>&idU=<?= $_GET["idU"] ?>&t=<?= $rand ?>" name="EXC" id="EXC" tabindex="5" style="font-size: 16px;"><?= $txtDescad ?></a>
+						</div>
+					<?php
+					} else {
+					?>
+						<div class="push20"></div>
+						<div class="col-md-12 text-center">
+							<a href="javascript:void(0)" name="EXC" id="EXC" tabindex="5" onclick='ajxDescadastraDq("<?= fnEncode($cod_cliente) ?>")' style="font-size: 16px;"><?= $txtDescad ?></a>
+						</div>
 				<?php
 					}
 				}

@@ -294,7 +294,7 @@ while ($rsempresa = mysqli_fetch_assoc($rwempresa)) {
 						B.TIP_CREDITO='C' AND
 						B.COD_STATUSCRED='1' 
 						GROUP BY B.COD_CLIENTE      
-						HAVING (SELECT SUM(val_saldo) FROM creditosdebitos E WHERE E.COD_CLIENTE=C.COD_CLIENTE AND COD_STATUSCRED=1) >= $tot_saldomin";
+						HAVING (SELECT COALESCE(SUM(E.val_saldo), 0.00) val_saldo FROM creditosdebitos E WHERE E.COD_CLIENTE=C.COD_CLIENTE AND COD_STATUSCRED=1) >= $tot_saldomin";
 			mysqli_query($contemporaria, $sqlIns);
 			fnLog(array("DESCRICAO" => "Gravando Créditos a Expirar", "COD_EMPRESA" => $cod_empresa, "SQL" => $sqlIns, "ERRO" => mysqli_error($contemporaria), "COD_GATILHO" => $cod_gatilho, "TIP_GATILHO" => $tip_gatilho));
 		} elseif ($tip_gatilho == "inativos") {
@@ -389,6 +389,9 @@ while ($rsempresa = mysqli_fetch_assoc($rwempresa)) {
 
 				case '<#NOME>';
 					$selectCliente .= "SUBSTRING_INDEX(SUBSTRING_INDEX(concat(Upper(SUBSTR(C.NOM_CLIENTE, 1,1)), lower(SUBSTR(C.NOM_CLIENTE, 2,LENGTH(C.NOM_CLIENTE)))), ' ', 1), ' ', -1) AS NOM_CLIENTE, ";
+					break;
+				case '<#CODCLIENTE>';
+					$selectCliente .= "C.COD_CLIENTE CODCLIENTE,";
 					break;
 				case '<#CARTAO>';
 					$selectCliente .= "";
@@ -590,6 +593,7 @@ while ($rsempresa = mysqli_fetch_assoc($rwempresa)) {
 			$textoenvio = str_replace('<#EMAIL>', @$rsemail_fila['DES_EMAILUS'], $textoenvio);
 			$textoenvio = str_replace('<#RESGATE>', @$rsemail_fila['VAL_RESGATE'], $textoenvio);
 			$textoenvio = str_replace('<#SALDOEXPIRA>', @$rsemail_fila['VAL_EXPIRAR'], $textoenvio);
+			$textoenvio = str_replace('<#CODCLIENTE>', $rsemail_fila['CODCLIENTE'], $textoenvio);
 			$textoenvio = nl2br($textoenvio, true);
 			$textoenvio = str_replace('<br />', ' \n ', $textoenvio);
 			$textoenvio = str_replace("'", "", $textoenvio);

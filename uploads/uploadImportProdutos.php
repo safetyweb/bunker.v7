@@ -6,7 +6,7 @@ require_once '../_system/convertxlsxtocsv.php';
 
 //echo fnDebug('true');
 ////fnEscreve('Entra no ajax');
-
+$sql1 = "";
 if ($_SESSION['SYS_COD_EMPRESA'] == 2) {
 	echo fnDebug('true');
 	ini_set('display_errors', 1);
@@ -98,7 +98,7 @@ switch ($acao) {
 								$row[$k] = $r;
 							}
 						}
-
+						$codigosExternosBanco = [];
 						// Pula a primeira linha (cabeçalho)
 						if ($contador == 0) {
 							$colunas = array_filter($row, function ($a) {
@@ -107,10 +107,12 @@ switch ($acao) {
 						} else if ($contador != 0 && count($colunas) == 13) {
 
 							// Buscando string SQL pelo código externo do produto
-							if (strpos(@$sql1, fnLimpaCampo(trim($row[0])))) {
+							if (in_array($row[0], $codigosExternosBanco)) {
+								// fnEscreve(trim($row[0]));
 								// Incrementando o contador caso o código externo seja duplicado (para informar o número de registros duplicados)
 								$duplicado++;
 							} else {
+								$codigosExternosBanco[] = $row[0];
 								// Comparando o último código externo com o código externo a ser gravado
 								if (fnLimpaCampo(trim($row[0])) != $ultimo_cod && fnLimpaCampo(trim($row[0])) != "") {
 									// Limitando o nome do produto a 250 caracteres (limite definido no campo da tabela)
@@ -196,7 +198,7 @@ switch ($acao) {
 											LOG_PBM,
 											LOG_ATIVO
 											) VALUES $insert";
-										// fnEscreve($insert);
+
 										mysqli_query(connTemp($cod_empresa, ""), trim($sql1));
 										// fnTesteSql(connTemp($cod_empresa, ""), trim($sql1));
 										// fnEscreve($sql1);
@@ -279,7 +281,6 @@ switch ($acao) {
 				echo 'Arquivo infectado por: <i>' . $retorno['MSG'] . '</i>';
 			}
 		}
-
 		break;
 
 	case "ler": //Rotina de leitura da prévia dos dados enviados
@@ -663,14 +664,7 @@ switch ($acao) {
 				AND i.COD_EMPRESA = $cod_empresa
 				GROUP BY i.DES_CATEGOR, i.DES_SUBCATE;
 
-				UPDATE subcategoria s
-				JOIN import_produtos i ON i.COD_SUBEXTE = s.COD_SUBEXTE
-				SET s.DES_SUBCATE = i.DES_SUBCATE
-				WHERE s.COD_EMPRESA = $cod_empresa  AND s.DES_SUBCATE <> i.DES_SUBCATE
-				AND i.DES_SUBCATE != ''
-				AND i.COD_SUBEXTE IS NOT NULL
-				AND i.COD_SUBEXTE != ''
-				AND i.COD_SUBEXTE != 0;";
+			";
 			mysqli_multi_query(connTemp($cod_empresa, ""), trim($sqlInsereSubcate));
 
 			$sqlFornecedor = "INSERT INTO fornecedormrka (COD_EXTERNO, NOM_FORNECEDOR, COD_EMPRESA, COD_USUCADA, DAT_CADASTR)

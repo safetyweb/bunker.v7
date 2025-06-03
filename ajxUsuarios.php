@@ -248,6 +248,7 @@ switch ($opcao) {
 		$log_usuario = fnLimpaCampo($_POST['LOG_USUARIO']);
 
 		$sql = "SELECT * FROM USUARIOS WHERE COD_EMPRESA = $cod_empresa AND LOG_USUARIO = '$log_usuario'";
+
 		$query = mysqli_query($connAdm->connAdm(), $sql);
 		$qtdRegistros = mysqli_num_rows($query);
 

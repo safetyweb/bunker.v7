@@ -523,7 +523,7 @@ function AtualizaCadastro($fase, $cliente, $dadosLogin)
      return array('AtualizaCadastroResult'=>array('msgerro' => print_r($tesr)));  
     }*/
     //formata PF/PJ
-    if (trim($cliente['tipocliente']) == 'PF' || trim($cliente['tipocliente']) == '') {
+    if (trim($cliente['tipocliente']) == 'PF' || trim($cliente['tipocliente']) == '' || trim($cliente['tipocliente']) == 'F') {
         $TP_CLIENTE = 'F';
     } else {
         $TP_CLIENTE = 'J';

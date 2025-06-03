@@ -437,6 +437,9 @@ while ($rsempresa = mysqli_fetch_assoc($rwempresa)) {
                 case '<#NOME>';
                     $selectCliente .= "C.NOM_CLIENTE, ";
                     break;
+                case '<#CODCLIENTE>';
+                    $selectCliente .= "C.COD_CLIENTE CODCLIENTE,";
+                    break;
                 case '<#CARTAO>';
                     $selectCliente .= "";
                     break;
@@ -611,7 +614,7 @@ while ($rsempresa = mysqli_fetch_assoc($rwempresa)) {
 						group by C.COD_CLIENTE
 						" .
             ($tip_gatilho == "venda" ?
-                "HAVING (SELECT SUM(val_saldo) FROM creditosdebitos E WHERE E.COD_CLIENTE=C.COD_CLIENTE AND E.COD_STATUSCRED=1) >= $tot_saldomin" :
+                "HAVING (SELECT COALESCE(SUM(E.val_saldo), 0.00) val_saldo FROM creditosdebitos E WHERE E.COD_CLIENTE=C.COD_CLIENTE AND E.COD_STATUSCRED=1) >= $tot_saldomin" :
                 ""
             );
         //echo "<pre>$sqlcli_cad";exit;
@@ -662,6 +665,7 @@ while ($rsempresa = mysqli_fetch_assoc($rwempresa)) {
             $textoenvio = str_replace('<#SALDOEXPIRA>', @$rsemail_fila['VAL_EXPIRAR'], $textoenvio);
             $textoenvio = str_replace('<#CREDITOVENDA>', @$rsemail_fila['CRED_VENDA'], $textoenvio);
             $textoenvio = str_replace('<#DATAEXPIRAMAX>', fnDataShort(@$rsemail_fila['DATAEXPIRAMAX']), $textoenvio);
+            $textoenvio = str_replace('<#CODCLIENTE>', $rsemail_fila['CODCLIENTE'], $textoenvio);
 
             //$textoenvio=str_replace('<#LINKATIVACAO>', 'http://'.@$DES_DOMINIO.'.mais.cash/active.do?idC='.fnEncode($cod_cliente), $textoenvio);
             if ($COD_DOMINIO == '1') {

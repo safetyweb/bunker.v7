@@ -463,7 +463,8 @@ function ValidaDescontos($cpfcnpj, $cartao, $valortotalliquido, $valor_resgate, 
                 $dadosLogin['idcliente'] == '430' ||
                 $dadosLogin['idcliente'] == '66'  ||
                 $dadosLogin['idcliente'] == '218' ||
-                $dadosLogin['idcliente'] == '34'
+                $dadosLogin['idcliente'] == '34'  ||
+                $dadosLogin['idcliente'] == '602'
             ) {
 
                 $valormaxresgate = (fnFormatvalor($valortotalliquido, $dec) * $resgresult['PCT_MAXRESG']) / 100;

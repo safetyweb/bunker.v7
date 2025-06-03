@@ -12,6 +12,7 @@ $req_senha = '';
 $hashLocal = mt_rand();
 $cod_empresa = fnDecode($_GET['id']);
 $opcao = @$_REQUEST['opcao'];
+$log_validadesc = "N";
 
 $adm = $connAdm->connAdm();
 
@@ -51,6 +52,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $opcao <> "") {
         } else {
             $log_configu = $_REQUEST['LOG_CONFIGU'];
         }
+        $log_validadesc = 'N';
+        if (isset($_REQUEST['LOG_VALIDADESC'])) {
+            $log_validadesc = $_REQUEST['LOG_VALIDADESC'];
+        }
+
         if (empty($_REQUEST['TIP_REGVENDA'])) {
             $tip_regvenda = '1';
         } else {
@@ -324,6 +330,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $opcao <> "") {
             '" . $tip_estorno . "', 
             '" . $log_dat_nascime . "', 
             '" . $log_alterahs . "',
+            '" . $log_validadesc . "',
             '" . $opcao . "'    
         ) ";
             // fnEscreve($sql);
@@ -662,7 +669,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $opcao <> "") {
                                         <label class="switch switch-small">
                                             <input type="checkbox" name="LOG_PDVMANU" id="LOG_PDVMANU"
                                                 class="switch switch-small" value="1"
-                                                <?= (@$log_pdvmanu == "S" ? "checked" : "") ?>>
+                                                <?= (@$log_pdvmanu > 0 ? "checked" : "") ?>>
                                             <span></span>
                                         </label>
                                     </div>
@@ -794,6 +801,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $opcao <> "") {
                                             <input type="checkbox" name="LOG_ALTERAHS" id="LOG_ALTERAHS"
                                                 class="switch switch-small" value="S"
                                                 <?= (@$log_alterahs == "S" ? "checked" : "") ?>>
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="inputName" class="control-label">Nova Versão <br />Válida Desconto</label>
+                                        <div class="push5"></div>
+                                        <label class="switch switch-small">
+                                            <input type="checkbox" name="LOG_VALIDADESC" id="LOG_VALIDADESC"
+                                                class="switch switch-small" value="S"
+                                                <?= ($log_validadesc == "S" ? "checked" : "") ?>>
                                             <span></span>
                                         </label>
                                     </div>

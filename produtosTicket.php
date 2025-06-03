@@ -107,6 +107,7 @@ $arrayPersonas = [];
 $valores = "";
 $iconePersona = "";
 $obj = "";
+$log_destaque = "";
 
 
 $hashLocal = mt_rand();
@@ -146,6 +147,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			$log_prodtkt = 'N';
 		} else {
 			$log_prodtkt = @$_REQUEST['LOG_PRODTKT'];
+		}
+		if (empty(@$_REQUEST['LOG_DESTAQUE'])) {
+			$log_destaque = 'N';
+		} else {
+			$log_destaque = @$_REQUEST['LOG_DESTAQUE'];
 		}
 
 		$dat_iniptkt = fnDataSql(@$_POST['DAT_INIPTKT']);
@@ -452,6 +458,11 @@ if (!empty($_POST["FIL_UNIVEND"]) && is_array($_POST["FIL_UNIVEND"]) && $_POST["
 	$fil_univend = "0";
 }
 
+$andDestaque = "";
+if (!empty($_POST["LOG_DESTAQUE"]) && $_POST["LOG_DESTAQUE"] == "S") {
+	$andDestaque = " AND PRODUTOTKT.LOG_OFERTAS = 'S'";
+}
+
 ?>
 
 <style>
@@ -542,6 +553,17 @@ if (!empty($_POST["FIL_UNIVEND"]) && is_array($_POST["FIL_UNIVEND"]) && $_POST["
 											<div class="push5"></div>
 											<label class="switch">
 												<input type="checkbox" name="LOG_VALIDO" id="LOG_VALIDO" class="switch" value="S" onchange="carregaProdValidos(this)" <?= (@$_POST["LOG_VALIDO"] == "S" ? "checked" : "") ?>>
+												<span></span>
+											</label>
+										</div>
+									</div>
+
+									<div class="col-md-2 text-left">
+										<div class="form-group">
+											<label for="inputName" class="control-label">Somente <br /> Produtos em Destaque</label>
+											<div class="push5"></div>
+											<label class="switch">
+												<input type="checkbox" name="LOG_DESTAQUE" id="LOG_DESTAQUE" class="switch" value="S" onchange="carregaProdValidos(this)" <?= (@$_POST["LOG_DESTAQUE"] == "S" ? "checked" : "") ?>>
 												<span></span>
 											</label>
 										</div>
@@ -1259,7 +1281,8 @@ if (!empty($_POST["FIL_UNIVEND"]) && is_array($_POST["FIL_UNIVEND"]) && $_POST["
 														-- AND PRODUTOCLIENTE.COD_EXCLUSA = 0
                                                         AND  case when PRODUTOCLIENTE.COD_EXCLUSA = 0 then 0 ELSE 1 end IN (0,1)
 														$where
-														$andFiltro";
+														$andFiltro
+														$andDestaque";
 
 											//fnEscreve($sql);
 
@@ -1288,6 +1311,7 @@ if (!empty($_POST["FIL_UNIVEND"]) && is_array($_POST["FIL_UNIVEND"]) && $_POST["
                                                             AND  case when PRODUTOCLIENTE.COD_EXCLUSA = 0 then 0 ELSE 1 end IN (0,1)
 															$where
 															$andFiltro
+															$andDestaque
 															$orderBy
 															LIMIT $inicio, $itens_por_pagina";
 											// echo $sql;

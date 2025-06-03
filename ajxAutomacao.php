@@ -30,7 +30,7 @@ switch ($opcao) {
 
         // Adiciona cabeçalho no CSV
         $header = ['ID_LOJA', 'CNPJ', 'NOMA_UNIDADE', 'ID_EMPRESA', 'LOGIN', 'SENHA', 'TOKEN'];
-        fputcsv($file, $header);
+        fputcsv($file, $header, ';');
 
         // Busca as unidades de venda
         $sqlBusca = "SELECT COD_UNIVEND, NOM_FANTASI, NUM_CGCECPF FROM UNIDADEVENDA WHERE COD_EMPRESA = $cod_empresa";
@@ -49,7 +49,7 @@ switch ($opcao) {
 
             // Dados para cada linha do CSV
             $data = [$codUnivend, $numCnpj, $nomeFantasia, $cod_empresa, $log_usuario, fnDecode($des_senhaus), $autoriz];
-            fputcsv($file, $data);
+            fputcsv($file, $data, ';');
         }
 
         // Fecha o arquivo CSV

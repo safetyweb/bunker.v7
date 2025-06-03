@@ -72,73 +72,8 @@ if (file_exists('./COMANDINSERT/Primeiravenda.txt')) {
   }
   file_put_contents('./COMANDINSERT/Primeiravenda.txt', time());
 }
+echo 'passo1';
 
-//envio de saldo da comunicação
-/*if(file_exists('./COMANDINSERT/EnvioSaldo.txt'))
-{    
-    if ((time() - filemtime('./COMANDINSERT/EnvioSaldo.txt')) >= 8 * 60 * 60) {
-
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-        CURLOPT_URL => 'http://externo.bunker.mk/twilo/EnvioSaldo.php',
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => "",
-        CURLOPT_MAXREDIRS => 100,
-        CURLOPT_TIMEOUT => 180000,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => "POST",
-        CURLOPT_POSTFIELDS => "",
-        CURLOPT_HTTPHEADER => array(
-                                    "Postman-Token: ba34fc31-389a-447e-84e2-4d12b0e2982d",
-                                    "cache-control: no-cache"
-                                    ),
-            )
-        );
-
-      $response = curl_exec($curl);
-      $err = curl_error($curl);
-
-      curl_close($curl);
-
-        if ($err) {
-          echo "cURL Error #:" . $err;
-        } else {
-          echo $response;
-        }    
-       file_put_contents('./COMANDINSERT/EnvioSaldo.txt', time());
-    }else{
-        echo 'fora do time envio de saldo';
-    }
-}else{
-     $curl = curl_init();
-        curl_setopt_array($curl, array(
-        CURLOPT_URL => 'http://externo.bunker.mk/twilo/EnvioSaldo.php',
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => "",
-        CURLOPT_MAXREDIRS => 100,
-        CURLOPT_TIMEOUT => 180000,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => "POST",
-        CURLOPT_POSTFIELDS => "",
-        CURLOPT_HTTPHEADER => array(
-                                    "Postman-Token: ba34fc31-389a-447e-84e2-4d12b0e2982d",
-                                    "cache-control: no-cache"
-                                    ),
-            )
-        );
-
-      $response = curl_exec($curl);
-      $err = curl_error($curl);
-
-      curl_close($curl);
-
-        if ($err) {
-          echo "cURL Error #:" . $err;
-        } else {
-          echo $response;
-        }    
-       file_put_contents('./COMANDINSERT/EnvioSaldo.txt', time());
-}    */
 //envio de saldo de sms por emailproxima atualização é enviar por sms
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 $caminhoArquivo = './COMANDINSERT/EnvioSaldo.csv';
@@ -187,6 +122,7 @@ function verificarEEnviarSaldo($caminhoArquivo, $intervaloTempo)
                  WHERE 
                     res.tip_restric = 'SLD' AND    
                     us.LOG_ESTATUS = 'S' AND
+                    res.DES_GATILHO IS NOT NULL AND 
                     us.DES_EMAILUS REGEXP '^[a-zA-Z0-9][a-zA-Z0-9._-]*[a-zA-Z0-9._-]@[a-zA-Z0-9][a-zA-Z0-9._-]*[a-zA-Z0-9].[a-zA-Z]{2,63}$'  
                  GROUP BY res.COD_EMPRESA, res.TIP_RESTRIC";
   $rwempresa = mysqli_query($conadmmysql, $empresas);
@@ -211,6 +147,7 @@ function verificarEEnviarSaldo($caminhoArquivo, $intervaloTempo)
                       pedido.TIP_LANCAMENTO = 'C' 
                   GROUP BY canal.COD_TPCOM, pedido.TIP_LANCAMENTO
                   ORDER BY pedido.TIP_LANCAMENTO DESC";
+    //echo '<br>' . $saldo . '<br>';
     $rwsaldo = mysqli_fetch_assoc(mysqli_query($conadmmysql, $saldo));
 
     $ultimoEnvio = isset($dados[$rsempresa['COD_EMPRESA']]) ? $dados[$rsempresa['COD_EMPRESA']] : null;
@@ -224,11 +161,7 @@ function verificarEEnviarSaldo($caminhoArquivo, $intervaloTempo)
         }
         $email = [];
         unset($email['email6']);
-        $email['email6'] = $rsempresa['DES_EMAILUS'];
-        //  $email['email6']='diogo_tank@hotmail.com;ricardoaugusto6693@gmail.com';
-        // $email['email5'] ='diogo_tank@hotmail.com';
-        //  $email['email5'] = 'diogo_tank@hotmail.com';
-
+        $email['email1'] = $rsempresa['DES_EMAILUS'];
         $retorno = fnsacmail(
           $email,
           'Suporte Marka_' . $rsempresa['COD_EMPRESA'],
@@ -237,7 +170,7 @@ function verificarEEnviarSaldo($caminhoArquivo, $intervaloTempo)
           "Marka Fidelização_" . $rsempresa['COD_EMPRESA'],
           $conadmmysql,
           connTemp(7, ""),
-          7
+          3
         );
         unset($htmle);
       }
@@ -253,60 +186,19 @@ function verificarEEnviarSaldo($caminhoArquivo, $intervaloTempo)
   atualizarArquivoCsv($caminhoArquivo, $dados);
   echo json_encode($retornoarray, true);
 }
+echo 'passo2';
+/*ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);*/
 
 // Chamar a função para verificar e enviar saldo
-verificarEEnviarSaldo($caminhoArquivo, $intervaloTempo);
 
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-/*
-		$filePath = './COMANDINSERT/EnvioSaldo.txt';
-		$timeInterval = 8 * 60 * 60; // 8 hours
-
-		function makeCurlRequest() {
-			$curl = curl_init();
-			curl_setopt_array($curl, array(
-				CURLOPT_URL => 'http://externo.bunker.mk/twilo/EnvioSaldo.php',
-				CURLOPT_RETURNTRANSFER => true,
-				CURLOPT_ENCODING => "",
-				CURLOPT_MAXREDIRS => 100,
-				CURLOPT_TIMEOUT => 180, // 180 seconds (3 minutes)
-				CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-				CURLOPT_CUSTOMREQUEST => "POST",
-				CURLOPT_POSTFIELDS => "",
-				CURLOPT_HTTPHEADER => array(
-					"Postman-Token: ba34fc31-389a-447e-84e2-4d12b0e2982d",
-					"cache-control: no-cache"
-				),
-			));
-
-			$response = curl_exec($curl);
-			$err = curl_error($curl);
-			curl_close($curl);
-
-			if ($err) {
-				echo "cURL Error #:" . $err;
-			} else {
-				echo $response;
-			}
-
-			file_put_contents($GLOBALS['filePath'], time());
-		}
-
-		if (file_exists($filePath)) {
-			if ((time() - filemtime($filePath)) >= $timeInterval) {
-				makeCurlRequest();
-			} else {
-				echo 'fora do time envio de saldo';
-			}
-		} else {
-			makeCurlRequest();
-		}
-*/
-
+//verificarEEnviarSaldo('./externo/Schedule/COMANDINSERT/EnvioSaldo.csv', '172800');
 
 $smsv1 = "SELECT * FROM senhas_parceiro apar
 				INNER JOIN parceiro_comunicacao par ON par.COD_PARCOMU=apar.COD_PARCOMU
-                                INNER JOIN empresas emp ON emp.COD_EMPRESA = apar.COD_EMPRESA  and emp.LOG_ATIVO='S'
+        INNER JOIN empresas emp ON emp.COD_EMPRESA = apar.COD_EMPRESA  and emp.LOG_ATIVO='S'
+        inner join tab_database t ON t.COD_EMPRESA=apar.COD_EMPRESA 
 				WHERE par.COD_TPCOM in ('2','5','1') AND apar.LOG_ATIVO='S' ORDER BY apar.cod_empresa ASC limit 1";
 $rwv = mysqli_query($connAdm->connAdm(), $smsv1);
 while ($rsv = mysqli_fetch_assoc($rwv)) {
@@ -354,10 +246,12 @@ while ($rsv = mysqli_fetch_assoc($rwv)) {
   }
 }
 
+echo 'passo3';
 
 $smsv2 = "SELECT * FROM senhas_parceiro apar
 				INNER JOIN parceiro_comunicacao par ON par.COD_PARCOMU=apar.COD_PARCOMU
-                                INNER JOIN empresas emp ON emp.COD_EMPRESA = apar.COD_EMPRESA  and emp.LOG_ATIVO='S'
+        INNER JOIN empresas emp ON emp.COD_EMPRESA = apar.COD_EMPRESA  and emp.LOG_ATIVO='S'
+        inner join tab_database t ON t.COD_EMPRESA=apar.COD_EMPRESA 
 				WHERE par.COD_TPCOM in ('2','5','1') AND apar.LOG_ATIVO='S' ORDER BY apar.cod_empresa ASC limit 1";
 $rwv = mysqli_query($connAdm->connAdm(), $smsv2);
 while ($rsv = mysqli_fetch_assoc($rwv)) {
@@ -404,11 +298,12 @@ while ($rsv = mysqli_fetch_assoc($rwv)) {
     break;
   }
 }
-
+echo 'passo4';
 //restrição de envio 
 $smsv = "SELECT * FROM senhas_parceiro apar
 				INNER JOIN parceiro_comunicacao par ON par.COD_PARCOMU=apar.COD_PARCOMU
-                                INNER JOIN empresas emp ON emp.COD_EMPRESA = apar.COD_EMPRESA  and emp.LOG_ATIVO='S'
+        INNER JOIN empresas emp ON emp.COD_EMPRESA = apar.COD_EMPRESA  and emp.LOG_ATIVO='S'
+        inner join tab_database t ON t.COD_EMPRESA=apar.COD_EMPRESA 
 				WHERE par.COD_TPCOM='2'  AND apar.LOG_ATIVO='S' ORDER BY apar.cod_empresa ASC";
 $rwv = mysqli_query($connAdm->connAdm(), $smsv);
 while ($rsv = mysqli_fetch_assoc($rwv)) {
@@ -418,7 +313,7 @@ while ($rsv = mysqli_fetch_assoc($rwv)) {
   if ($rwvproc->num_rows <= 0) {
     $inproc = "INSERT INTO controle_envio (COD_EMPRESA, LOG_ATIVO, COD_COMUNICACAO) VALUES ($rsv[COD_EMPRESA], 1, 2);";
     $rwvproc = mysqli_query($connAdm->connAdm(), $inproc);
-
+    echo 'http://externo.bunker.mk/dinamize/ENVIO_SMS_TWILO.php?COD_EMPRESA=' . $rsv['COD_EMPRESA'];
     $curl = curl_init();
     curl_setopt_array($curl, array(
       CURLOPT_URL => 'http://externo.bunker.mk/dinamize/ENVIO_SMS_TWILO.php?COD_EMPRESA=' . $rsv['COD_EMPRESA'],
@@ -454,7 +349,8 @@ while ($rsv = mysqli_fetch_assoc($rwv)) {
 
 $smsv = "SELECT * FROM senhas_parceiro apar
 				INNER JOIN parceiro_comunicacao par ON par.COD_PARCOMU=apar.COD_PARCOMU
-                                INNER JOIN empresas emp ON emp.COD_EMPRESA = apar.COD_EMPRESA  and emp.LOG_ATIVO='S'
+        INNER JOIN empresas emp ON emp.COD_EMPRESA = apar.COD_EMPRESA  and emp.LOG_ATIVO='S'
+        inner join tab_database t ON t.COD_EMPRESA=apar.COD_EMPRESA 
 				WHERE par.COD_TPCOM='5' AND apar.COD_PARCOMU='18' AND apar.LOG_ATIVO='S'";
 $rwv = mysqli_query($connAdm->connAdm(), $smsv);
 while ($rsv = mysqli_fetch_assoc($rwv)) {
@@ -501,7 +397,8 @@ while ($rsv = mysqli_fetch_assoc($rwv)) {
 
 $smsv = "SELECT * FROM senhas_parceiro apar
 				INNER JOIN parceiro_comunicacao par ON par.COD_PARCOMU=apar.COD_PARCOMU
-                                INNER JOIN empresas emp ON emp.COD_EMPRESA = apar.COD_EMPRESA  and emp.LOG_ATIVO='S'
+        INNER JOIN empresas emp ON emp.COD_EMPRESA = apar.COD_EMPRESA  and emp.LOG_ATIVO='S'
+        inner join tab_database t ON t.COD_EMPRESA=apar.COD_EMPRESA 
 				WHERE par.COD_TPCOM='5' AND apar.COD_PARCOMU='18' AND apar.LOG_ATIVO='S'";
 $rwv = mysqli_query($connAdm->connAdm(), $smsv);
 while ($rsv = mysqli_fetch_assoc($rwv)) {
@@ -549,7 +446,8 @@ while ($rsv = mysqli_fetch_assoc($rwv)) {
 
 $smsv = "SELECT * FROM senhas_parceiro apar
 				INNER JOIN parceiro_comunicacao par ON par.COD_PARCOMU=apar.COD_PARCOMU
-                                INNER JOIN empresas emp ON emp.COD_EMPRESA = apar.COD_EMPRESA  and emp.LOG_ATIVO='S'
+        INNER JOIN empresas emp ON emp.COD_EMPRESA = apar.COD_EMPRESA  and emp.LOG_ATIVO='S'
+         inner join tab_database t ON t.COD_EMPRESA=apar.COD_EMPRESA 
 				WHERE par.COD_TPCOM='5' AND apar.COD_PARCOMU='18' AND apar.LOG_ATIVO='S'";
 $rwv = mysqli_query($connAdm->connAdm(), $smsv);
 while ($rsv = mysqli_fetch_assoc($rwv)) {
@@ -594,7 +492,9 @@ while ($rsv = mysqli_fetch_assoc($rwv)) {
 }
 // envio whatsapp
 $smsvw = "SELECT * FROM senhas_whatsapp apar
-                INNER JOIN parceiro_comunicacao par ON par.COD_PARCOMU=apar.COD_PARCOMU WHERE par.COD_TPCOM='6' AND apar.COD_PARCOMU='21' AND apar.LOG_ATIVO='S'";
+          INNER JOIN parceiro_comunicacao par ON par.COD_PARCOMU=apar.COD_PARCOMU 
+          inner join tab_database t ON t.COD_EMPRESA=apar.COD_EMPRESA       
+          WHERE par.COD_TPCOM='6' AND apar.COD_PARCOMU='21' AND apar.LOG_ATIVO='S'";
 $rwv = mysqli_query($connAdm->connAdm(), $smsvw);
 while ($rsv = mysqli_fetch_assoc($rwv)) {
   $vproc = "SELECT * FROM controle_envio where COD_COMUNICACAO=21 and cod_empresa=" . $rsv['COD_EMPRESA'];

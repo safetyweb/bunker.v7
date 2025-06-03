@@ -121,9 +121,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$cod_univend_pref = fnLimpaCampoZero(@$_REQUEST['COD_UNIVEND']);
 		$cod_filtros = fnLimpaCampo(@$_REQUEST['COD_FILTROS']);
 		$des_chavecamp = fnLimpaCampoHtml(@$_REQUEST['DES_CHAVECAMP']);
+
 		$img_bannermain = fnLimpaCampo(@$_REQUEST['IMG_BANNERMAIN']);
+		if (!isset($_REQUEST['BANNERMAIN']) || $_REQUEST['BANNERMAIN'] == "") {
+			$img_bannermain = "";
+		}
+
 		$img_bannercad = fnLimpaCampo(@$_REQUEST['IMG_BANNERCAD']);
+		if (!isset($_REQUEST['BANNERCAD']) || $_REQUEST['BANNERCAD'] == "") {
+			$img_bannercad = "";
+		}
+
 		$img_bannerlog = fnLimpaCampo(@$_REQUEST['IMG_BANNERLOG']);
+		if (!isset($_REQUEST['BANNERLOG']) || $_REQUEST['BANNERLOG'] == "") {
+			$img_bannerlog = "";
+		}
+
 		$txt_bannermain = fnLimpaCampo(@$_REQUEST['TXT_BANNERMAIN']);
 		$txt_bannercad = fnLimpaCampo(@$_REQUEST['TXT_BANNERCAD']);
 		$pct_vantagem = fnValorSql(@$_REQUEST['PCT_VANTAGEM']);
@@ -153,6 +166,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 		$hHabilitado = @$_REQUEST['hHabilitado'];
 		$hashForm = @$_REQUEST['hashForm'];
+
+		// fnEscreveArray($_REQUEST);
 
 		if ($opcao != '') {
 

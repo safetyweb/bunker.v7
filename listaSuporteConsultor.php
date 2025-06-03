@@ -318,7 +318,7 @@ if (isset($_GET['x'])) {
 
 											while ($qrEmpresa = mysqli_fetch_assoc($arrayQuery)) {
 											?>
-												<option value="<?php echo $qrEmpresa['COD_EMPRESA']; ?>"><?php echo $qrEmpresa['NOM_FANTASI']; ?></option>
+												<option value="<?php echo $qrEmpresa['COD_EMPRESA']; ?>"><?= $qrEmpresa['COD_EMPRESA'] ?> - <?php echo $qrEmpresa['NOM_FANTASI']; ?></option>
 											<?php } ?>
 										</select>
 										<div class="help-block with-errors"></div>

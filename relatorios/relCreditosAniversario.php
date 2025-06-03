@@ -189,6 +189,7 @@ include "unidadesAutorizadas.php";
                                             B.COD_UNIVEND,
                                             A.DAT_VALIDADE,
                                             B.LOG_ATIVO,
+                                            B.COD_USUCADA,
                                             A.COD_CREDLOT
                                             FROM PERSONA B
                                             INNER JOIN CREDITOS_LOT A ON A.COD_PERSONAS=B.COD_PERSONA AND A.cod_empresa=$cod_empresa
@@ -207,7 +208,7 @@ include "unidadesAutorizadas.php";
                                                         $autorizado = "S";
                                                     }
 
-                                                    if ($autorizado == "S" || $qrListaCamp['LOG_PUBLICO'] == 'S') {
+                                                    if ($autorizado == "S" || $qrListaCamp['LOG_PUBLICO'] == 'S' || $qrListaCamp['COD_USUCADA'] == $_SESSION["SYS_COD_USUARIO"]) {
                                                         $selected = '';
                                                         if (is_array($cod_credlot) && in_array($qrListaCamp['COD_CREDLOT'], $cod_credlot)) {
                                                             $selected = 'selected';

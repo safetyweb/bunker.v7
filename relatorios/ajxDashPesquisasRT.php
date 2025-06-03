@@ -76,7 +76,7 @@ $lojasSelecionadas = @$_REQUEST['LOJAS'];
 if ($cod_univend == "9999" || $cod_univend['0'] == "9999") {
 	$andUnidades = "";
 } else {
-	$andUnidades = "AND DPI.COD_UNIVEND IN($lojasSelecionadas)";
+	$andUnidades = "AND DP.COD_UNIVEND IN($lojasSelecionadas)";
 }
 
 switch ($opcao) {
@@ -169,7 +169,7 @@ switch ($opcao) {
 														AND COD_EXCLUSA IS NULL
 													)
 							AND DP.COD_REGISTRO = DPI.COD_REGISTRO
-							AND DPI.COD_UNIVEND = $row[COD_UNIVEND]
+							AND DP.COD_UNIVEND = $row[COD_UNIVEND]
 							AND DPI.COD_EMPRESA = $cod_empresa
 							AND DPI.COD_PESQUISA = $cod_pesquisa";
 
@@ -265,7 +265,7 @@ switch ($opcao) {
 							   DPI.RESPOSTA_NUMERO,
 							   DP.DT_HORAFINAL AS FINALIZADO
 						FROM DADOS_PESQUISA_ITENS DPI
-						INNER JOIN CLIENTES CL ON CL.COD_CLIENTE = DPI.COD_CLIENTE
+						INNER JOIN CLIENTES CL ON CL.COD_CLIENTE = DP.COD_CLIENTE
 						INNER JOIN  DADOS_PESQUISA DP ON DP.COD_REGISTRO = DPI.COD_REGISTRO 
 							AND date(DP.DT_HORAINICIAL) BETWEEN '$dat_ini' AND '$dat_fim'
 						WHERE COD_NPSTIPO != 0
@@ -340,12 +340,12 @@ switch ($opcao) {
 			}
 		} else if ($tipo == 'geral') {
 
-			$sql = "SELECT DISTINCT CL.NOM_CLIENTE, CL.NUM_CGCECPF, UV.NOM_FANTASI, DPI.COD_CLIENTE FROM dados_pesquisa_itens DPI
-						INNER JOIN clientes CL ON CL.COD_CLIENTE = DPI.COD_CLIENTE
+			$sql = "SELECT DISTINCT CL.NOM_CLIENTE, CL.NUM_CGCECPF, UV.NOM_FANTASI, DP.COD_CLIENTE FROM dados_pesquisa_itens DPI
+						INNER JOIN clientes CL ON CL.COD_CLIENTE = DP.COD_CLIENTE
 						INNER JOIN WEBTOOLS.UNIDADEVENDA UV ON UV.COD_UNIVEND = DPI.COD_UNIVEND
 						WHERE DPI.COD_EMPRESA = $cod_empresa 
 						AND DPI.COD_PESQUISA = $cod_pesquisa 
-						AND DPI.COD_CLIENTE != 0";
+						AND DP.COD_CLIENTE != 0";
 			// fnEscreve($sql);
 			$arrayQuery = mysqli_query(connTemp($cod_empresa, ''), $sql);
 
@@ -361,7 +361,7 @@ switch ($opcao) {
 							INNER JOIN modelopesquisa MP ON MP.COD_REGISTR = DPI.COD_PERGUNTA
 							WHERE DPI.COD_EMPRESA = $cod_empresa 
 							AND DPI.COD_PESQUISA = $cod_pesquisa 
-							AND DPI.COD_CLIENTE = $qrBusca[COD_CLIENTE]
+							AND DP.COD_CLIENTE = $qrBusca[COD_CLIENTE]
 							GROUP BY COD_PERGUNTA
 							ORDER BY COD_NPSTIPO DESC, MP.COD_REGISTR";
 
@@ -480,7 +480,7 @@ switch ($opcao) {
 						AND DPI.COD_EMPRESA = $cod_empresa
 						$andUnidades
 						AND DPI.COD_PESQUISA = $cod_pesquisa
-						AND DPI.COD_CLIENTE = CL.COD_CLIENTE
+						AND DP.COD_CLIENTE = CL.COD_CLIENTE
 						AND CL.LOG_CADTOTEM = 'S'
 						AND LOG_PRINCIPAL = 'S'
 						GROUP BY DPI.COD_UNIVEND";
@@ -504,7 +504,7 @@ switch ($opcao) {
 														AND COD_EXCLUSA IS NULL
 													)
 							AND DP.COD_REGISTRO = DPI.COD_REGISTRO
-							AND DPI.COD_UNIVEND = $row[COD_UNIVEND]
+							AND DP.COD_UNIVEND = $row[COD_UNIVEND]
 							AND DPI.COD_EMPRESA = $cod_empresa
 							AND DPI.COD_PESQUISA = $cod_pesquisa";
 
@@ -600,7 +600,7 @@ switch ($opcao) {
 							   DPI.RESPOSTA_NUMERO,
 							   DP.DT_HORAFINAL AS FINALIZADO
 						FROM DADOS_PESQUISA_ITENS DPI
-						INNER JOIN CLIENTES CL ON CL.COD_CLIENTE = DPI.COD_CLIENTE
+						INNER JOIN CLIENTES CL ON CL.COD_CLIENTE = DP.COD_CLIENTE
 						INNER JOIN  DADOS_PESQUISA DP ON DP.COD_REGISTRO = DPI.COD_REGISTRO 
 							AND date(DP.DT_HORAINICIAL) BETWEEN '$dat_ini' AND '$dat_fim'
 						WHERE AND COD_NPSTIPO != 0
@@ -701,7 +701,7 @@ switch ($opcao) {
 							FROM DADOS_PESQUISA_ITENS DPI
 							INNER JOIN  DADOS_PESQUISA DP ON DP.COD_REGISTRO = DPI.COD_REGISTRO 
 							AND date(DP.DT_HORAINICIAL) BETWEEN '$dat_ini' AND '$dat_fim'
-							LEFT JOIN CLIENTES CL ON CL.COD_CLIENTE = DPI.COD_CLIENTE
+							LEFT JOIN CLIENTES CL ON CL.COD_CLIENTE = DP.COD_CLIENTE
 							WHERE COD_PERGUNTA = $qrBusca[COD_REGISTR]
 							$andUnidades
 							AND DPI.COD_EMPRESA = $cod_empresa

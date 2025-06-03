@@ -342,7 +342,7 @@ while ($qrLista = mysqli_fetch_assoc($arrayQuery)) {
 				$sql1 = "SELECT COUNT(1) AS TEMACESSO FROM senhas_parceiro apar
 											INNER JOIN parceiro_comunicacao par ON par.COD_PARCOMU=apar.COD_PARCOMU
 											WHERE par.COD_TPCOM='2' 
-											AND apar.COD_PARCOMU IN('22','17')
+											AND apar.COD_PARCOMU IN('22','17','23')
 											AND apar.COD_EMPRESA=$cod_empresa 
 											AND apar.LOG_ATIVO='S'";
 				$arrayQuery1 = mysqli_query($connAdm->connAdm(), $sql1);

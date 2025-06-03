@@ -84,6 +84,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			$log_negativo = 'S';
 		}
 
+		$log_maiscash = "N";
+		if (isset($_REQUEST['LOG_MAISCASH']) && $_REQUEST['LOG_MAISCASH'] == 'S') {
+			$log_maiscash = 'S';
+		}
+
 		$cod_empresa = "";
 		if (isset($_REQUEST['COD_EMPRESA'])) {
 			$cod_empresa = fnLimpaCampo($_REQUEST['COD_EMPRESA']);
@@ -115,23 +120,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 					//case sql insert empresa
 					if ($cod_empresa == "" || $cod_empresa == 0) {
-						switch ($cod_integradora) {
+						if ($log_maiscash != "S") {
+							switch ($cod_integradora) {
 
-							case '24': //alpha7
-								$sqlInserEmpresa = "CALL SP_ALTERA_EMPRESAS_FULL (0,'$cod_usucada','$nom_empresa','','$nom_respons','$num_cgcecpf','S','6','','$nom_fantasi','$num_telefon','','','','','','','','','4','3','4','N','N','2','$des_sufixo','N','N','$cod_chaveco','RESG','N','N','','24','','','1','2','2',NULL,'$cod_consultor','N','$log_pontuar','2','','','','','N','S','N','N','4','1','2','S','2','0','N','N','$log_cadtoken','$log_negativo','N','0.00','13','6','2','18','N','N','2','6','8','','0','0','S','N','CAD')";
-								break;
+								case '24': //alpha7
+									$sqlInserEmpresa = "CALL SP_ALTERA_EMPRESAS_FULL (0,'$cod_usucada','$nom_empresa','','$nom_respons','$num_cgcecpf','S','6','','$nom_fantasi','$num_telefon','','','','','','','','','4','3','4','N','N','2','$des_sufixo','N','N','$cod_chaveco','RESG','N','N','','24','','','1','2','2',NULL,'$cod_consultor','N','$log_pontuar','2','','','','','N','S','N','N','4','1','2','S','2','0','N','N','$log_cadtoken','$log_negativo','N','0.00','13','6','2','18','N','N','2','6','8','','0','0','S','N','N','CAD')";
+									break;
 
-							case '13': //inovafarma
-								$sqlInserEmpresa = "CALL SP_ALTERA_EMPRESAS_FULL (0,'$cod_usucada','$nom_empresa','','$nom_respons','$num_cgcecpf','S','6','','$nom_fantasi','$num_telefon','','','','','','','','','4','3','4','N','N','2','$des_sufixo','N','N','$cod_chaveco','RESG','N','N','','13','','','1','2','2',NULL,'$cod_consultor','N','$log_pontuar','2','','','','','S','S','N','N','4','1','1','S','2','0','N','N','$log_cadtoken','$log_negativo','N','0.00','13','6','2','18','N','N','2','6','8','','0','0','S','N','CAD')";
-								break;
+								case '13': //inovafarma
+									$sqlInserEmpresa = "CALL SP_ALTERA_EMPRESAS_FULL (0,'$cod_usucada','$nom_empresa','','$nom_respons','$num_cgcecpf','S','6','','$nom_fantasi','$num_telefon','','','','','','','','','4','3','4','N','N','2','$des_sufixo','N','N','$cod_chaveco','RESG','N','N','','13','','','1','2','2',NULL,'$cod_consultor','N','$log_pontuar','2','','','','','S','S','N','N','4','1','1','S','2','0','N','N','$log_cadtoken','$log_negativo','N','0.00','13','6','2','18','N','N','2','6','8','','0','0','S','N','N','CAD')";
+									break;
 
-							case '34': //trier
-								$sqlInserEmpresa = " CALL SP_ALTERA_EMPRESAS_FULL (0,'$cod_usucada','$nom_empresa','','$nom_respons','$num_cgcecpf','S','6','','$nom_fantasi','$num_telefon','','','','','','','','','4','3','4','N','N','2','$des_sufixo','N','N','$cod_chaveco','RESG','N','N','','34','','','1','4','2',NULL,'$cod_consultor','N','$log_pontuar','2','','','','','S','S','N','N','3','1','1','S','2','0','N','N','$log_cadtoken','$log_negativo','N','0.00','13','6','2','18','N','N','2','6','8','','0','0','S','N','CAD')";
-								break;
+								case '34': //trier
+									$sqlInserEmpresa = " CALL SP_ALTERA_EMPRESAS_FULL (0,'$cod_usucada','$nom_empresa','','$nom_respons','$num_cgcecpf','S','6','','$nom_fantasi','$num_telefon','','','','','','','','','4','3','4','N','N','2','$des_sufixo','N','N','$cod_chaveco','RESG','N','N','','34','','','1','4','2',NULL,'$cod_consultor','N','$log_pontuar','2','','','','','S','S','N','N','3','1','1','S','2','0','N','N','$log_cadtoken','$log_negativo','N','0.00','13','6','2','18','N','N','2','6','8','','0','0','S','N','N','CAD')";
+									break;
 
-							default:
-								$sqlInserEmpresa = " CALL SP_ALTERA_EMPRESAS_FULL (0,'$cod_usucada','$nom_empresa','','$nom_respons','$num_cgcecpf','S','6','','$nom_fantasi','$num_telefon','','','','','','','','','4','3','4','N','N','2','$des_sufixo','N','N','$cod_chaveco','RESG','N','N','','34','','','1','4','2',NULL,'$cod_consultor','N','$log_pontuar','2','','','','','S','S','N','N','3','1','1','S','2','0','N','N','$log_cadtoken','$log_negativo','N','0.00','13','6','2','18','N','N','2','6','8','','0','0','S','N','CAD')";
-								break;
+								default:
+									$sqlInserEmpresa = " CALL SP_ALTERA_EMPRESAS_FULL (0,'$cod_usucada','$nom_empresa','','$nom_respons','$num_cgcecpf','S','6','','$nom_fantasi','$num_telefon','','','','','','','','','4','3','4','N','N','2','$des_sufixo','N','N','$cod_chaveco','RESG','N','N','','34','','','1','4','2',NULL,'$cod_consultor','N','$log_pontuar','2','','','','','S','S','N','N','3','1','1','S','2','0','N','N','$log_cadtoken','$log_negativo','N','0.00','13','6','2','18','N','N','2','6','8','','0','0','S','N','N','CAD')";
+									break;
+							}
+						} else {
+							$sqlInserEmpresa = " CALL SP_ALTERA_EMPRESAS_FULL (0,'$cod_usucada','$nom_empresa','','$nom_respons','$num_cgcecpf','S','2','','$nom_fantasi','$num_telefon','','','','','','','','','18','3','4','N','N','2','$des_sufixo','N','N','$cod_chaveco','DESC','N','N','','2','','','1','2','2',NULL,'$cod_consultor','N','$log_pontuar','2','','','','','N','S','N','N','3','1','2','N','2','0','N','N','$log_cadtoken','$log_negativo','N','0.00','13','0','0','0','N','N','2','6','8','','0','0','N','N','N','CAD')";
 						}
 
 						$arrayProcEmp = mysqli_query($connAdm->connAdm(), trim($sqlInserEmpresa));
@@ -150,14 +159,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 							$sqlAudit = "INSERT INTO AUDITORIA_EMPRESA
 								(
 								COD_EMPRESA,
+								LOG_MAISCASH,
 								DAT_CADASTR,
 								COD_USUCADA
 								)VALUES(
 								$cod_empresa,
+								'$log_maiscash',
 								NOW(),
 								$cod_usucada
 								)";
-							// fnEscreve($sqlAudit);
+							fnEscreve($sqlAudit);
 							$arrayProcAudit = mysqli_query($connAdm->connAdm(), trim($sqlAudit));
 
 							if (!$arrayProcAudit) {
@@ -260,16 +271,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 						if (mysqli_num_rows($query) == 0) {
 							//insere campos obrigatorios
-							$sqlCampo = "INSERT INTO matriz_campo_integracao 
-							(COD_CAMPOOBG, TIP_CAMPOOBG, COD_USUCADA, DAT_CADASTR, COD_EMPRESA) VALUES 
-							(24,'OBG',$cod_usucada,NOW(), $cod_empresa),
-							(5,'OBG',$cod_usucada,NOW(), $cod_empresa),
-							(8,'OBG',$cod_usucada,NOW(), $cod_empresa),
-							(23,'OBG',$cod_usucada,NOW(), $cod_empresa),
-							(13,'OBG',$cod_usucada,NOW(), $cod_empresa),
-							(13,'TKN',$cod_usucada,NOW(), $cod_empresa),
-							(11,'CAD',$cod_usucada,NOW(), $cod_empresa),
-							(24,'TKN',$cod_usucada,NOW(), $cod_empresa)";
+							if ($log_maiscash != "S") {
+								$sqlCampo = "INSERT INTO matriz_campo_integracao 
+								(COD_CAMPOOBG, TIP_CAMPOOBG, COD_USUCADA, DAT_CADASTR, COD_EMPRESA) VALUES 
+								(24,'OBG',$cod_usucada,NOW(), $cod_empresa),
+								(5,'OBG',$cod_usucada,NOW(), $cod_empresa),
+								(8,'OBG',$cod_usucada,NOW(), $cod_empresa),
+								(23,'OBG',$cod_usucada,NOW(), $cod_empresa),
+								(13,'OBG',$cod_usucada,NOW(), $cod_empresa),
+								(13,'TKN',$cod_usucada,NOW(), $cod_empresa),
+								(11,'CAD',$cod_usucada,NOW(), $cod_empresa),
+								(24,'TKN',$cod_usucada,NOW(), $cod_empresa)";
+							} else {
+								$sqlCampo = "INSERT INTO matriz_campo_integracao 
+								(COD_CAMPOOBG, TIP_CAMPOOBG, COD_USUCADA, DAT_CADASTR, COD_EMPRESA) VALUES 
+								(5,'OBG',$cod_usucada,NOW(), $cod_empresa),
+								(13,'OBG',$cod_usucada,NOW(), $cod_empresa)";
+							}
 							// fnEscreve($sqlCampo);
 							$arrayProcCampos = mysqli_query($connAdm->connAdm(), trim($sqlCampo));
 
@@ -310,15 +328,33 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 						if (mysqli_num_rows($query) == 0) {
 
 							//insere matriz de integração
-							$sqlMatriz = "INSERT INTO matriz_integracao (COD_EMPRESA, COD_ACAOINT, COD_FASEVND, COD_USUCADA, DAT_CADASTR)
-							SELECT $cod_empresa, COD_ACAOINT, COD_FASEVND, $cod_usucada, NOW()
-							FROM matriz_integracao
-							WHERE COD_EMPRESA = $cod_integradora";
-							// fnEscreve($sqlMatriz);
-							$arrayProcMatriz = mysqli_query($connAdm->connAdm(), trim($sqlMatriz));
 
-							if (!$arrayProcMatriz) {
-								$cod_erro = Log_error_comand($connAdm->connAdm(), $conn, $cod_empresa, $actual_link, $MODULO, $COD_MODULO, $sqlMatriz, $nom_usuario);
+							if ($log_maiscash != "S") {
+								$sqlMatriz = "INSERT INTO matriz_integracao (COD_EMPRESA, COD_ACAOINT, COD_FASEVND, COD_USUCADA, DAT_CADASTR)
+								SELECT $cod_empresa, COD_ACAOINT, COD_FASEVND, $cod_usucada, NOW()
+								FROM matriz_integracao
+								WHERE COD_EMPRESA = $cod_integradora";
+								$arrayProcMatriz = mysqli_query($connAdm->connAdm(), trim($sqlMatriz));
+
+								if (!$arrayProcMatriz) {
+									$cod_erro = Log_error_comand($connAdm->connAdm(), $conn, $cod_empresa, $actual_link, $MODULO, $COD_MODULO, $sqlMatriz, $nom_usuario);
+								}
+							} else {
+
+								$sql = "CALL SP_ALTERA_MATRIZ_INTEGRA ('$cod_empresa','1','1','$cod_usucada','CAD')";
+								mysqli_query($connAdm->connAdm(), trim($sql));
+
+								$sql = "CALL SP_ALTERA_MATRIZ_INTEGRA ('$cod_empresa','8','1','$cod_usucada','CAD')";
+								mysqli_query($connAdm->connAdm(), trim($sql));
+
+								$sql = "CALL SP_ALTERA_MATRIZ_INTEGRA ('$cod_empresa','2','2','$cod_usucada','CAD')";
+								mysqli_query($connAdm->connAdm(), trim($sql));
+
+								$sql = "CALL SP_ALTERA_MATRIZ_INTEGRA ('$cod_empresa','8','6','$cod_usucada','CAD')";
+								mysqli_query($connAdm->connAdm(), trim($sql));
+
+								$sql = "CALL SP_ALTERA_MATRIZ_INTEGRA ('$cod_empresa','8','7','$cod_usucada','CAD')";
+								mysqli_query($connAdm->connAdm(), trim($sql));
 							}
 
 							//busca matrizes criadas
@@ -391,6 +427,8 @@ if ($cod_empresa != "" || isset($_GET['id']) && is_numeric(fnLimpacampo(fnDecode
 		$desa_cadtoken = "disabled";
 		$desa_pontuar = "disabled";
 		$desa_negativo = "disabled";
+		$desa_maiscash = "disabled";
+		$check_maiscash = "";
 		$check_cadtoken = "";
 		$check_pontuar = "";
 		$check_negativo = "";
@@ -416,6 +454,10 @@ if ($cod_empresa != "" || isset($_GET['id']) && is_numeric(fnLimpacampo(fnDecode
 		$query = mysqli_query($connAdm->connAdm(), trim($sqlAudit));
 		if ($result = mysqli_fetch_assoc($query)) {
 			$qtd_univend = $result['QTD_UNIVEND'];
+
+			if ($result['LOG_MAISCASH'] == 'S') {
+				$check_maiscash = "checked";
+			}
 		}
 	}
 }
@@ -567,108 +609,10 @@ if ($cod_empresa != "" || isset($_GET['id']) && is_numeric(fnLimpacampo(fnDecode
 
 									<div class="col-sm-12" style="padding-left: 0;">
 
-										<div class="col-xs-2" style="padding-left: 0;"> <!-- required for floating -->
-
-											<?php
-											$sqlAudit = "SELECT * FROM
-												AUDITORIA_EMPRESA
-												WHERE COD_EMPRESA = $cod_empresa";
-
-											$queryAudit = mysqli_query($connAdm->connAdm(), trim($sqlAudit));
-
-											$passoUm = "fal fa-clock";
-											$passoDois = "fal fa-clock";
-											$passoTres = "fal fa-clock";
-											$passoQuatro = "fal fa-clock";
-											$passoCinco = "fal fa-clock";
-											$bgPassoUm = "bg-warning";
-											$bgPassoDois = "bg-warning";
-											$bgPassoTres = "bg-warning";
-											$bgPassoQuatro = "bg-warning";
-											$bgPassoCinco = "bg-warning";
-											$desabilitaPag = 'onclick="event.preventDefault();" style="pointer-events: none;"';
-											if ($resultAudit = mysqli_fetch_assoc($queryAudit)) {
-												if ($resultAudit['FASE1'] == 'S') {
-													$passoUm = "fal fa-check";
-													$bgPassoUm = "bg-success";
-												}
-
-												if ($resultAudit['FASE2'] == 'S') {
-													$passoDois = "fal fa-check";
-													$bgPassoDois = "bg-success";
-													$desabilitaPag = "";
-												}
-
-												if ($resultAudit['FASE3'] == 'S') {
-													$passoTres = "fal fa-check";
-													$bgPassoTres = "bg-success";
-												}
-
-												if ($resultAudit['FASE4'] == 'S') {
-													$passoQuatro = "fal fa-check";
-													$bgPassoQuatro = "bg-success";
-												}
-
-												if ($resultAudit['FASE5'] == 'S') {
-													$passoCinco = "fal fa-check";
-													$bgPassoCinco = "bg-success";
-												}
-											}
-											?>
-											<!-- Nav tabs -->
-											<ul class="vTab nav nav-tabs tabs-left text-center">
-
-												<li class="active vTab">
-													<a href="action.do?mod=<?= fnEncode(2091) ?>&id=<?= fnEncode($cod_empresa) ?>">
-
-														<div class="notify-badge text-center <?= $bgPassoUm ?>" id="notificaPasso1" style><span class="<?= $passoUm ?>"></span></div>
-
-														<i class="fal fa-user-edit fa-2x" style="margin: 10px 0 2px 0"></i>
-														<h5 class="hidden-xs" style="margin: 3px 0 0 0">Empresa e Usuários</h5>
-													</a>
-												</li>
-
-												<li class="vTab">
-													<a href="action.do?mod=<?= fnEncode(2092) ?>&id=<?= fnEncode($cod_empresa) ?>">
-
-														<div class="notify-badge text-center <?= $bgPassoDois ?>" id="notificaPasso2"><span class="<?= $passoDois ?>"></span></div>
-
-														<i class="fal fa-database fa-2x" style="margin: 10px 0 2px 0"></i>
-														<h5 class="hidden-xs" style="margin: 3px 0 0 0">Database</h5>
-													</a>
-												</li>
-
-												<li class="vTab">
-													<a href="action.do?mod=<?= fnEncode(2093) ?>&id=<?= fnEncode($cod_empresa) ?>" <?= $desabilitaPag ?>>
-
-														<div class="notify-badge text-center <?= $bgPassoTres ?>" id="notificaPasso3"><span class="<?= $passoTres ?>"></span></div>
-
-														<i class="fal fa-user-edit fa-2x" style="margin: 10px 0 2px 0"></i>
-														<h5 class="hidden-xs" style="margin: 3px 0 0 0">Clientes e Hotsite</h5>
-													</a>
-												</li>
-
-												<li class="vTab">
-													<a href="action.do?mod=<?= fnEncode(2096) ?>&id=<?= fnEncode($cod_empresa) ?>" <?= $desabilitaPag ?>>
-
-														<div class="notify-badge text-center <?= $bgPassoQuatro ?>" id="notificaPasso4"><span class="<?= $passoQuatro ?>"></span></div>
-
-														<i class="fal fa-user-edit fa-2x" style="margin: 10px 0 2px 0"></i>
-														<h5 class="hidden-xs" style="margin: 3px 0 0 0">Campanhas e Comunicação</h5>
-													</a>
-												</li>
-
-												<li class="vTab">
-													<a href="action.do?mod=<?= fnEncode(2102) ?>&id=<?= fnEncode($cod_empresa) ?>" <?= $desabilitaPag ?>>
-
-														<div class="notify-badge text-center <?= $bgPassoCinco ?>" id="notificaPasso5"><span class="<?= $passoCinco ?>"></span></div>
-														<i class="fal fa-key fa-2x" style="margin: 10px 0 2px 0"></i>
-														<h5 class="hidden-xs" style="margin: 3px 0 0 0">Dados de Login</h5>
-													</a>
-												</li>
-
-											</ul>
-										</div>
+										<?php
+										$abaAtivo = 2091;
+										include 'menuAutomacao.php';
+										?>
 
 										<div class="col-xs-10">
 											<!-- conteudo abas -->
@@ -691,6 +635,17 @@ if ($cod_empresa != "" || isset($_GET['id']) && is_numeric(fnLimpacampo(fnDecode
 																	<legend>Dados da Empresa</legend>
 
 																	<div class="row">
+
+																		<div class="col-md-3">
+																			<div class="form-group">
+																				<label for="inputName" class="control-label">Mais Cash</label>
+																				<div class="push5"></div>
+																				<label class="switch switch-small">
+																					<input type="checkbox" name="LOG_MAISCASH" id="LOG_MAISCASH" class="switch switch-small" value="S" <?= $desa_maiscash ?> <?= $check_maiscash ?>>
+																					<span></span>
+																				</label>
+																			</div>
+																		</div>
 
 																		<div class="col-md-3">
 																			<div class="form-group">
@@ -1074,7 +1029,7 @@ if ($cod_empresa != "" || isset($_GET['id']) && is_numeric(fnLimpacampo(fnDecode
 
 								<div class="form-group text-right col-lg-12">
 									<button type="submit" name="CAD" id="CAD" class="btn btn-success getBtn"><i class="fas fa-cogs"></i>&nbsp;&nbsp;Processar</button>
-									<a href="action.do?mod=<?= fnEncode(2092) ?>&id=<?= fnEncode($cod_empresa) ?>" class="btn btn-primary next next1" <?= $desabilitado ?> name="next">Próximo&nbsp;&nbsp;<i class="fas fa-arrow-right"></i></a>
+									<?= $btnProximo ?>
 								</div>
 
 								<div class="push10"></div>

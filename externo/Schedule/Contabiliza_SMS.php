@@ -4,6 +4,7 @@ require '../../_system/_functionsMain.php';
 $empresa = "select * from empresas emp
          INNER JOIN senhas_parceiro apar  ON apar.cod_empresa=emp.COD_EMPRESA
          INNER JOIN parceiro_comunicacao par ON par.COD_PARCOMU=apar.COD_PARCOMU
+         inner join tab_database t ON t.COD_EMPRESA=emp.COD_EMPRESA 
          WHERE emp.log_ativo='S' AND par.COD_TPCOM='2' AND apar.LOG_ATIVO='S'";
 
 $rwempresa = mysqli_query($connAdm->connAdm(), $empresa);

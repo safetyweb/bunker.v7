@@ -56,7 +56,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
+$cod_usuario = $_SESSION['SYS_COD_USUARIO'];
+$sql = "SELECT NUM_CELULAR, DES_EMAILUS FROM usuarios WHERE COD_USUARIO = $cod_usuario";
+$arrayQuery = mysqli_query($connAdm->connAdm(), $sql);
+if ($qrResult = mysqli_fetch_assoc($arrayQuery)) {
+    $num_celular = $qrResult['NUM_CELULAR'];
+    $des_emailus = $qrResult['DES_EMAILUS'];
+}
+
 ?>
+
+<style>
+    .btExec:hover {
+        cursor: pointer;
+        color: red;
+    }
+</style>
 
 <div class="push30"></div>
 
@@ -162,7 +177,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <input type="hidden" name="hashForm" id="hashForm" value="<?php echo $hashLocal; ?>" />
                         <input type="hidden" name="hHabilitado" id="hHabilitado" value="S">
 
-
                         <div class="push5"></div>
 
                     </form>
@@ -192,7 +206,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                         <th>Status</th>
                                         <th>Data Início</th>
                                         <th>Data Finalização</th>
-                                        <th width="40"></th>
+                                        <th width="40" class="{sorter:false}"></th>
                                     </tr>
                                 </thead>
 
@@ -276,7 +290,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                         }
 
                                     ?>
-                                        <tr>
+                                        <tr id="bloco_<?= $qrListaVendas['COD_EMPRESA']; ?>">
                                             <td class="text-center"><a href="action.php?mod=<?= fnEncode(2091) ?>&id=<?= fnEncode($qrListaVendas['COD_EMPRESA']) ?>"><?= $qrListaVendas['COD_EMPRESA']; ?></a></td>
                                             <td><?= $qrListaVendas['NOM_EMPRESA']; ?></td>
                                             <td><?= $qrListaVendas['NOM_FANTASI']; ?></td>
@@ -284,7 +298,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                             <td><?= $status; ?></td>
                                             <td><?= fnDataShort($qrListaVendas['DAT_CADASTR']); ?></td>
                                             <td><?= fnDataShort($qrListaVendas['DAT_FINALIZA']); ?></td>
-                                            <td></td>
+                                            <td>
+                                                <?php
+                                                if ($_SESSION['SYS_COD_EMPRESA'] == 2) {
+                                                ?>
+                                                    <i id="<?= $qrListaVendas['COD_EMPRESA'] ?>" class="fal fa-trash-alt btExec"></i>
+                                                <?php
+                                                }
+                                                ?>
+                                            </td>
                                         </tr>
                                     <?php
 
@@ -361,6 +383,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $('#DAT_INI_GRP').data("DateTimePicker").maxDate(e.date);
         });
 
+        $(".btExec").on('click', function() {
+            let id = $(this).attr('id');
+            excluir(id);
+        })
+
     });
 
     function reloadPage(idPage) {
@@ -380,4 +407,48 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
         });
     }
+
+    <?php
+    if ($_SESSION['SYS_COD_EMPRESA'] == 2) {
+    ?>
+
+        function excluir(id) {
+            $.confirm({
+                title: "Confirmar exclusão",
+                content: "Deseja confirmar a exclusão da empresa com código: " + id + "</b>",
+                type: 'red',
+                buttons: {
+                    "Excluir": {
+                        btnClass: 'btn-danger',
+                        action: function() {
+                            $('#bloco_' + id).html('<td colspan="8"><div class="loading" style="width: 100%; height: 50px;">Excluindo...</div></td>');
+                            $.ajax({
+                                type: "POST",
+                                url: "relatorios/ajxRelEmpAutom.do?opcao=excluir",
+                                data: {
+                                    idr: id,
+                                },
+                                success: function(data) {
+                                    console.log(data);
+                                    setTimeout(function() {
+                                        $('#bloco_' + id).remove();
+                                    }, 2000);
+                                },
+                                error: function() {
+                                    $('#relatorioConteudo').html('<p class="error" style="margin-top: 10px;"><strong>Oops!</strong> Token invalido ou expirado...</p>');
+                                }
+                            });
+                        }
+                    },
+                    "CANCELAR": {
+                        btnClass: 'btn-default',
+                        action: function() {}
+                    }
+                }
+            });
+        }
+
+    <?php
+    }
+    ?>
 </script>

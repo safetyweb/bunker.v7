@@ -89,26 +89,6 @@ $andGrupo = "";
 if ($log_grupo == 'S') {
 	$andGrupo = "AND (A.COD_CATEGOR = 0 OR A.COD_CATEGOR IS NULL)";
 }
-if ($filtro != '') {
-	if ($filtro == "EAN" || $filtro == "COD_PRODUTO") {
-		$andFiltro = " AND A.$filtro = '$val_pesquisa' ";
-	} else if ($filtro == "COD_CATEGOR") {
-		$sqlCat = "SELECT COD_CATEGOR FROM CATEGORIA WHERE DES_CATEGOR LIKE '%$val_pesquisa%'";
-		$arrayCat = mysqli_query(connTemp($cod_empresa, ''), $sqlCat);
-		$cod_categor = "";
-		while ($qrCat = mysqli_fetch_assoc($arrayCat)) {
-			$cod_categor .= $qrCat['COD_CATEGOR'] . ",";
-		}
-		$cod_categor = ltrim(rtrim($cod_categor, ','), ',');
-		$andFiltro = "AND B.COD_CATEGOR IN($cod_categor)";
-	} else if ($filtro == "DES_PRODUTO_EQ") {
-		$andFiltro = " AND A.DES_PRODUTO = '$val_pesquisa' ";
-	} else {
-		$andFiltro = " AND A.$filtro LIKE '%$val_pesquisa%' ";
-	}
-} else {
-	$andFiltro = " ";
-}
 
 //se pesquisa dos produtos do ticket
 if (!empty(@$_GET['idP']) && @$_GET['idP'] != "") {
@@ -147,8 +127,6 @@ switch ($opcao) {
 	                " . $andFiltro . "
 	                " . $andProduto . " 
 	                AND A.COD_EXCLUSA=0 order by A.DES_PRODUTO ";
-
-		fnEscreve($sql);
 
 		$arrayQuery = mysqli_query(connTemp($cod_empresa, ''), $sql);
 
@@ -247,7 +225,6 @@ switch ($opcao) {
 				$andGrupo 
 				AND A.COD_EXCLUSA=0 order by A.DES_PRODUTO limit $inicio,$itens_por_pagina";
 
-		// fnEscreve($sql);
 		$arrayQuery = mysqli_query(connTemp($cod_empresa, ""), $sql);
 
 		$count = 0;

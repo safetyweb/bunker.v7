@@ -249,7 +249,7 @@ while ($rsempresa = mysqli_fetch_assoc($rwempresa)) {
                         group by C.COD_CLIENTE
 						" .
             ($tip_gatilho == "venda" ?
-                "HAVING (SELECT SUM(val_saldo) FROM creditosdebitos E WHERE E.COD_CLIENTE=C.COD_CLIENTE AND E.COD_STATUSCRED=1) >= $tot_saldomin" :
+                "HAVING (SELECT COALESCE(SUM(E.val_saldo), 0.00) val_saldo FROM creditosdebitos E WHERE E.COD_CLIENTE=C.COD_CLIENTE AND E.COD_STATUSCRED=1) >= $tot_saldomin" :
                 ""
             ) .
             " LIMIT 1999 ";

@@ -20,101 +20,91 @@ $pagina = @$_GET['idPage'];
 $cod_empresa = fnDecode($_GET['id']);
 $cod_persona = fnDecode($_GET['codPersona']);
 
-fnEscreve($cod_persona);
-fnEscreveArray($_REQUEST);
-
 switch ($opcao) {
 	case 'exportar':
 
 		$nomeRel = $_GET['nomeRel'];
 		$arquivoCaminho = 'media/excel/' . $cod_empresa . '_' . $nomeRel . '.csv';
 
-		/*$writer = WriterFactory::create(Type::CSV);
-			$writer->setFieldDelimiter(';');
-			$writer->openToFile($arquivo); 	*/
+		// if ($_SESSION['SYS_COD_EMPRESA'] != 2) {
+		// 	$sql = "call SP_GERA_EXCEL_PERSONA( '$cod_persona' , $cod_empresa);";
 
-		$sql = "call SP_GERA_EXCEL_PERSONA( '$cod_persona' , $cod_empresa);";
-
-		// fnEscreve($sql);
+		// 	$arrayQuery = mysqli_query(connTemp($cod_empresa, ''), $sql);
 
 
-		//SELECT da lista, não é o mesmo do export
+		// 	$arquivo = fopen($arquivoCaminho, 'w', 0);
 
-		// $sql2 = "SELECT B.COD_CLIENTE,B.NUM_CARTAO,B.NUM_CGCECPF,B.NOM_CLIENTE,
-		// 		B.DES_EMAILUS,B.NUM_CELULAR,B.DAT_CADASTR,B.DAT_NASCIME ,B.COD_SEXOPES, C.NOM_UNIVEND 
-		// 		FROM PERSONACLASSIFICA A, CLIENTES B, $connAdm->DB.unidadevenda C
-		// 		WHERE 
-		// 		A.COD_CLIENTE=B.COD_CLIENTE AND
-		// 		B.COD_UNIVEND=C.COD_UNIVEND AND
-		// 		B.LOG_AVULSO='N' AND
-		// 		A.COD_PERSONA = $cod_persona AND 
-		// 		A.COD_EMPRESA = $cod_empresa ";
+		// 	while ($headers = mysqli_fetch_field($arrayQuery)) {
+		// 		$CABECHALHO[] = $headers->name;
+		// 	}
 
-		// echo($sql);
-		$arrayQuery = mysqli_query(connTemp($cod_empresa, ''), $sql);
-		// echo "<pre>";
-		// print_r(mysqli_fetch_assoc($arrayQuery));
-		// echo "</pre>";
+		// 	fputcsv($arquivo, $CABECHALHO, ';', '"', '\n');
+
+		// 	while ($row = mysqli_fetch_assoc($arrayQuery)) {
+
+		// 		$array = array_map("utf8_decode", $row);
+		// 		fputcsv($arquivo, $array, ';', '"', '\n');
+		// 	}
+		// 	fclose($arquivo);
+		// } else {
+		$itens_por_pagina = 100000;
+
+		$sql = "SELECT COUNT(*) as CONTADOR FROM PERSONACLASSIFICA A, CLIENTES B
+				WHERE A.COD_CLIENTE = B.COD_CLIENTE 
+				AND B.LOG_AVULSO='N' 
+				AND A.COD_PERSONA = $cod_persona 
+				AND A.COD_EMPRESA = $cod_empresa";
+
+		$retorno = mysqli_query(conntemp($cod_empresa, ''), $sql);
+		$total_itens_por_pagina = mysqli_fetch_assoc($retorno);
+
+		$numPaginas = ceil($total_itens_por_pagina['CONTADOR'] / $itens_por_pagina);
 
 		$arquivo = fopen($arquivoCaminho, 'w', 0);
+		$CABECHALHO = [];
 
-		while ($headers = mysqli_fetch_field($arrayQuery)) {
-			$CABECHALHO[] = $headers->name;
-		}
+		for ($pagina = 1; $pagina <= $numPaginas; $pagina++) {
 
-		fputcsv($arquivo, $CABECHALHO, ';', '"', '\n');
+			$inicio = ($itens_por_pagina * $pagina) - $itens_por_pagina;
 
-		while ($row = mysqli_fetch_assoc($arrayQuery)) {
+			$sql = "SELECT B.COD_CLIENTE,
+						B.NUM_CARTAO,
+						B.NUM_CGCECPF,
+						B.NOM_CLIENTE,
+						B.DES_EMAILUS,
+						B.NUM_CELULAR,
+						B.DAT_CADASTR,
+						B.DAT_NASCIME,
+						B.COD_SEXOPES,
+						PE.DES_PROFISS,
+						C.NOM_UNIVEND
+				FROM PERSONACLASSIFICA A
+				INNER JOIN CLIENTES B ON A.COD_CLIENTE = B.COD_CLIENTE
+				INNER JOIN $connAdm->DB.unidadevenda C ON B.COD_UNIVEND = C.COD_UNIVEND
+				LEFT JOIN $connAdm->DB.profissoes PE ON PE.COD_PROFISS = B.COD_PROFISS
+				WHERE A.COD_PERSONA = $cod_persona
+					AND A.COD_EMPRESA = $cod_empresa
+					AND B.LOG_AVULSO = 'N'
+				ORDER BY B.NOM_CLIENTE limit $inicio,$itens_por_pagina";
 
-			// echo "<pre>";
-			// print_r($row);
-			// echo "</pre>";
+			$arrayQuery = mysqli_query(conntemp($cod_empresa, ''), $sql);
 
-			/*$row[VALOR_COMPRA]=fnvalor($row[VALOR_COMPRA],2);
-					$row[VALOR_RESGATE]=fnvalor($row[VALOR_RESGATE],2);
-					$row[CREDITO_TOTAL]=fnvalor($row[CREDITO_TOTAL],2);
-					$row[CREDITO_DISPONIVEL]=fnvalor($row[CREDITO_DISPONIVEL],2);
-					$row[CREDITO_EXPIRA_30]=fnvalor($row[CREDITO_EXPIRA_30],2);
-					$row[VAL_TICKET_MEDIO]=fnvalor($row[VAL_TICKET_MEDIO],2);
-					$row[VAL_TICKET_MEDIO]=fnvalor($row[VAL_TICKET_MEDIO],2);*/
-
-
-			//$limpandostring = fnAcentos(Utf8_ansi(json_encode($row)));
-			//$textolimpo = json_decode($limpandostring, true);
-			$array = array_map("utf8_decode", $row);
-			fputcsv($arquivo, $array, ';', '"', '\n');
-		}
-		fclose($arquivo);
-		/*$arrayQuery = mysqli_query(connTemp($cod_empresa,''),$sql);
-                        $array = array();
-			while($row = mysqli_fetch_assoc($arrayQuery)){
-				  $newRow = array();
-				  
-				  $cont = 0;
-				  foreach ($row as $objeto) {
-					  
-					// Colunas que são double converte com fnValor
-					if($cont == 16 || $cont == 19 || $cont == 21 || ($cont >= 28 && $cont <= 31) || $cont == 37 || $cont == 38){
-						array_push($newRow, fnValor($objeto, 2));
-					}else{
-						array_push($newRow, $objeto);
-					}
-					  
-					$cont++;
-				  }
-				$array[] = $newRow;
+			if ($pagina == 1) {
+				while ($headers = mysqli_fetch_field($arrayQuery)) {
+					$CABECHALHO[] = $headers->name;
+				}
+				fputcsv($arquivo, $CABECHALHO, ';', '"', '\n');
 			}
-			
-			$arrayColumnsNames = array();
-			while($row = mysqli_fetch_field($arrayQuery))
-			{
-				array_push($arrayColumnsNames, $row->name);
-            }			
-                        
-			$writer->addRow($arrayColumnsNames);
-			$writer->addRows($array);
 
-			$writer->close();*/
+			while ($row = mysqli_fetch_assoc($arrayQuery)) {
+				$array = array_map("utf8_decode", $row);
+				fputcsv($arquivo, $array, ';', '"', '\n');
+			}
+		}
+
+		fclose($arquivo);
+		// }
+
 		break;
 
 	case 'exportar2':

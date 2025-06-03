@@ -222,6 +222,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 					///FIM INSERE CLIENTE
 
+					/// INSERE CLIENTE AVULSO
+					$sqlBusca = "SELECT COD_CLIENTE_AV FROM EMPRESAS WHERE COD_EMPRESA = $cod_empresa";
+					$arrayQuery = mysqli_query($connAdm->connAdm(), $sqlBusca);
+					if (mysqli_num_rows($arrayQuery) == 0) {
+						$sql = "CALL SP_CADASTRA_CLIENTE_AVULSO (
+								'" . $cod_empresa . "', 
+								'S'   
+								) ";
+
+						//fnEscreve($sql);														
+						$arrayQuery = mysqli_query(connTemp($cod_empresa, ''), $sql);
+						$qrBuscaClienteAvulso = mysqli_fetch_assoc($arrayQuery);
+
+						$cod_avulso = $qrBuscaClienteAvulso['COD_CLIENTE'];
+
+						$sql2 = "UPDATE EMPRESAS SET COD_CLIENTE_AV = $cod_avulso WHERE COD_EMPRESA = $cod_empresa ";
+						$arrayQuery2 = mysqli_query($connAdm->connAdm(), $sql2);
+					}
+
+
+					/// FIM INSERE CLIENTE AVULSO
+
 					////// BLOCO DE INSERÇÃO DE PERFIL
 					$sqlBusca = "SELECT COD_PERFILS FROM PERFIL WHERE COD_EMPRESA = $cod_empresa";
 					$query = mysqli_query($connAdm->connAdm(), $sqlBusca);
@@ -1114,107 +1136,10 @@ if ($cod_empresa != 0) {
 
 									<div class="col-sm-12" style="padding-left: 0;">
 
-										<div class="col-xs-2" style="padding-left: 0;"> <!-- required for floating -->
-											<!-- Nav tabs -->
-
-											<?php
-											$sqlAudit = "SELECT * FROM
-												AUDITORIA_EMPRESA
-												WHERE COD_EMPRESA = $cod_empresa";
-
-											$queryAudit = mysqli_query($connAdm->connAdm(), trim($sqlAudit));
-
-											$passoUm = "fal fa-clock";
-											$passoDois = "fal fa-clock";
-											$passoTres = "fal fa-clock";
-											$passoQuatro = "fal fa-clock";
-											$passoCinco = "fal fa-clock";
-											$bgPassoUm = "bg-warning";
-											$bgPassoDois = "bg-warning";
-											$bgPassoTres = "bg-warning";
-											$bgPassoQuatro = "bg-warning";
-											$bgPassoCinco = "bg-warning";
-											if ($resultAudit = mysqli_fetch_assoc($queryAudit)) {
-												if ($resultAudit['FASE1'] == 'S') {
-													$passoUm = "fal fa-check";
-													$bgPassoUm = "bg-success";
-												}
-
-												if ($resultAudit['FASE2'] == 'S') {
-													$passoDois = "fal fa-check";
-													$bgPassoDois = "bg-success";
-												}
-
-												if ($resultAudit['FASE3'] == 'S') {
-													$passoTres = "fal fa-check";
-													$bgPassoTres = "bg-success";
-												}
-
-												if ($resultAudit['FASE4'] == 'S') {
-													$passoQuatro = "fal fa-check";
-													$bgPassoQuatro = "bg-success";
-												}
-
-												if ($resultAudit['FASE5'] == 'S') {
-													$passoCinco = "fal fa-check";
-													$bgPassoCinco = "bg-success";
-												}
-											}
-
-											?>
-											<ul class="vTab nav nav-tabs tabs-left text-center">
-
-												<li class="vTab">
-													<a href="action.do?mod=<?= fnEncode(2091) ?>&id=<?= fnEncode($cod_empresa) ?>">
-
-														<div class="notify-badge text-center <?= $bgPassoUm ?>" id="notificaPasso1" style><span class="<?= $passoUm ?>"></span></div>
-
-														<i class="fal fa-user-edit fa-2x" style="margin: 10px 0 2px 0"></i>
-														<h5 class="hidden-xs" style="margin: 3px 0 0 0">Empresa e Usuários</h5>
-													</a>
-												</li>
-
-												<li class="vTab">
-													<a href="action.do?mod=<?= fnEncode(2092) ?>&id=<?= fnEncode($cod_empresa) ?>">
-
-														<div class="notify-badge text-center <?= $bgPassoDois ?>" id="notificaPasso2"><span class="<?= $passoDois ?>"></span></div>
-
-														<i class="fal fa-database fa-2x" style="margin: 10px 0 2px 0"></i>
-														<h5 class="hidden-xs" style="margin: 3px 0 0 0">Database</h5>
-													</a>
-												</li>
-
-												<li class="active vTab">
-													<a href="action.do?mod=<?= fnEncode(2093) ?>&id=<?= fnEncode($cod_empresa) ?>">
-
-														<div class="notify-badge text-center <?= $bgPassoTres ?>" id="notificaPasso3"><span class="<?= $passoTres ?>"></span></div>
-
-														<i class="fal fa-user-edit fa-2x" style="margin: 10px 0 2px 0"></i>
-														<h5 class="hidden-xs" style="margin: 3px 0 0 0">Clientes e Hotsite</h5>
-													</a>
-												</li>
-
-												<li class="vTab">
-													<a href="action.do?mod=<?= fnEncode(2096) ?>&id=<?= fnEncode($cod_empresa) ?>">
-
-														<div class="notify-badge text-center <?= $bgPassoQuatro ?>" id="notificaPasso4"><span class="<?= $passoQuatro ?>"></span></div>
-
-														<i class="fal fa-user-edit fa-2x" style="margin: 10px 0 2px 0"></i>
-														<h5 class="hidden-xs" style="margin: 3px 0 0 0">Campanhas e Comunicação</h5>
-													</a>
-												</li>
-
-												<li class="vTab">
-													<a href="action.do?mod=<?= fnEncode(2102) ?>&id=<?= fnEncode($cod_empresa) ?>">
-
-														<div class="notify-badge text-center <?= $bgPassoCinco ?>" id="notificaPasso5"><span class="<?= $passoCinco ?>"></span></div>
-														<i class="fal fa-key fa-2x" style="margin: 10px 0 2px 0"></i>
-														<h5 class="hidden-xs" style="margin: 3px 0 0 0">Dados de Login</h5>
-													</a>
-												</li>
-
-											</ul>
-										</div>
+										<?php
+										$abaAtivo = 2093;
+										include 'menuAutomacao.php';
+										?>
 
 										<div class="col-xs-10">
 											<!-- conteudo abas -->
@@ -1944,7 +1869,7 @@ if ($cod_empresa != 0) {
 
 									<div class="form-group text-right col-lg-12">
 										<button type="submit" name="CAD" id="CAD" class="btn btn-success getBtn"><i class="fas fa-cogs"></i>&nbsp;&nbsp;Processar</button>
-										<a href="action.do?mod=<?= fnEncode(2096) ?>&id=<?= fnEncode($cod_empresa) ?>" class="btn btn-primary next next1" name="next">Próximo&nbsp;&nbsp;<i class="fas fa-arrow-right"></i></a>
+										<?= $btnProximo ?>
 									</div>
 
 									<div class="push10"></div>

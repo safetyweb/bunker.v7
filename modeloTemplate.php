@@ -445,7 +445,7 @@ if (is_numeric(fnLimpacampo(fnDecode(@$_GET['idT'])))) {
 																<div style="position: relative">
 																	<center>
 																		<h3 style="margin: 5px; font-weight: 900">ISABEL,</h3>
-																		<!--<h5 style="margin: 5px; font-weight: 900"><b>LEVE TAMBÉM...</b></h5>-->
+																		<h5 style="margin: 5px; font-weight: 600"><small><b>Cliente Gold</b></small></h5>
 																		<h5 style="margin-top: 5px">Está <b>esquecendo</b> de algo?</h5>
 																		<a class="excluirBloco">
 																			<i class="fa fa-trash" style="margin: 0" aria-hidden="true"></i>
@@ -534,7 +534,7 @@ if (is_numeric(fnLimpacampo(fnDecode(@$_GET['idT'])))) {
 																	<center>
 																		<h6>ISABEL DE ANDRADE MARTINEZ SALES BR</h6>
 																		<h6>Saldo: R$ 0,18</h6>
-																		<h6>31/05/2017</h6>
+																		<h6>31/05/2017 às 10:00</h6>
 																	</center>
 																	<a class="excluirBloco">
 																		<i class="fa fa-trash" style="margin: 0" aria-hidden="true"></i>
@@ -687,7 +687,7 @@ if (is_numeric(fnLimpacampo(fnDecode(@$_GET['idT'])))) {
 																		<h6>ISABEL DE ANDRADE MARTINEZ SALES BR</h6>
 																		<h6>Número Cartão: 1234 5678 9012 3456</h6>
 																		<h6>Saldo: R$ 0,18</h6>
-																		<h6>31/05/2017</h6>
+																		<h6>31/05/2017 às 10:00</h6>
 																	</center>
 																	<a class="excluirBloco">
 																		<i class="fa fa-trash" style="margin: 0" aria-hidden="true"></i>
@@ -1001,7 +1001,7 @@ if (is_numeric(fnLimpacampo(fnDecode(@$_GET['idT'])))) {
 																<div style="position: relative">
 																	<div class="div-aniv">
 																		<?php
-																		if ($msgsbtr != '' && $msgsbtr != 0) {
+																		if ($msgsbtr != '') {
 																		?>
 																			<div class="imagemTicket text-center f18">
 																				<a href="javascript:void(0)" class="addBox" data-url="action.do?mod=<?php echo fnEncode(1916) ?>&id=<?php echo fnEncode($cod_empresa) ?>&idC=<?= fnEncode($qrBuscaComunicacao['COD_COMUNIC']) ?>&pop=true" data-title="Editar Texto"><?= $msgsbtr ?></a>

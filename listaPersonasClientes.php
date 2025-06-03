@@ -30,7 +30,7 @@ if (isset($_POST['COD_EMPRESA'])) {
 
 		//fnEscreve($sql);
 
-		$arrayQuery = mysqli_query(conntemp($cod_empresa,''), $sql);
+		$arrayQuery = mysqli_query(conntemp($cod_empresa, ''), $sql);
 		$qrBuscaEmpresa = mysqli_fetch_assoc($arrayQuery);
 
 		$nom_empresa = $qrBuscaEmpresa['NOM_FANTASI'];
@@ -133,7 +133,7 @@ if (isset($_POST['COD_EMPRESA'])) {
 													A.COD_EMPRESA = $cod_empresa ";
 											//fnEscreve($sql);
 
-											$retorno = mysqli_query(conntemp($cod_empresa,''), $sql);
+											$retorno = mysqli_query(conntemp($cod_empresa, ''), $sql);
 											$total_itens_por_pagina = mysqli_fetch_assoc($retorno);
 
 											$numPaginas = ceil($total_itens_por_pagina['CONTADOR'] / $itens_por_pagina);
@@ -164,7 +164,7 @@ if (isset($_POST['COD_EMPRESA'])) {
 
 											//fnEscreve($sql);
 
-											$arrayQuery = mysqli_query(conntemp($cod_empresa,''), $sql);
+											$arrayQuery = mysqli_query(conntemp($cod_empresa, ''), $sql);
 
 											$count = 0;
 											while ($qrListaPersonas = mysqli_fetch_assoc($arrayQuery)) {
@@ -198,7 +198,7 @@ if (isset($_POST['COD_EMPRESA'])) {
 
 										<tfoot>
 											<tr>
-											<th colspan="100">
+												<th colspan="100">
 													<a class="btn btn-info btn-sm exportarCSV"><i class="fa fa-file-excel" aria-hidden="true"></i>&nbsp; Exportar</a>
 												</th>
 											</tr>

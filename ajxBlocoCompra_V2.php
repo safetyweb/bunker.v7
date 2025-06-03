@@ -34,7 +34,7 @@ $log_usuario = $qrBuscaUsuario['LOG_USUARIO'];
 $des_senhaus = $qrBuscaUsuario['DES_SENHAUS'];	
 //consulta empresa
 $sql = "SELECT COD_EMPRESA, NOM_FANTASI,LOG_CONSEXT, LOG_PDVMANU,TIP_CAMPANHA FROM empresas where COD_EMPRESA = '".$cod_empresa."' ";
-//fnEscreve($sql);
+// fnEscreve($sql);
 $arrayQuery = mysqli_query($connAdm->connAdm(),$sql) or die(mysqli_error());
 $qrBuscaEmpresa = mysqli_fetch_assoc($arrayQuery);
 	

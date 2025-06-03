@@ -152,6 +152,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 					// fnTestesql(connTemp($cod_empresa,""),trim($sql));
 					mysqli_query(connTemp($cod_empresa, ''), $sql);
 
+					$url = "https://modelo.fidelidade.mk/pesquisa?idP=" . fnEncode($cod_pesquisa);
+					$titulo = "Pesquisa NPS - " . $des_pesquisa . " #" . $cod_pesquisa;
+					$sql = "SELECT ID FROM TAB_ENCURTADOR WHERE URL_ORIGINAL = '" . $url . "' AND COD_EMPRESA = " . $cod_empresa;
+					$arrayQuery = mysqli_query($connAdm->connAdm(), $sql);
+					$qr = mysqli_fetch_assoc($arrayQuery);
+					fnAltEncurtador($titulo, $qr["ID"], $cod_empresa, $connAdm->connAdm());
+
 					$msgRetorno = "Registro alterado com <strong>sucesso!</strong>";
 					break;
 				case 'EXC':

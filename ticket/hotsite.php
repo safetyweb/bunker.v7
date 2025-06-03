@@ -70,18 +70,34 @@ if ($siteGo == "OK") {
 	//fnEscreve($cod_empresa);
 
 	//busca nome da empresa
-	$sql2 = "SELECT NOM_FANTASI, COD_CHAVECO, LOG_BLOQUEIAPJ from EMPRESAS WHERE COD_EMPRESA = $cod_empresa ";
+	$sql2 = "SELECT NOM_FANTASI, COD_CHAVECO, LOG_BLOQUEIAPJ, TIP_SENHA, MIN_SENHA, MAX_SENHA from EMPRESAS WHERE COD_EMPRESA = $cod_empresa ";
 	$arrayQuery = mysqli_query($connAdm->connAdm(), $sql2);
 	$qrBuscaDadosEmpresa = mysqli_fetch_assoc($arrayQuery);
 	$nom_fantasi = $qrBuscaDadosEmpresa['NOM_FANTASI'];
 	$cod_chaveco = $qrBuscaDadosEmpresa['COD_CHAVECO'];
 	$bloqueiaPj = $qrBuscaDadosEmpresa['LOG_BLOQUEIAPJ'];
+	$tip_senha = $qrBuscaDadosEmpresa['TIP_SENHA'];
+	$min_senha = $qrBuscaDadosEmpresa['MIN_SENHA'];
+	$max_senha = $qrBuscaDadosEmpresa['MAX_SENHA'];
 
 	if (isset($_GET['preview'])) {
 		$table = 'SITE_EXTRATO_PREVIEW';
 		//fnEscreve('preview');
 	} else {
 		$table = 'SITE_EXTRATO';
+	}
+
+	$wizardSenha = "int";
+
+	if ($tip_senha != "2") {
+		$wizardSenha = "pr-password";
+	}
+
+	if ($cod_empresa == 124) {
+		$wizardSenha = "int";
+		$helpSenha = "Máximo de 4 dígitos numéricos";
+		$max_senha = "4";
+		$min_senha = "4";
 	}
 
 	//busca dados da tabela
@@ -215,6 +231,12 @@ if ($siteGo == "OK") {
 		while ($qrCamp = mysqli_fetch_assoc($arrayCamp)) {
 			$arrayCampanhas22 .= $qrCamp['DES_CHAVECAMP'] . ',' . $qrCamp['IMG_BANNERMAIN'] . ',' . $qrCamp['TXT_BANNERMAIN'] . ',' . $qrCamp['IMG_BANNERLOG'] . ';';
 		}
+	}
+
+	if (isset($_GET['dev']) && $_GET['dev'] == true) {
+		echo "<pre>";
+		print_r($qrBuscaSiteExtrato);
+		echo "</pre>";
 	}
 
 ?>
@@ -1439,10 +1461,11 @@ if ($siteGo == "OK") {
 									<div class="col-md-12 col-xs-12">
 										<div class="form-group">
 											<!-- <label for="inputName" class="control-label required">Senha</label> -->
-											<input type="password" style="color: #34495E!important;" placeholder="sua senha" class="form-control input-hg input-lg text-center input-chave" name="senha" id="senha" maxlength="6" required>
+											<input type="password" style="color: #34495E!important;" placeholder="sua senha" class="form-control input-hg input-lg text-center input-chave <?= $wizardSenha ?>" name="senha" id="senha" minlength="<?= $min_senha ?>" maxlength="<?= $max_senha ?>" required>
 											<div class="help-block with-errors"></div>
 										</div>
 									</div>
+
 									<!-- <input type="password" maxlength="8" id="senha" name="senha" class="form-control input-hg" placeholder="Sua Senha" /> -->
 									<div class="col-md-8">
 

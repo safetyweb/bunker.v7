@@ -547,6 +547,9 @@ while ($rsempresa = mysqli_fetch_assoc($rwempresa)) {
 				case '<#NOME>';
 					$selectCliente .= "SUBSTRING_INDEX(SUBSTRING_INDEX(concat(Upper(SUBSTR(C.NOM_CLIENTE, 1,1)), lower(SUBSTR(C.NOM_CLIENTE, 2,LENGTH(C.NOM_CLIENTE)))), ' ', 1), ' ', -1) AS NOM_CLIENTE, ";
 					break;
+				case '<#CODCLIENTE>';
+					$selectCliente .= "C.COD_CLIENTE CODCLIENTE,";
+					break;
 				case '<#CARTAO>';
 					$selectCliente .= "";
 					break;
@@ -755,7 +758,7 @@ while ($rsempresa = mysqli_fetch_assoc($rwempresa)) {
 			)
 			. ") " .
 			($tip_gatilho == "venda" ?
-				"AND IFNULL((SELECT SUM(IFNULL(val_saldo,0)) FROM creditosdebitos E WHERE E.COD_CLIENTE=C.COD_CLIENTE AND E.COD_STATUSCRED=1),0) >= $tot_saldomin" :
+				"AND IFNULL((SELECT COALESCE(SUM(E.val_saldo), 0.00) val_saldo FROM creditosdebitos E WHERE E.COD_CLIENTE=C.COD_CLIENTE AND E.COD_STATUSCRED=1),0) >= $tot_saldomin" :
 				""
 			);
 		$sql_dados = $sqlcli_cad;

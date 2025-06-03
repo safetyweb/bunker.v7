@@ -36,6 +36,11 @@ $server->register(
 
 function BuscaConsumidor($fase, $opcoesbuscaconsumidor, $dadosLogin)
 {
+
+  /*if ($opcoesbuscaconsumidor['cpf'] == '48627404801') {
+    sleep(10);
+  }*/
+
   ob_start('ob_gzhandler');
   include_once  '../_system/Class_conn.php';
   include_once  'func/function.php';
@@ -89,6 +94,8 @@ function BuscaConsumidor($fase, $opcoesbuscaconsumidor, $dadosLogin)
   } else {
     $logcpf = fnlimpaCPF($opcoesbuscaconsumidor['cartao']);
   }
+
+
 
   if ($opcoesbuscaconsumidor['cpf'] == '' && $opcoesbuscaconsumidor['cartao'] == '' && $opcoesbuscaconsumidor['telefone'] != '') {
     $telbunsca = preg_replace('/[^0-9]/', '', $opcoesbuscaconsumidor['telefone']);

@@ -165,7 +165,8 @@ if (@$cod_univend == "9999") {
 include "unidadesAutorizadas.php";
 
 if ($cod_univend != "9999") {
-	$andUnidades = "AND DPI.COD_UNIVEND IN($lojasSelecionadas)";
+	$andUnidades = "AND DP.COD_UNIVEND IN($lojasSelecionadas)";
+	// $andUnidades = "AND DPI.COD_UNIVEND IN($lojasSelecionadas)";
 	$andUnidadesDp = "AND DP.COD_UNIVEND IN($lojasSelecionadas)";
 }
 
@@ -1206,7 +1207,7 @@ if (!empty($arrayQtd)) {
 
 <?php
 
-$sql = " SELECT DPI.COD_UNIVEND,
+$sql = " SELECT DP.COD_UNIVEND,
 
 										DPI.COD_PERGUNTA,
 
@@ -1220,7 +1221,7 @@ $sql = " SELECT DPI.COD_UNIVEND,
 														   AND COD_EXCLUSA IS NULL) 
 									AND DPI2.COD_NPSTIPO = 3
 									AND DPI2.COD_EMPRESA = $cod_empresa
-								 	AND DPI2.COD_UNIVEND = DPI.COD_UNIVEND
+								 	AND DP2.COD_UNIVEND = DP.COD_UNIVEND
 								 ) AS TOTAL_PROMOTORES,
 
 								(SELECT COUNT(*) FROM DADOS_PESQUISA_ITENS DPI2
@@ -1233,7 +1234,7 @@ $sql = " SELECT DPI.COD_UNIVEND,
 														   AND COD_EXCLUSA IS NULL) 
 									AND DPI2.COD_NPSTIPO = 2
 									AND DPI2.COD_EMPRESA = $cod_empresa
-								 	AND DPI2.COD_UNIVEND = DPI.COD_UNIVEND
+								 	AND DP2.COD_UNIVEND = DP.COD_UNIVEND
 								 ) AS TOTAL_NEUTROS,
 
 								 (SELECT COUNT(*) FROM DADOS_PESQUISA_ITENS DPI2
@@ -1246,7 +1247,7 @@ $sql = " SELECT DPI.COD_UNIVEND,
 														   AND COD_EXCLUSA IS NULL) 
 									AND DPI2.COD_NPSTIPO = 1
 									AND DPI2.COD_EMPRESA = $cod_empresa
-								 	AND DPI2.COD_UNIVEND = DPI.COD_UNIVEND
+								 	AND DP2.COD_UNIVEND = DP.COD_UNIVEND
 								 ) AS TOTAL_DETRATORES
 
 							FROM DADOS_PESQUISA_ITENS DPI
@@ -1255,9 +1256,9 @@ $sql = " SELECT DPI.COD_UNIVEND,
 							WHERE DP.COD_REGISTRO = DPI.COD_REGISTRO
 							AND DPI.COD_EMPRESA = $cod_empresa
 							AND DP.COD_PESQUISA = $cod_pesquisa
-							AND DPI.COD_UNIVEND IS NOT NULL
+							AND DP.COD_UNIVEND IS NOT NULL
 							$andUnidades
-							GROUP BY DPI.COD_UNIVEND
+							GROUP BY DP.COD_UNIVEND
 							";
 // fnescreve($sql);
 $arrayQuery = mysqli_query(connTemp($cod_empresa, ''), $sql);
@@ -1331,7 +1332,7 @@ if ($arrayQuery) {
 																						AND DP.DT_HORAINICIAL BETWEEN '$dat_ini 00:00:00' AND '$dat_fim 23:59:59'
 																						AND DPI.COD_EMPRESA = $cod_empresa
 																						AND DPI.COD_NPSTIPO IN(1,2,3) 
-																						AND DPI.COD_UNIVEND = " . $qrBuscaModulos['COD_UNIVEND'];
+																						AND DP.COD_UNIVEND = " . $qrBuscaModulos['COD_UNIVEND'];
 
 															// fnEscreve($sql);
 															$med_ponderada = 0;

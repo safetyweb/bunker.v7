@@ -66,29 +66,14 @@ switch ($opcao) {
 		$nps = fnLimpacampoZero($_GET['nps']);
 		$resposta_texto = fnLimpacampo($_GET['resposta_texto']);
 
-		if($cod_players != 0){
-			$unidade_resposta = "(SELECT COD_UNIVEND FROM TOTEM_PLAYERS
-									WHERE COD_PLAYERS = $cod_players 
-									AND COD_EMPRESA = $cod_empresa)";
-		}else{
-			$unidade_resposta = "CASE 
-									WHEN (SELECT COD_UNIVEND FROM CLIENTES WHERE COD_CLIENTE = $cod_cliente AND COD_EMPRESA = $cod_empresa) IS NOT NULL  
-										THEN (SELECT COD_UNIVEND FROM CLIENTES WHERE COD_CLIENTE = $cod_cliente AND COD_EMPRESA = $cod_empresa)
-									WHEN (SELECT MAX(COD_UNIVEND) FROM VENDAS WHERE COD_CLIENTE = $cod_cliente AND COD_EMPRESA = $cod_empresa) IS NOT NULL  
-										THEN (SELECT MAX(COD_UNIVEND) FROM VENDAS WHERE COD_CLIENTE = $cod_cliente AND COD_EMPRESA = $cod_empresa)
-									WHEN (SELECT COD_UNIVEND FROM unidadevenda WHERE LOG_ESTATUS = 'S' AND LOG_UNIPREF = 'S' AND COD_EMPRESA = $cod_empresa LIMIT 1 ) > 0 
-										THEN  (SELECT COD_UNIVEND FROM unidadevenda WHERE LOG_ESTATUS = 'S' AND LOG_ESTATUS = 'S' AND LOG_UNIPREF = 'S' AND COD_EMPRESA = $cod_empresa LIMIT 1 )
-									ELSE (SELECT COD_UNIVEND FROM unidadevenda WHERE LOG_ESTATUS = 'S' and COD_EMPRESA = $cod_empresa LIMIT 1 )
-								END"; 
-		}
+		
 
 
 		if($defineSalvo == 1){
 	
 			$sql = "INSERT INTO DADOS_PESQUISA_ITENS 
-					(COD_REGISTRO, COD_PESQUISA, COD_PERGUNTA, COD_EMPRESA, COD_CLIENTE, RESPOSTA_NUMERO, RESPOSTA_TEXTO, COD_NPSTIPO, COD_UNIVEND) 
-			 VALUES ($cod_registro, $cod_pesquisa, $cod_modpesquisa, $cod_empresa, $cod_cliente, $resposta_numero, '$resposta_texto', $nps,
-			 			$unidade_resposta 
+					(COD_REGISTRO, COD_PESQUISA, COD_PERGUNTA, COD_EMPRESA, RESPOSTA_NUMERO, RESPOSTA_TEXTO, COD_NPSTIPO) 
+			 VALUES ($cod_registro, $cod_pesquisa, $cod_modpesquisa, $cod_empresa, $resposta_numero, '$resposta_texto', $nps
 					);";
 			// echo $sql;
 			// exit();
@@ -477,9 +462,25 @@ switch ($opcao) {
 			$nom_cliente = "";
 		}
 
-		if($qrPesq['LOG_ATIVO'] == 'S' && $fim_campanha >= date("Y-m-d H:i:s") && $fim_pesquisa >= date("Y-m-d") && $nom_cliente == ""){			
+		if($qrPesq['LOG_ATIVO'] == 'S' && $fim_campanha >= date("Y-m-d H:i:s") && $fim_pesquisa >= date("Y-m-d") && $nom_cliente == ""){		
+			
+			if($cod_players != 0){
+				$unidade_resposta = "(SELECT COD_UNIVEND FROM TOTEM_PLAYERS
+										WHERE COD_PLAYERS = $cod_players 
+										AND COD_EMPRESA = $cod_empresa)";
+			}else{
+				$unidade_resposta = "CASE 
+										WHEN (SELECT COD_UNIVEND FROM VENDAS WHERE COD_CLIENTE = $cod_cliente AND COD_EMPRESA = $cod_empresa ORDER BY COD_VENDA DESC LIMIT 1) IS NOT NULL  
+											THEN (SELECT COD_UNIVEND FROM VENDAS WHERE COD_CLIENTE = $cod_cliente AND COD_EMPRESA = $cod_empresa ORDER BY COD_VENDA DESC LIMIT 1)
+										WHEN (SELECT COD_UNIVEND FROM CLIENTES WHERE COD_CLIENTE = $cod_cliente AND COD_EMPRESA = $cod_empresa) IS NOT NULL  
+											THEN (SELECT COD_UNIVEND FROM CLIENTES WHERE COD_CLIENTE = $cod_cliente AND COD_EMPRESA = $cod_empresa)
+										WHEN (SELECT COD_UNIVEND FROM unidadevenda WHERE LOG_ESTATUS = 'S' AND LOG_UNIPREF = 'S' AND COD_EMPRESA = $cod_empresa LIMIT 1 ) > 0 
+											THEN  (SELECT COD_UNIVEND FROM unidadevenda WHERE LOG_ESTATUS = 'S' AND LOG_ESTATUS = 'S' AND LOG_UNIPREF = 'S' AND COD_EMPRESA = $cod_empresa LIMIT 1 )
+										ELSE (SELECT COD_UNIVEND FROM unidadevenda WHERE LOG_ESTATUS = 'S' and COD_EMPRESA = $cod_empresa LIMIT 1 )
+									END"; 
+			}
 		
-			$sql = "INSERT INTO DADOS_PESQUISA (COD_PESQUISA, COD_EMPRESA, COD_CLIENTE, COD_NPSPLATAFO, DT_HORAINICIAL) VALUES ($cod_pesquisa, $cod_empresa, $cod_cliente, $plataforma, now());";
+			$sql = "INSERT INTO DADOS_PESQUISA (COD_PESQUISA, COD_EMPRESA, COD_CLIENTE, COD_UNIVEND, COD_NPSPLATAFO, DT_HORAINICIAL) VALUES ($cod_pesquisa, $cod_empresa, $cod_cliente, $unidade_resposta, $plataforma, now());";
 			// echo $sql;
 			mysqli_query(connTemp($cod_empresa,''),$sql);	
 

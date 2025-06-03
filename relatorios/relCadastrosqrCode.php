@@ -529,7 +529,7 @@ if ($cod_campanha != "") {
                                 ?>
                                     <tr>
                                         <td><?php echo $qrListaVendas['COD_CLIENTE']; ?></td>
-                                        <td><?php echo $qrListaVendas['NOM_CLIENTE']; ?></td>
+                                        <td><a href='action.do?mod=<?= fnEncode(1024) ?>&id=<?= fnEncode($cod_empresa) ?>&idC=<?= fnEncode($qrListaVendas['COD_CLIENTE']) ?>' target='_blank'><?php echo $qrListaVendas['NOM_CLIENTE']; ?></a></td>
                                         <td class="text-right"><small>R$ <?php echo fnValor($qrListaVendas['TOT_CREDITOS'], 2); ?></small></td>
                                         <td class="text-right"><small>R$ <?php echo fnValor($qrListaVendas['TOT_DEBITOS'], 2); ?></small></td>
                                         <td class="text-right"><small>R$ <?php echo fnValor($qrListaVendas['TOT_VENDAS'], 2); ?></small></td>

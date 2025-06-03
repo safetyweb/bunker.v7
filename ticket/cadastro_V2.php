@@ -481,7 +481,13 @@ if ($cod_cliente != 0) {
 if ($chaveCampanha != "") {
 
 	// busca dados campanha 22
-	$sqlCampanha = "SELECT * FROM CAMPANHA_HOTSITE WHERE COD_EMPRESA = $cod_empresa AND DES_CHAVECAMP = '#" . $chaveCampanha . "'";
+	$sqlCampanha = "SELECT * 
+	FROM CAMPANHA_HOTSITE 
+	WHERE COD_EMPRESA = $cod_empresa 
+	AND DES_CHAVECAMP = '#" . $chaveCampanha . "' 
+	AND COD_EXCLUSA IS NULL 
+	AND CURRENT_DATE BETWEEN DAT_MIN AND DAT_MAX";
+
 	$arrayCamp = mysqli_query(connTemp($cod_empresa, ''), $sqlCampanha);
 	$qrCamp = mysqli_fetch_assoc($arrayCamp);
 

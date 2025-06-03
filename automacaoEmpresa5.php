@@ -1,7 +1,10 @@
 <?php
 
 //echo "<h5>_".$opcao."</h5>";
-
+echo fnDebug('true');
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 $hashLocal = mt_rand();
 
 // definir o numero de itens por pagina
@@ -15,7 +18,7 @@ $pagina = "1";
 //FUNÇÃO PARA GERAR SENHA RANDON
 function gerarSenha($comprimento = 12)
 {
-    $caracteres = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+[]{}|;:,.<>?';
+    $caracteres = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 
     $senha = '';
 
@@ -44,6 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $log_emailenv = 'S';
         }
 
+        $des_corpoemail = "";
         if (isset($_REQUEST['DES_CORPOEMAIL'])) {
             $des_corpoemail = fnLimpaCampo($_REQUEST['DES_CORPOEMAIL']);
         }
@@ -52,6 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $des_destinatario = fnLimpaCampo($_REQUEST['DES_DESTINATARIO']);
         }
 
+        $des_assuntoemail = "";
         if (isset($_REQUEST['DES_ASSUNTOEMAIL'])) {
             $des_assuntoemail = fnLimpaCampo($_REQUEST['DES_ASSUNTOEMAIL']);
         }
@@ -182,34 +187,57 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                                     $arrayProcAudit = mysqli_query($connAdm->connAdm(), trim($sqlAudit));
 
-                                    require_once 'envioEmailAutomacao.php';
+                                    // require_once 'envioEmailAutomacao.php';
 
-                                    $destinatario = explode(',', $des_destinatario);
+                                    // $destinatario = explode(',', $des_destinatario);
 
-                                    $emailDestino = array(
-                                        'email1' => $destinatario[0],
-                                        'email2' => isset($destinatario[1]) ? $destinatario[1] : '',
-                                        'email3' => isset($destinatario[2]) ? $destinatario[2] : '',
-                                        'email4' => isset($destinatario[3]) ? $destinatario[3] : '',
-                                        'email5' => isset($destinatario[4]) ? $destinatario[4] : ''
-                                    );
+                                    // $emailDestino = array(
+                                    //     'email1' => $destinatario[0],
+                                    //     'email2' => isset($destinatario[1]) ? $destinatario[1] : '',
+                                    //     'email3' => isset($destinatario[2]) ? $destinatario[2] : '',
+                                    //     'email4' => isset($destinatario[3]) ? $destinatario[3] : '',
+                                    //     'email5' => isset($destinatario[4]) ? $destinatario[4] : ''
+                                    // );
 
-                                    fnAutommail(
-                                        $emailDestino,
-                                        'software house',
-                                        "<html>" . $des_corpoemail . "</html>",
-                                        $des_assuntoemail,
-                                        'Dados Login ' . $nom_empresa,
-                                        $connAdm->connAdm(),
-                                        connTemp($cod_empresa, ""),
-                                        $cod_empresa,
-                                        './media/clientes/3/' . $des_contrato,
-                                        $nom_contrato
-                                    );
+                                    // fnAutommail(
+                                    //     $emailDestino,
+                                    //     'Marka Fidelição',
+                                    //     'Dados de Login',
+                                    //     'Marka Fidelição',
+                                    //     $connAdm->connAdm(),
+                                    //     connTemp(3, ""),
+                                    //     $cod_empresa,
+                                    //     './media/clientes/3/',
+                                    //     $nom_contrato
+                                    // );
                                 }
                             }
                         }
                     }
+
+                    require_once 'envioEmailAutomacao.php';
+
+                    $destinatario = explode(',', $des_destinatario);
+
+                    $emailDestino = array(
+                        'email1' => $destinatario[0],
+                        'email2' => isset($destinatario[1]) ? $destinatario[1] : '',
+                        'email3' => isset($destinatario[2]) ? $destinatario[2] : '',
+                        'email4' => isset($destinatario[3]) ? $destinatario[3] : '',
+                        'email5' => isset($destinatario[4]) ? $destinatario[4] : ''
+                    );
+
+                    fnAutommail(
+                        $emailDestino,
+                        'Marka Fidelição',
+                        'Dados de Login',
+                        'Marka Fidelição',
+                        $connAdm->connAdm(),
+                        connTemp(3, ""),
+                        $cod_empresa,
+                        './media/clientes/3/',
+                        $des_contrato
+                    );
 
                     //LIBERA ACESSO CONSULTORES E FINANCEIRO
                     $sqlBusca = "SELECT COD_USUARIO, NOM_USUARIO, COD_MULTEMP FROM usuarios WHERE cod_empresa = 3 AND COD_USUARIO IN(34,6145,5348,$cod_consultor)";
@@ -445,107 +473,10 @@ if ($cod_integradora == 34 && $des_destinatario == "") {
 
                                     <div class="col-sm-12" style="padding-left: 0;">
 
-                                        <div class="col-xs-2" style="padding-left: 0;"> <!-- required for floating -->
-
-                                            <?php
-                                            $sqlAudit = "SELECT * FROM
-											AUDITORIA_EMPRESA
-											WHERE COD_EMPRESA = $cod_empresa";
-
-                                            $queryAudit = mysqli_query($connAdm->connAdm(), trim($sqlAudit));
-
-                                            $passoUm = "fal fa-clock";
-                                            $passoDois = "fal fa-clock";
-                                            $passoTres = "fal fa-clock";
-                                            $passoQuatro = "fal fa-clock";
-                                            $passoCinco = "fal fa-clock";
-                                            $bgPassoUm = "bg-warning";
-                                            $bgPassoDois = "bg-warning";
-                                            $bgPassoTres = "bg-warning";
-                                            $bgPassoQuatro = "bg-warning";
-                                            $bgPassoCinco = "bg-warning";
-                                            if ($resultAudit = mysqli_fetch_assoc($queryAudit)) {
-                                                if ($resultAudit['FASE1'] == 'S') {
-                                                    $passoUm = "fal fa-check";
-                                                    $bgPassoUm = "bg-success";
-                                                }
-
-                                                if ($resultAudit['FASE2'] == 'S') {
-                                                    $passoDois = "fal fa-check";
-                                                    $bgPassoDois = "bg-success";
-                                                }
-
-                                                if ($resultAudit['FASE3'] == 'S') {
-                                                    $passoTres = "fal fa-check";
-                                                    $bgPassoTres = "bg-success";
-                                                }
-
-                                                if ($resultAudit['FASE4'] == 'S') {
-                                                    $passoQuatro = "fal fa-check";
-                                                    $bgPassoQuatro = "bg-success";
-                                                }
-
-                                                if ($resultAudit['FASE5'] == 'S') {
-                                                    $passoCinco = "fal fa-check";
-                                                    $bgPassoCinco = "bg-success";
-                                                }
-                                            }
-
-                                            ?>
-                                            <!-- Nav tabs -->
-                                            <ul class="vTab nav nav-tabs tabs-left text-center">
-
-                                                <li class="vTab">
-                                                    <a href="action.do?mod=<?= fnEncode(2091) ?>&id=<?= fnEncode($cod_empresa) ?>">
-
-                                                        <div class="notify-badge text-center <?= $bgPassoUm ?>" id="notificaPasso1" style><span class="<?= $passoUm ?>"></span></div>
-
-                                                        <i class="fal fa-user-edit fa-2x" style="margin: 10px 0 2px 0"></i>
-                                                        <h5 class="hidden-xs" style="margin: 3px 0 0 0">Empresa e Usuários</h5>
-                                                    </a>
-                                                </li>
-
-                                                <li class="vTab">
-                                                    <a href="action.do?mod=<?= fnEncode(2092) ?>&id=<?= fnEncode($cod_empresa) ?>">
-
-                                                        <div class="notify-badge text-center <?= $bgPassoDois ?>" id="notificaPasso2"><span class="<?= $passoDois ?>"></span></div>
-
-                                                        <i class="fal fa-database fa-2x" style="margin: 10px 0 2px 0"></i>
-                                                        <h5 class="hidden-xs" style="margin: 3px 0 0 0">Database</h5>
-                                                    </a>
-                                                </li>
-
-                                                <li class="vTab">
-                                                    <a href="action.do?mod=<?= fnEncode(2093) ?>&id=<?= fnEncode($cod_empresa) ?>">
-
-                                                        <div class="notify-badge text-center <?= $bgPassoTres ?>" id="notificaPasso3"><span class="<?= $passoTres ?>"></span></div>
-
-                                                        <i class="fal fa-user-edit fa-2x" style="margin: 10px 0 2px 0"></i>
-                                                        <h5 class="hidden-xs" style="margin: 3px 0 0 0">Clientes e Hotsite</h5>
-                                                    </a>
-                                                </li>
-
-                                                <li class="vTab">
-                                                    <a href="action.do?mod=<?= fnEncode(2096) ?>&id=<?= fnEncode($cod_empresa) ?>">
-
-                                                        <div class="notify-badge text-center <?= $bgPassoQuatro ?>" id="notificaPasso4"><span class="<?= $passoQuatro ?>"></span></div>
-
-                                                        <i class="fal fa-user-edit fa-2x" style="margin: 10px 0 2px 0"></i>
-                                                        <h5 class="hidden-xs" style="margin: 3px 0 0 0">Campanhas e Comunicação</h5>
-                                                    </a>
-                                                </li>
-
-                                                <li class="active vTab">
-                                                    <a href="action.do?mod=<?= fnEncode(2102) ?>&id=<?= fnEncode($cod_empresa) ?>">
-
-                                                        <div class="notify-badge text-center <?= $bgPassoCinco ?>" id="notificaPasso5"><span class="<?= $passoCinco ?>"></span></div>
-                                                        <i class="fal fa-key fa-2x" style="margin: 10px 0 2px 0"></i>
-                                                        <h5 class="hidden-xs" style="margin: 3px 0 0 0">Dados de Login</h5>
-                                                    </a>
-                                                </li>
-
-                                            </ul>
-                                        </div>
+                                        <?php
+                                        $abaAtivo = 2102;
+                                        include 'menuAutomacao.php';
+                                        ?>
 
                                         <div class="col-xs-10">
                                             <!-- conteudo abas -->
@@ -659,13 +590,13 @@ if ($cod_integradora == 34 && $des_destinatario == "") {
                                                                             </div>
                                                                         </div>
 
-                                                                        <div class="col-md-3">
+                                                                        <!-- <div class="col-md-3">
                                                                             <label for="inputName" class="control-label">Assunto</label>
                                                                             <div class="form-group">
                                                                                 <input type="text" placeholder="Assunto" class="form-control input-sm" name="DES_ASSUNTOEMAIL" id="DES_ASSUNTOEMAIL" <?= $desabilitado ?> value="<?= $des_assuntoemail ?>" maxlength="50">
                                                                                 <div class="help-block with-errors"></div>
                                                                             </div>
-                                                                        </div>
+                                                                        </div> -->
 
                                                                         <div class="col-md-3">
                                                                             <label for="inputName" class="control-label">Contrato empresa</label>
@@ -681,7 +612,7 @@ if ($cod_integradora == 34 && $des_destinatario == "") {
 
                                                                     </div>
 
-                                                                    <div class="push10"></div>
+                                                                    <!-- <div class="push10"></div>
 
                                                                     <div class="row" id="uploadRow">
                                                                         <div class="col-md-12">
@@ -691,7 +622,7 @@ if ($cod_integradora == 34 && $des_destinatario == "") {
                                                                             </div>
                                                                             <div class="help-block with-errors"></div>
                                                                         </div>
-                                                                    </div>
+                                                                    </div> -->
 
                                                                 </fieldset>
 
@@ -844,7 +775,6 @@ if ($cod_integradora == 34 && $des_destinatario == "") {
 
                                     <div class="form-group text-right col-lg-12">
                                         <button type="submit" name="CAD" id="CAD" class="btn btn-success getBtn"><i class="fas fa-cogs"></i>&nbsp;&nbsp;Processar</button>
-                                        <a href="action.do?mod=<?= fnEncode(2093) ?>&id=<?= fnEncode($cod_empresa) ?>" class="btn btn-primary next next1" name="next">Próximo&nbsp;&nbsp;<i class="fas fa-arrow-right"></i></a>
                                     </div>
 
                                     <div class="push10"></div>

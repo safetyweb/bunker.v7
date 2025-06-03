@@ -573,6 +573,10 @@ if (isset($log_todas) && $log_todas == 'S') {
 
                                         $sqlVendas = "SELECT count(*) as QTD_VENDAS FROM VENDAS WHERE COD_EMPRESA = " . $qrListaEmpresas['COD_EMPRESA'] . " AND DAT_CADASTR >= '" . fnDataSql($data_inicial) . "' AND DAT_CADASTR <= '" . fnDataSql($data_final) . " '";
                                         $queryVendas = mysqli_query(connTemp($qrListaEmpresas['COD_EMPRESA'], ''), $sqlVendas);
+
+                                        if ($queryVendas === false) {
+                                        }
+
                                         if (mysqli_num_rows($queryVendas) > 0) {
                                             $qrVendas = mysqli_fetch_assoc($queryVendas);
                                             $qtd_vendas = $qrVendas['QTD_VENDAS'];

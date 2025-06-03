@@ -37,8 +37,8 @@ if ($val_pesquisa != "") {
 }
 // ---------------------------------------------
 
-//fnEscreve($filtro);
-//fnEscreve($val_pesquisa);
+// fnEscreve($filtro);
+// fnEscreve($val_pesquisa);
 ?>
 
 <div class="push30"></div>
@@ -98,7 +98,7 @@ if ($val_pesquisa != "") {
 										<li><a href="#NOM_CONSULTOR">Coordenador</a></li>
 									</ul>
 								</div>
-								<input type="hidden" name="VAL_PESQUISA" value="" id="VAL_PESQUISA">
+								<input type="hidden" name="VAL_PESQUISA" value="" id="VAL_PESQUISA" value="<?= $filtro ?>" />
 								<input type="text" id="INPUT" class="form-control form-control-sm remove-side-borders search-bar" name="INPUT" value="<?= $val_pesquisa ?>" onkeyup="buscaRegistro(this)">
 								<div class="input-group-btn" id="CLEARDIV" style="<?= $esconde ?>">
 									<button class="btn btn-outline form-control form-control-sm remove-side-borders search-bar" id="CLEAR" type="button">&nbsp;<span class="fal fa-times"></span></button>
@@ -359,6 +359,8 @@ if (!is_null($RedirectPg)) {
 			$('.search-panel span#search_concept').text(concept);
 			$('.input-group #VAL_PESQUISA').val(param);
 			$('#INPUT').focus();
+			console.log(param);
+			console.log(concept);
 		});
 
 		$("#FILTERS, #INPUT, #SEARCH, #CLEAR").focus(function() {

@@ -933,7 +933,7 @@ if (fnAutMaster($_SESSION["SYS_COD_TPUSUARIO"], $_SESSION["SYS_COD_EMPRESA"]) ==
 													<!-- <li><a href="#CNPJ">CNPJ</a></li> -->
 												</ul>
 											</div>
-											<input type="hidden" name="VAL_PESQUISA" value="" id="VAL_PESQUISA">
+											<input type="hidden" name="VAL_PESQUISA" value="<?= $filtro ?>" id="VAL_PESQUISA">
 											<input type="text" id="INPUT"
 												class="form-control form-control-sm remove-side-borders search-bar"
 												name="INPUT" value="<?= $val_pesquisa ?>" onkeyup="buscaRegistro(this)">
@@ -1204,6 +1204,22 @@ if (fnAutMaster($_SESSION["SYS_COD_TPUSUARIO"], $_SESSION["SYS_COD_EMPRESA"]) ==
 
 	<script type="text/javascript">
 		//Barra de pesquisa essentials ------------------------------------------------------
+
+		$(document).ready(function() {
+			var filtroSelecionado = '<?= $filtro ?>';
+
+			if (filtroSelecionado === '' || filtroSelecionado === 'SEM_FILTRO') {
+				$('#search_concept').text('Sem filtro');
+			} else {
+				// Procura o texto da opção pelo href correspondente
+				var textoFiltro = $('.item-filtro[href="#' + filtroSelecionado + '"]').text();
+
+				// Se achou, altera o texto no botão
+				if (textoFiltro) {
+					$('#search_concept').text(textoFiltro);
+				}
+			}
+		});
 		$(document).ready(function(e) {
 			var value = $('#INPUT').val().toLowerCase().trim();
 			if (value) {
@@ -1285,14 +1301,12 @@ if (fnAutMaster($_SESSION["SYS_COD_TPUSUARIO"], $_SESSION["SYS_COD_EMPRESA"]) ==
 		//-----------------------------------------------------------------------------------
 
 		$(document).ready(function() {
+			$("#AND_FILTRO").val("<?= $andFiltro ?>");
 
 			var numPaginas = <?php echo $numPaginas; ?>;
 			if (numPaginas != 0) {
 				carregarPaginacao(numPaginas);
 			}
-
-			$("#AND_FILTRO").val("<?= $andFiltro ?>");
-
 			//chosen
 			$.fn.validator.Constructor.INPUT_SELECTOR = ':input:not([type="submit"], button):enabled, .requiredChk';
 			$('#formulario').validator();

@@ -136,6 +136,7 @@ switch ($opcao) {
 					       E.nom_fantasi AS LOJA,
 							 D.NOM_CLIENTE,
 							 D.NUM_CGCECPF AS CPF,
+							 D.NUM_CELULAR AS CELULAR,
 							 A.DAT_CADASTR_WS AS DAT_VENDA,
 							 A.VAL_TOTPRODU,
 							 A.VAL_DESCONTO,
@@ -184,6 +185,7 @@ switch ($opcao) {
 			$rowDet['VAL_DESCONTO'] = fnValor($rowDet['VAL_DESCONTO'], 2);
 			$rowDet['VAL_TOTVENDA'] = fnValor($rowDet['VAL_TOTVENDA'], 2);
 			$rowDet['DAT_VENDA'] = fnDataFull($rowDet['DAT_VENDA']);
+			$rowDet['CELULAR'] = fnmasktelefone($rowDet['CELULAR']);
 			$arrQTD_PRODUTO = explode('|_|', $rowDet['QTD_PRODUTO']);
 			$arrVAL_UNITARIO = explode('|_|', $rowDet['VAL_UNITARIO']);
 			$arrVAL_TOTITEM = explode('|_|', $rowDet['VAL_TOTITEM']);
@@ -198,6 +200,7 @@ switch ($opcao) {
 					"LOJA" => '',
 					"NOM_CLIENTE" => '',
 					"CPF" => '',
+					"CELULAR" => '',
 					"DAT_VENDA" => '',
 					"VAL_TOTPRODU" => 0,
 					"VAL_DESCONTO" => isset($rowDet['VAL_DESCONTO']) ? $rowDet['VAL_DESCONTO'] : 0,

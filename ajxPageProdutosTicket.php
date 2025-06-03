@@ -81,6 +81,7 @@ $arrayPersonas = [];
 $valores = "";
 $iconePersona = "";
 $obj = "";
+$log_destaque = '';
 
 $opcao = @$_GET['opcao'];
 $itens_por_pagina = @$_GET['itens_por_pagina'];
@@ -103,6 +104,11 @@ if (empty(@$_REQUEST['LOG_PRODTKT'])) {
 	$log_prodtkt = 'N';
 } else {
 	$log_prodtkt = @$_REQUEST['LOG_PRODTKT'];
+}
+if (empty(@$_REQUEST['LOG_DESTAQUE'])) {
+	$log_destaque = 'N';
+} else {
+	$log_destaque = $_REQUEST['LOG_DESTAQUE'];
 }
 
 $dat_iniptkt = fnDataSql(@$_POST['DAT_INIPTKT']);
@@ -187,6 +193,11 @@ if ($log_tktunivend == "S" && $CarregaMaster == '0') {
 	} else {
 		$CarregaMaster = '0';
 	}
+}
+
+$andDestaque = "";
+if (!empty($_POST["LOG_DESTAQUE"]) && $_POST["LOG_DESTAQUE"] == "S") {
+	$andDestaque = " AND PRODUTOTKT.LOG_OFERTAS = 'S'";
 }
 
 if (@$_POST["DES_ORDENAC"] <> "") {
@@ -319,7 +330,8 @@ switch ($opcao) {
 						-- AND PRODUTOCLIENTE.COD_EXCLUSA = 0
                         AND  case when PRODUTOCLIENTE.COD_EXCLUSA = 0 then 0 ELSE 1 end IN (0,1)
 						$where
-						$andFiltro";
+						$andFiltro
+						$andDestaque";
 
 		//fnEscreve($sql);
 
@@ -349,6 +361,7 @@ switch ($opcao) {
                             AND  case when PRODUTOCLIENTE.COD_EXCLUSA = 0 then 0 ELSE 1 end IN (0,1)
 							$where
 							$andFiltro
+							$andDestaque
 							$orderBy
 							LIMIT $inicio, $itens_por_pagina";
 		// fnConsole($sql);

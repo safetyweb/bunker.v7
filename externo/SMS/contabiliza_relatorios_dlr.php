@@ -1,20 +1,20 @@
 <?php
 include '../../_system/_functionsMain.php';
-$intervalo=10;
+$intervalo = 10;
 
-$conadmmysql=$connAdm->connAdm();
-$empresa="select emp.COD_EMPRESA,apar.DES_AUTHKEY,apar.DES_AUTHKEY2,par.COD_PARCOMU from empresas emp
+$conadmmysql = $connAdm->connAdm();
+$empresa = "select emp.COD_EMPRESA,apar.DES_AUTHKEY,apar.DES_AUTHKEY2,par.COD_PARCOMU from empresas emp
          INNER JOIN senhas_parceiro apar  ON apar.cod_empresa=emp.COD_EMPRESA
          INNER JOIN parceiro_comunicacao par ON par.COD_PARCOMU=apar.COD_PARCOMU
+         inner join tab_database t ON t.COD_EMPRESA=emp.COD_EMPRESA
          WHERE emp.log_ativo='S' AND par.COD_TPCOM='2' AND apar.COD_PARCOMU='19' AND apar.LOG_ATIVO='S' $COD_EMPRESAURL;";
-$rwempresa=mysqli_query($conadmmysql, $empresa);
-while($rsempresa= mysqli_fetch_assoc($rwempresa))
-{
-    $contemporaria= connTemp($rsempresa['COD_EMPRESA'], '');
-    $limpablk="DELETE FROM blacklist_sms WHERE WHERE NUM_CELULAR IS NULL;";
+$rwempresa = mysqli_query($conadmmysql, $empresa);
+while ($rsempresa = mysqli_fetch_assoc($rwempresa)) {
+    $contemporaria = connTemp($rsempresa['COD_EMPRESA'], '');
+    $limpablk = "DELETE FROM blacklist_sms WHERE WHERE NUM_CELULAR IS NULL;";
     mysqli_query($contemporaria, $limpablk);
     //contadores da lista
-   $sqlcontadores="SELECT   TIP_GATILHO,
+    $sqlcontadores = "SELECT   TIP_GATILHO,
                             LOG_TESTE,
                             ID_DISPARO,
                             COD_CAMPANHA,
@@ -49,27 +49,24 @@ while($rsempresa= mysqli_fetch_assoc($rwempresa))
                             INNER JOIN gatilho_sms g ON g.COD_CAMPANHA=ret.COD_CAMPANHA
                             WHERE 
                              ret.CHAVE_CLIENTE is not NULL and 
-                            ret.COD_EMPRESA=".$rsempresa['COD_EMPRESA']." AND 
+                            ret.COD_EMPRESA=" . $rsempresa['COD_EMPRESA'] . " AND 
                             DATE(ret.dat_cadastr)>=date(DATE_SUB(NOW(), INTERVAL $intervalo DAY))
                                                     ) tmpsms
-                   GROUP BY LOG_TESTE, COD_CAMPANHA,DATE(DATA_CADASTRO);"; 
-    $rwcontadores=mysqli_query($contemporaria, $sqlcontadores);
-    while ($rscontadore= mysqli_fetch_assoc($rwcontadores))
-    {
-        if($rwcontadores->num_rows > '0')
-        {
-            $total=$rscontadore[SUB_TOTAL];
+                   GROUP BY LOG_TESTE, COD_CAMPANHA,DATE(DATA_CADASTRO);";
+    $rwcontadores = mysqli_query($contemporaria, $sqlcontadores);
+    while ($rscontadore = mysqli_fetch_assoc($rwcontadores)) {
+        if ($rwcontadores->num_rows > '0') {
+            $total = $rscontadore[SUB_TOTAL];
 
-                //VERIFICAR SE O LOTE EXISTE PARA NÃO INSERIR DUPLICADO 
-               $lote="SELECT * FROM sms_lote WHERE LOG_TESTE='".$rscontadore[LOG_TESTE]."' and COD_EMPRESA='".$rsempresa['COD_EMPRESA']."' AND COD_CAMPANHA='".$rscontadore[COD_CAMPANHA]."' AND COD_DISPARO_EXT='".$rscontadore[ID_DISPARO]."'";
-               $rwlote= mysqli_query($contemporaria, $lote);
-               $row = mysqli_fetch_assoc($rwlote); 
-                if($rwlote->num_rows > '0')
-                {    
-                    $uplote="UPDATE sms_lote SET QTD_LISTA='".$total."'  WHERE LOG_TESTE='$rscontadore[LOG_TESTE]' and COD_EMPRESA='".$rsempresa['COD_EMPRESA']."' AND COD_CAMPANHA='".$rscontadore[COD_CAMPANHA]."' AND COD_DISPARO_EXT='".$rscontadore[ID_DISPARO]."'";
-                    mysqli_query($contemporaria, $uplote);
-                }else{
-                    $inslote="INSERT INTO SMS_LOTE(
+            //VERIFICAR SE O LOTE EXISTE PARA NÃO INSERIR DUPLICADO 
+            $lote = "SELECT * FROM sms_lote WHERE LOG_TESTE='" . $rscontadore[LOG_TESTE] . "' and COD_EMPRESA='" . $rsempresa['COD_EMPRESA'] . "' AND COD_CAMPANHA='" . $rscontadore[COD_CAMPANHA] . "' AND COD_DISPARO_EXT='" . $rscontadore[ID_DISPARO] . "'";
+            $rwlote = mysqli_query($contemporaria, $lote);
+            $row = mysqli_fetch_assoc($rwlote);
+            if ($rwlote->num_rows > '0') {
+                $uplote = "UPDATE sms_lote SET QTD_LISTA='" . $total . "'  WHERE LOG_TESTE='$rscontadore[LOG_TESTE]' and COD_EMPRESA='" . $rsempresa['COD_EMPRESA'] . "' AND COD_CAMPANHA='" . $rscontadore[COD_CAMPANHA] . "' AND COD_DISPARO_EXT='" . $rscontadore[ID_DISPARO] . "'";
+                mysqli_query($contemporaria, $uplote);
+            } else {
+                $inslote = "INSERT INTO SMS_LOTE(
                                      COD_CAMPANHA,
                                      COD_EMPRESA,						
                                      COD_LOTE,
@@ -91,19 +88,18 @@ while($rsempresa= mysqli_fetch_assoc($rwempresa))
                                      'S',
                                      0,
                                      $rscontadore[ID_DISPARO],
-                                     '".$rscontadore[DATA_CADASTRO]."',
-                                     '".$rscontadore[LOG_TESTE]."'    
+                                     '" . $rscontadore[DATA_CADASTRO] . "',
+                                     '" . $rscontadore[LOG_TESTE] . "'    
                              );";
-                    echo $inslote.'<br>';
-                    mysqli_query($contemporaria, $inslote);   
-                }
-                   
-                //inserir contadores do relatorio
-                $entregasms="SELECT * FROM controle_entrega_sms WHERE log_teste='$rscontadore[LOG_TESTE]' and COD_EMPRESA='".$rsempresa['COD_EMPRESA']."' AND COD_CAMPANHA='".$rscontadore[COD_CAMPANHA]."' AND COD_DISPARO='".$rscontadore[ID_DISPARO]."'";
-                $rwentregasms= mysqli_query($contemporaria, $entregasms);
-                if($rwentregasms->num_rows > '0')
-                {
-                    $updateentrega="UPDATE controle_entrega_sms 
+                echo $inslote . '<br>';
+                mysqli_query($contemporaria, $inslote);
+            }
+
+            //inserir contadores do relatorio
+            $entregasms = "SELECT * FROM controle_entrega_sms WHERE log_teste='$rscontadore[LOG_TESTE]' and COD_EMPRESA='" . $rsempresa['COD_EMPRESA'] . "' AND COD_CAMPANHA='" . $rscontadore[COD_CAMPANHA] . "' AND COD_DISPARO='" . $rscontadore[ID_DISPARO] . "'";
+            $rwentregasms = mysqli_query($contemporaria, $entregasms);
+            if ($rwentregasms->num_rows > '0') {
+                $updateentrega = "UPDATE controle_entrega_sms 
                                         SET  qtd_disparados=$total, 
                                              qtd_sucesso=$rscontadore[COD_CCONFIRMACAO] + $rscontadore[COD_SCONFIRMACAO], 
                                              qtd_falha= $rscontadore[BOUNCE],
@@ -113,10 +109,10 @@ while($rsempresa= mysqli_fetch_assoc($rwempresa))
                                              QTD_NRECEBIDO=$rscontadore[COD_NRECEBIDO],
                                              QTD_OPTOUT=$rscontadore[COD_OPTOUT_ATIVO],
                                              log_teste='$rscontadore[LOG_TESTE]'
-                                    WHERE log_teste='$rscontadore[LOG_TESTE]' and COD_EMPRESA='".$rsempresa['COD_EMPRESA']."' AND COD_CAMPANHA='".$rscontadore[COD_CAMPANHA]."' AND COD_DISPARO='".$rscontadore[ID_DISPARO]."';";
-                    mysqli_query($contemporaria,$updateentrega);
-                }else{                            
-                    $entregue="INSERT INTO controle_entrega_sms (cod_empresa, 
+                                    WHERE log_teste='$rscontadore[LOG_TESTE]' and COD_EMPRESA='" . $rsempresa['COD_EMPRESA'] . "' AND COD_CAMPANHA='" . $rscontadore[COD_CAMPANHA] . "' AND COD_DISPARO='" . $rscontadore[ID_DISPARO] . "';";
+                mysqli_query($contemporaria, $updateentrega);
+            } else {
+                $entregue = "INSERT INTO controle_entrega_sms (cod_empresa, 
                                                                      cod_campanha_ext,                                                                                
                                                                      cod_campanha, 
                                                                      dat_cadastr, 
@@ -148,12 +144,10 @@ while($rsempresa= mysqli_fetch_assoc($rwempresa))
                                                                      '0',
                                                                      '$rscontadore[LOG_TESTE]'
                                                                      );";
-                    mysqli_query($contemporaria,$entregue);
-                  echo $entregue.'<br>';
-                }
-           
+                mysqli_query($contemporaria, $entregue);
+                echo $entregue . '<br>';
+            }
         }
-     echo '<br>EXECUTADO EM TODAS AS EMPRESAS<br>';      
+        echo '<br>EXECUTADO EM TODAS AS EMPRESAS<br>';
     }
 }
-?>

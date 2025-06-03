@@ -1,14 +1,14 @@
 <?php
+function write_log($message, $debug_level)
+{
+    $timestamp = date("Y-m-d H:i:s");
+    if ($debug_level > 0) {
+        echo "[$timestamp] $message<br>";
+    }
+}
 function fnsacmail($email, $nome, $texto, $Subject, $FromName, $conAdm, $conntemp, $cod_empresa, $caminhoanexo = FALSE, $nom_arquivo = FALSE)
 {
     // Função para exibir mensagens na tela, se TIP_DEBUG > 0
-    function write_log($message, $debug_level)
-    {
-        $timestamp = date("Y-m-d H:i:s");
-        if ($debug_level > 0) {
-            echo "[$timestamp] $message<br>";
-        }
-    }
 
     $confSmtp = "SELECT * from SENHAS_SMTP WHERE
                  case when cod_empresa=3 then cod_empresa
@@ -52,17 +52,27 @@ function fnsacmail($email, $nome, $texto, $Subject, $FromName, $conAdm, $conntem
             $cc_recipients = !empty($email['email5']) ? explode(';', $email['email5']) : [];
 
             // Montar o conteúdo do e-mail
+            /* $email_content = "To: " . implode(', ', $recipients) . "\n";
+            if (!empty($cc_recipients)) {
+                $email_content .= "Cc: " . implode(', ', $cc_recipients) . "\n";
+            }*/
             $email_content = "To: " . implode(', ', $recipients) . "\n";
             if (!empty($cc_recipients)) {
                 $email_content .= "Cc: " . implode(', ', $cc_recipients) . "\n";
             }
+            /*
             $email_content .= "From: $DES_EMAIL\n" .
                 "Subject: $Subject\n" .
                 "MIME-Version: 1.0\n" .
                 "Content-Type: text/html; charset=UTF-8\n" .
                 "\n" .
+                $texto;*/
+            $email_content .= "From: \"$nome\" <$DES_EMAIL>\n" .
+                "Subject: $Subject\n" .
+                "MIME-Version: 1.0\n" .
+                "Content-Type: text/html; charset=UTF-8\n" .
+                "\n" .
                 $texto;
-
             // Criar arquivo temporário para o conteúdo
             $temp_file = tempnam(sys_get_temp_dir(), 'email_');
             file_put_contents($temp_file, $email_content);

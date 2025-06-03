@@ -11,9 +11,13 @@ if ($_SESSION['SYS_COD_USUARIO'] == 127937) {
 
 
 $opcao = $_GET['opcao'];
-$itens_por_pagina = $_GET['itens_por_pagina'];
-$pagina = $_GET['idPage'];
 
+if (isset($_GET['itens_por_pagina'])) {
+    $itens_por_pagina = $_GET['itens_por_pagina'];
+}
+if (isset($_GET['pagina'])) {
+    $pagina = $_GET['pagina'];
+}
 if (isset($_REQUEST['NOM_FANTASI'])) {
     $nom_fantasi = fnLimpaCampo($_REQUEST['NOM_FANTASI']);
 }
@@ -28,6 +32,9 @@ if (isset($_REQUEST['DAT_INI'])) {
 }
 if (isset($_REQUEST['DAT_FIM'])) {
     $dat_fim = fnDataSql($_POST['DAT_FIM']);
+}
+if (isset($_REQUEST['idr'])) {
+    $cod_registro = fnLimpaCampoZero($_REQUEST['idr']);
 }
 
 switch ($opcao) {
@@ -124,6 +131,45 @@ switch ($opcao) {
 
             $count++;
         }
+        break;
+
+    case 'excluir':
+
+        $sql = "SELECT 
+        EMP.COD_EMPRESA,
+        B.NOM_DATABASE
+        FROM EMPRESAS as EMP
+        LEFT JOIN tab_database B ON B.cod_empresa=EMP.COD_EMPRESA
+        WHERE EMP.COD_EMPRESA = $cod_registro";
+
+        $query = mysqli_query($connAdm->connAdm(), $sql);
+        if (mysqli_num_rows($query) > 0) {
+            while ($qrResult = mysqli_fetch_assoc($query)) {
+                if ($qrResult['NOM_DATABASE'] != "") {
+
+                    $sqlReg = "SELECT TABLE_NAME FROM information_schema.COLUMNS WHERE table_schema='" . $qrResult['NOM_DATABASE'] . "' AND COLUMN_NAME='COD_EMPRESA' GROUP BY table_name";
+                    $queryTables = mysqli_query(connTemp($qrResult['COD_EMPRESA'], ''), $sqlReg);
+
+                    while ($qrtables = mysqli_fetch_assoc($queryTables)) {
+                        $sql = "DELETE FROM " . $qrtables['TABLE_NAME'] . " WHERE COD_EMPRESA = " . $qrResult['COD_EMPRESA'];
+                        mysqli_query(connTemp($qrResult['COD_EMPRESA'], ''), $sql);
+                    }
+                }
+
+                $sqlReg = "SELECT TABLE_NAME FROM information_schema.COLUMNS WHERE table_schema='webtools' AND COLUMN_NAME='COD_EMPRESA' AND TABLE_NAME NOT IN ('LOG_CPF', 'CLIP_HELP') GROUP BY table_name";
+                $queryAdm = mysqli_query($connAdm->connAdm(), $sqlReg);
+                if (mysqli_num_rows($queryAdm) > 0) {
+
+                    while ($qrAdm = mysqli_fetch_assoc($queryAdm)) {
+                        $sqlAdm = "DELETE FROM " . $qrAdm['TABLE_NAME'] . " WHERE COD_EMPRESA = " . $qrResult['COD_EMPRESA'] . ";";
+                        mysqli_query($connAdm->connAdm(), $sqlAdm);
+                    }
+                }
+            }
+        }
+
+
+
         break;
 }
 ?>

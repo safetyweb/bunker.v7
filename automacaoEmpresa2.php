@@ -143,6 +143,14 @@ if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
 		$nom_fantasi = $qrBuscaEmpresa['NOM_FANTASI'];
 		$cod_database = $qrBuscaEmpresa['COD_DATABASE'];
 	}
+
+	//BUSCA AUDITORIA
+	$sqlAudit = "SELECT * FROM AUDITORIA_EMPRESA WHERE COD_EMPRESA = $cod_empresa";
+	$arrayAudit = mysqli_query($connAdm->connAdm(), $sqlAudit);
+	$qrAudit = mysqli_fetch_assoc($arrayAudit);
+	if (isset($arrayAudit)) {
+		$log_maiscash = $qrAudit['LOG_MAISCASH'];
+	}
 } else {
 	$cod_empresa = 0;
 	$cod_database = 0;
@@ -307,110 +315,10 @@ if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
 
 									<div class="col-sm-12" style="padding-left: 0;">
 
-										<div class="col-xs-2" style="padding-left: 0;"> <!-- required for floating -->
-											<!-- Nav tabs -->
-											<?php
-											$sqlAudit = "SELECT * FROM
-												AUDITORIA_EMPRESA
-												WHERE COD_EMPRESA = $cod_empresa";
-
-											$queryAudit = mysqli_query($connAdm->connAdm(), trim($sqlAudit));
-
-											$passoUm = "fal fa-clock";
-											$passoDois = "fal fa-clock";
-											$passoTres = "fal fa-clock";
-											$passoQuatro = "fal fa-clock";
-											$passoCinco = "fal fa-clock";
-											$bgPassoUm = "bg-warning";
-											$bgPassoDois = "bg-warning";
-											$bgPassoTres = "bg-warning";
-											$bgPassoQuatro = "bg-warning";
-											$bgPassoCinco = "bg-warning";
-											$qtd_unvCad = 0;
-											$desabilitaPag = 'onclick="event.preventDefault();" style="pointer-events: none; opactity: 0.5;"';
-											if ($resultAudit = mysqli_fetch_assoc($queryAudit)) {
-												$qtd_unvCad = $resultAudit['QTD_UNIVEND'];
-												if ($resultAudit['FASE1'] == 'S') {
-													$passoUm = "fal fa-check";
-													$bgPassoUm = "bg-success";
-												}
-
-												if ($resultAudit['FASE2'] == 'S') {
-													$passoDois = "fal fa-check";
-													$bgPassoDois = "bg-success";
-													$desabilitaPag = "";
-												}
-
-												if ($resultAudit['FASE3'] == 'S') {
-													$passoTres = "fal fa-check";
-													$bgPassoTres = "bg-success";
-												}
-
-												if ($resultAudit['FASE4'] == 'S') {
-													$passoQuatro = "fal fa-check";
-													$bgPassoQuatro = "bg-success";
-												}
-
-												if ($resultAudit['FASE5'] == 'S') {
-													$passoCinco = "fal fa-check";
-													$bgPassoCinco = "bg-success";
-												}
-											}
-
-											?>
-											<ul class="vTab nav nav-tabs tabs-left text-center">
-
-												<li class="vTab">
-													<a href="action.do?mod=<?= fnEncode(2091) ?>&id=<?= fnEncode($cod_empresa) ?>">
-
-														<div class="notify-badge text-center <?= $bgPassoUm ?>" id="notificaPasso1" style><span class="<?= $passoUm ?>"></span></div>
-
-														<i class="fal fa-user-edit fa-2x" style="margin: 10px 0 2px 0"></i>
-														<h5 class="hidden-xs" style="margin: 3px 0 0 0">Empresa e Usuários</h5>
-													</a>
-												</li>
-
-												<li class="active vTab">
-													<a href="action.do?mod=<?= fnEncode(2092) ?>&id=<?= fnEncode($cod_empresa) ?>">
-
-														<div class="notify-badge text-center <?= $bgPassoDois ?>" id="notificaPasso2"><span class="<?= $passoDois ?>"></span></div>
-
-														<i class="fal fa-database fa-2x" style="margin: 10px 0 2px 0"></i>
-														<h5 class="hidden-xs" style="margin: 3px 0 0 0">Database</h5>
-													</a>
-												</li>
-
-												<li class="vTab">
-													<a href="action.do?mod=<?= fnEncode(2093) ?>&id=<?= fnEncode($cod_empresa) ?>">
-
-														<div class="notify-badge text-center <?= $bgPassoTres ?>" id="notificaPasso3" <?= $desabilitaPag ?>><span class="<?= $passoTres ?>"></span></div>
-
-														<i class="fal fa-user-edit fa-2x" style="margin: 10px 0 2px 0"></i>
-														<h5 class="hidden-xs" style="margin: 3px 0 0 0">Clientes e Hotsite</h5>
-													</a>
-												</li>
-
-												<li class="vTab">
-													<a href="action.do?mod=<?= fnEncode(2096) ?>&id=<?= fnEncode($cod_empresa) ?>">
-
-														<div class="notify-badge text-center <?= $bgPassoQuatro ?>" id="notificaPasso4" <?= $desabilitaPag ?>><span class="<?= $passoQuatro ?>"></span></div>
-
-														<i class="fal fa-user-edit fa-2x" style="margin: 10px 0 2px 0"></i>
-														<h5 class="hidden-xs" style="margin: 3px 0 0 0">Campanhas e Comunicação</h5>
-													</a>
-												</li>
-
-												<li class="vTab">
-													<a href="action.do?mod=<?= fnEncode(2102) ?>&id=<?= fnEncode($cod_empresa) ?>">
-
-														<div class="notify-badge text-center <?= $bgPassoCinco ?>" id="notificaPasso5" <?= $desabilitaPag ?>><span class="<?= $passoCinco ?>"></span></div>
-														<i class="fal fa-key fa-2x" style="margin: 10px 0 2px 0"></i>
-														<h5 class="hidden-xs" style="margin: 3px 0 0 0">Dados de Login</h5>
-													</a>
-												</li>
-
-											</ul>
-										</div>
+										<?php
+										$abaAtivo = 2092;
+										include 'menuAutomacao.php';
+										?>
 
 										<div class="col-xs-10">
 
@@ -449,6 +357,11 @@ if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
 																		$andData = "AND TAB.COD_DATABASE = $cod_database";
 																	}
 
+																	$andMc = "";
+																	if ($log_maiscash == "S") {
+																		$andMc = "AND NOM_DATABASE = 'db_maiscash'";
+																	}
+
 																	$sql = "SELECT 
 																				SV.COD_SERVIDOR,
 																				tab.NOM_DATABASE,
@@ -460,6 +373,7 @@ if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
 																				INNER JOIN servidores SV ON SV.COD_SERVIDOR=tab.COD_SERVIDOR
 																				where emp.LOG_ATIVO='S'
 																				$andData
+																				$andMc
 																				GROUP BY NOM_DATABASE order by NOM_DATABASE ";
 
 																	$arrayQuery = mysqli_query($connAdm->connAdm(), $sql);
@@ -471,15 +385,14 @@ if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
 																	while ($qrListaDatabase = mysqli_fetch_assoc($arrayQuery)) {
 
 																		// se o nome não começar com db_host pula para o proximo item da lista
-																		if (strpos($qrListaDatabase['NOM_DATABASE'], 'db_host') !== 0) {
+																		if ($log_maiscash != "S" && strpos($qrListaDatabase['NOM_DATABASE'], 'db_host') !== 0) {
 																			continue;
 																		}
-
 
 																		$qtd_empresa = $qrListaDatabase['QTD_EMPRESA'];
 																		$qtd_unvd = $qrListaDatabase['QTD_UNV'] + $qtd_unvCad;
 
-																		if ($qtd_empresa < 10 && $qtd_unvd < 200) {
+																		if ($log_maiscash == 'S' || $qtd_empresa < 10 && $qtd_unvd < 200) {
 																			$encontrouBase = true;
 
 																	?>
@@ -548,7 +461,7 @@ if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
 
 									<div class="form-group text-right col-lg-12">
 										<button type="submit" name="CAD" id="CAD" class="btn btn-success getBtn" <?= $desabilita ?>><i class="fas fa-cogs"></i>&nbsp;&nbsp;Processar</button>
-										<a href="action.do?mod=<?= fnEncode(2093) ?>&id=<?= fnEncode($cod_empresa) ?>" class="btn btn-primary next next1" name="next">Próximo&nbsp;&nbsp;<i class="fas fa-arrow-right"></i></a>
+										<?= $btnProximo ?>
 									</div>
 
 									<div class="push10"></div>

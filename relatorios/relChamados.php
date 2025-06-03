@@ -208,13 +208,6 @@ $sqlEmpresa = "SELECT
 						   (SUM(CASE WHEN DATE(ch.dat_cadastr) BETWEEN '$dat_ini' AND '$dat_fim' THEN '1' ELSE 0 END) * 100) /
 							(SELECT SUM(1) FROM sac_chamados CH2 WHERE DATE(ch2.dat_cadastr) BETWEEN '$dat_ini' AND '$dat_fim') 
 							   PCT_CHAMADOS 
-						   
-							
-							
-							
-							
-							
-							
 							FROM sac_chamados ch 
 						   INNER JOIN sac_status st ON st.COD_STATUS=ch.COD_STATUS 
 						   INNER JOIN sac_tpsolicitacao tp ON tp.COD_TPSOLICITACAO=ch.COD_TPSOLICITACAO 
@@ -298,6 +291,7 @@ $sqlTipo = "SELECT
 									SUM(QTD_IMPLATA) QTD_IMPLATA, 
 									SUM(QTD_FALHA) QTD_FALHA, 
 									SUM(QTD_MELHORIA) QTD_MELHORIA,
+									SUM(QTD_COMUNICACAO) QTD_COMUNICACAO,
 									SUM(QTD_OUTROS) QTD_OUTROS, 
 									SUM(QTD_CONCLUIDO_ANO) QTD_CONCLUIDO_ANO, 
 									SUM(QTD_ABERTO_ANO) QTD_ABERTO_ANO, 
@@ -307,9 +301,8 @@ $sqlTipo = "SELECT
 									SUM(QTD_IMPLATA_ANO) QTD_IMPLATA_ANO,
 									SUM(QTD_FALHA_ANO) QTD_FALHA_ANO,
 									SUM(QTD_MELHORIA_ANO) QTD_MELHORIA_ANO,
+									SUM(QTD_COMUNICACAO_ANO) QTD_COMUNICACAO_ANO,
 									SUM(QTD_OUTROS_ANO) QTD_OUTROS_ANO
-
-
 				FROM (
 							SELECT 
 									1 agrupador, 
@@ -328,7 +321,8 @@ $sqlTipo = "SELECT
 									SUM(CASE WHEN ch.COD_TPSOLICITACAO IN (7) AND DATE(ch.dat_cadastr) BETWEEN '$dat_ini' AND '$dat_fim' THEN '1' ELSE 0 END) QTD_IMPLATA, 
 									SUM(CASE WHEN ch.COD_TPSOLICITACAO IN (6) AND DATE(ch.dat_cadastr) BETWEEN '$dat_ini' AND '$dat_fim' THEN '1' ELSE 0 END) QTD_FALHA, 
 									SUM(CASE WHEN ch.COD_TPSOLICITACAO IN (8) AND DATE(ch.dat_cadastr) BETWEEN '$dat_ini' AND '$dat_fim' THEN '1' ELSE 0 END) QTD_MELHORIA,
-									SUM(CASE WHEN ch.COD_TPSOLICITACAO NOT IN (5,3,1,7,6,8) AND  date(ch.dat_cadastr) between '$dat_ini' AND '$dat_fim' THEN '1' ELSE 0 END) QTD_OUTROS, 
+									SUM(CASE WHEN ch.COD_TPSOLICITACAO IN (24) AND DATE(ch.dat_cadastr) BETWEEN '$dat_ini' AND '$dat_fim' THEN '1' ELSE 0 END) QTD_COMUNICACAO,
+									SUM(CASE WHEN ch.COD_TPSOLICITACAO NOT IN (5,3,1,7,6,8,24) AND  date(ch.dat_cadastr) between '$dat_ini' AND '$dat_fim' THEN '1' ELSE 0 END) QTD_OUTROS, 
 									SUM(CASE WHEN ch.COD_STATUS IN (6,10) THEN '1' ELSE 0 END) QTD_CONCLUIDO_ANO, 
 									SUM(CASE WHEN ch.COD_STATUS NOT IN (6,10) THEN '1' ELSE 0 END) QTD_ABERTO_ANO, 
 									SUM(CASE WHEN ch.COD_TPSOLICITACAO IN (5) THEN '1' ELSE 0 END) QTD_SUPORTE_ANO, 
@@ -337,7 +331,8 @@ $sqlTipo = "SELECT
 									SUM(CASE WHEN ch.COD_TPSOLICITACAO IN (7) THEN '1' ELSE 0 END) QTD_IMPLATA_ANO,
 									SUM(CASE WHEN ch.COD_TPSOLICITACAO IN (6) THEN '1' ELSE 0 END) QTD_FALHA_ANO,
 									SUM(CASE WHEN ch.COD_TPSOLICITACAO IN (8) THEN '1' ELSE 0 END) QTD_MELHORIA_ANO,
-									SUM(CASE WHEN ch.COD_TPSOLICITACAO NOT IN (5,3,1,7,6,8) THEN '1' ELSE 0 END) QTD_OUTROS_ANO
+									SUM(CASE WHEN ch.COD_TPSOLICITACAO IN (8) THEN '1' ELSE 0 END) QTD_COMUNICACAO_ANO,
+									SUM(CASE WHEN ch.COD_TPSOLICITACAO NOT IN (5,3,1,7,6,8,24) THEN '1' ELSE 0 END) QTD_OUTROS_ANO
 							FROM sac_chamados ch
 							
 							INNER JOIN sac_status st ON st.COD_STATUS=ch.COD_STATUS
@@ -369,6 +364,7 @@ $pct_duvida = ($qrTipo["QTD_DUVIDA"] * 100) / $qrTipo["QTD_TOTAL"];
 $pct_implata = ($qrTipo["QTD_IMPLATA"] * 100) / $qrTipo["QTD_TOTAL"];
 $pct_falha = ($qrTipo["QTD_FALHA"] * 100) / $qrTipo["QTD_TOTAL"];
 $pct_melhoria = ($qrTipo["QTD_MELHORIA"] * 100) / $qrTipo["QTD_TOTAL"];
+$pct_comunicacao = ($qrTipo["QTD_COMUNICACAO"] * 100) / $qrTipo["QTD_TOTAL"];
 $pct_outros = ($qrTipo["QTD_OUTROS"] * 100) / $qrTipo["QTD_TOTAL"];
 
 array_push($arrTipo, fnValorSql(fnValor($pct_suporte, 2)));
@@ -377,6 +373,7 @@ array_push($arrTipo, fnValorSql(fnValor($pct_duvida, 2)));
 array_push($arrTipo, fnValorSql(fnValor($pct_implata, 2)));
 array_push($arrTipo, fnValorSql(fnValor($pct_falha, 2)));
 array_push($arrTipo, fnValorSql(fnValor($pct_melhoria, 2)));
+array_push($arrTipo, fnValorSql(fnValor($pct_comunicacao, 2)));
 array_push($arrTipo, fnValorSql(fnValor($pct_outros, 2)));
 
 
@@ -682,7 +679,8 @@ $cod_chamado_fechado = rtrim($cod_chamado_fechado, ",");
 											sum(case when ch.COD_TPSOLICITACAO IN (7) AND  date(ch.dat_cadastr) between '$dat_ini' AND '$dat_fim' then '1' ELSE NULL END) QTD_IMPLATA,
 											sum(case when ch.COD_TPSOLICITACAO IN (6) AND  date(ch.dat_cadastr) between '$dat_ini' AND '$dat_fim' then '1' ELSE NULL END) QTD_FALHA,
 											sum(case when ch.COD_TPSOLICITACAO IN (8) AND  date(ch.dat_cadastr) between '$dat_ini' AND '$dat_fim' then '1' ELSE NULL END) QTD_MELHORIA,
-											sum(case when ch.COD_TPSOLICITACAO NOT IN (5,3,1,7,6,8) AND  date(ch.dat_cadastr) between '$dat_ini' AND '$dat_fim' then '1' ELSE NULL END) QTD_OUTROS,
+											sum(case when ch.COD_TPSOLICITACAO IN (24) AND  date(ch.dat_cadastr) between '$dat_ini' AND '$dat_fim' then '1' ELSE NULL END) QTD_COMUNICACAO,
+											sum(case when ch.COD_TPSOLICITACAO NOT IN (5,3,1,7,6,8,24) AND  date(ch.dat_cadastr) between '$dat_ini' AND '$dat_fim' then '1' ELSE NULL END) QTD_OUTROS,
 											sum(case when ch.COD_STATUS IN (6,10) then '1' ELSE NULL END) QTD_CONCLUIDO_ANO,
 											sum(1) QTD_ABERTO_ANO,
 											sum(case when ch.COD_TPSOLICITACAO IN (5) then '1' ELSE NULL END) QTD_SUPORTE_ANO,
@@ -691,7 +689,8 @@ $cod_chamado_fechado = rtrim($cod_chamado_fechado, ",");
 											sum(case when ch.COD_TPSOLICITACAO IN (7) then '1' ELSE NULL END) QTD_IMPLATA_ANO,
 											sum(case when ch.COD_TPSOLICITACAO IN (6) then '1' ELSE NULL END) QTD_FALHA_ANO,
 											sum(case when ch.COD_TPSOLICITACAO IN (8) then '1' ELSE NULL END) QTD_MELHORIA_ANO,
-											sum(case when ch.COD_TPSOLICITACAO NOT IN (5,3,1,7,6,8) then '1' ELSE NULL END) QTD_OUTROS_ANO
+											sum(case when ch.COD_TPSOLICITACAO IN (24) then '1' ELSE NULL END) QTD_COMUNICACAO_ANO,
+											sum(case when ch.COD_TPSOLICITACAO NOT IN (5,3,1,7,6,8,24) then '1' ELSE NULL END) QTD_OUTROS_ANO
 										FROM sac_chamados ch
 										INNER join sac_status st ON st.COD_STATUS=ch.COD_STATUS
 										INNER JOIN sac_tpsolicitacao tp ON tp.COD_TPSOLICITACAO=ch.COD_TPSOLICITACAO
@@ -735,6 +734,7 @@ $cod_chamado_fechado = rtrim($cod_chamado_fechado, ",");
 
 											<p>Suporte</p>
 											<p>Desenvolvimento</p>
+											<p>Comunicação</p>
 											<p>Dúvida</p>
 											<p>Implantação</p>
 											<p>Falha de sistema</p>
@@ -747,6 +747,7 @@ $cod_chamado_fechado = rtrim($cod_chamado_fechado, ",");
 
 											<p><?= fnValor($qrTotal['QTD_SUPORTE'], 0) ?></p>
 											<p><?= fnValor($qrTotal['QTD_DEV'], 0) ?></p>
+											<p><?= fnValor($qrTotal['QTD_COMUNICACAO'], 0) ?></p>
 											<p><?= fnValor($qrTotal['QTD_DUVIDA'], 0) ?></p>
 											<p><?= fnValor($qrTotal['QTD_IMPLATA'], 0) ?></p>
 											<p><?= fnValor($qrTotal['QTD_FALHA'], 0) ?></p>
@@ -804,6 +805,7 @@ $cod_chamado_fechado = rtrim($cod_chamado_fechado, ",");
 
 											<p>Suporte</p>
 											<p>Desenvolvimento</p>
+											<p>Comunicação</p>
 											<p>Dúvida</p>
 											<p>Implantação</p>
 											<p>Falha de sistema</p>
@@ -845,6 +847,11 @@ $cod_chamado_fechado = rtrim($cod_chamado_fechado, ",");
 											} else {
 												$melhoria = '0,0';
 											}
+											if ($qrTotal['QTD_COMUNICACAO'] != 0 && $qrTotal['SEMANA'] != 0) {
+												$comunicacao = fnValor(($qrTotal['QTD_COMUNICACAO'] / $qrTotal['SEMANA']), 1);
+											} else {
+												$comunicacao = '0,0';
+											}
 											if ($qrTotal['QTD_OUTROS'] != 0 && $qrTotal['SEMANA'] != 0) {
 												$outros = fnValor(($qrTotal['QTD_OUTROS'] / $qrTotal['SEMANA']), 1);
 											} else {
@@ -856,6 +863,7 @@ $cod_chamado_fechado = rtrim($cod_chamado_fechado, ",");
 
 											<p><?= $suporte ?></p>
 											<p><?= $desenvolvimento ?></p>
+											<p><?= $comunicacao ?></p>
 											<p><?= $duvida ?></p>
 											<p><?= $implantacao ?></p>
 											<p><?= $falhas ?></p>
@@ -900,6 +908,7 @@ $cod_chamado_fechado = rtrim($cod_chamado_fechado, ",");
 
 											<p>Suporte</p>
 											<p>Desenvolvimento</p>
+											<p>Comunicação</p>
 											<p>Dúvida</p>
 											<p>Implantação</p>
 											<p>Falha de sistema</p>
@@ -912,6 +921,7 @@ $cod_chamado_fechado = rtrim($cod_chamado_fechado, ",");
 
 											<p><?= fnValor(($qrTotal['QTD_SUPORTE'] / $qrTotal['MES']), 0) ?></p>
 											<p><?= fnValor(($qrTotal['QTD_DEV'] / $qrTotal['MES']), 0) ?></p>
+											<p><?= fnValor(($qrTotal['QTD_COMUNICACAO'] / $qrTotal['MES']), 0) ?></p>
 											<p><?= fnValor(($qrTotal['QTD_DUVIDA'] / $qrTotal['MES']), 0) ?></p>
 											<p><?= fnValor(($qrTotal['QTD_IMPLATA'] / $qrTotal['MES']), 0) ?></p>
 											<p><?= fnValor(($qrTotal['QTD_FALHA'] / $qrTotal['MES']), 0) ?></p>
@@ -956,6 +966,7 @@ $cod_chamado_fechado = rtrim($cod_chamado_fechado, ",");
 
 											<p>Suporte</p>
 											<p>Desenvolvimento</p>
+											<p>Comunicação</p>
 											<p>Dúvida</p>
 											<p>Implantação</p>
 											<p>Falha de sistema</p>
@@ -968,6 +979,7 @@ $cod_chamado_fechado = rtrim($cod_chamado_fechado, ",");
 
 											<p><?= $qrTotal['QTD_SUPORTE_ANO'] ?></p>
 											<p><?= $qrTotal['QTD_DEV_ANO'] ?></p>
+											<p><?= $qrTotal['QTD_COMUNICACAO_ANO'] ?></p>
 											<p><?= $qrTotal['QTD_DUVIDA_ANO'] ?></p>
 											<p><?= $qrTotal['QTD_IMPLATA_ANO'] ?></p>
 											<p><?= $qrTotal['QTD_FALHA_ANO'] ?></p>
@@ -1361,7 +1373,7 @@ if ($log_labels == 'S') {
 		});
 
 		var data = {
-			labels: ["Suporte", "DEV", "Dúvida", "Implantação", "Falha", "Melhoria", "Outros"],
+			labels: ["Suporte", "DEV", "Dúvida", "Implantação", "Falha", "Melhoria", "Comunicação", "Outros"],
 			datasets: [{
 
 				backgroundColor: <?= json_encode($arrCor2, true) ?>,

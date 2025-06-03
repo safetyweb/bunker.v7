@@ -624,26 +624,26 @@ include "unidadesAutorizadas.php";
                                                 }
 
                                                 if ($qrBuscaModulos['BOUNCE'] == 1) {
-                                                    $cliCadastrado = "<b class='text-danger'>e</b>";
+                                                    $cliCadastrado = "<b class='text-danger'>Falha no destino</b>";
                                                     $reenvioTkn = "";
                                                 }
 
 
                                                 echo "
-                                                                                                <tr>
-                                                                                                  <td>" . $qrBuscaModulos['NOM_CLIENTE'] . "</td>
-                                                                                                  <td>" . $qrBuscaModulos['NUM_CGCECPF'] . "</td>
-                                                                                                  <td>" . $qrBuscaModulos['NUM_CELULAR'] . "</td>
-                                                                                                  <td>" . $qrBuscaModulos['NOM_FANTASI'] . "</td>
-                                                                                                  <td>" . fnDataFull($qrBuscaModulos['DAT_CADASTR']) . "</td>
-                                                                                                  <td>" . $qrBuscaModulos['DES_MSG'] . "</td>
-                                                                                                  <td>" . $qrBuscaModulos['CHAVE_CLIENTE'] . "</td>    
-                                                                                                  <td>" . $cliCadastrado . "</td>
-                                                                                                  <td>" . $statusToken . "</td>
-                                                                                                  <td>" . $reenvioTkn . "</td>
-                                                                                                </tr>
+                                                    <tr>
+                                                        <td>" . $qrBuscaModulos['NOM_CLIENTE'] . "</td>
+                                                        <td>" . $qrBuscaModulos['NUM_CGCECPF'] . "</td>
+                                                        <td>" . $qrBuscaModulos['NUM_CELULAR'] . "</td>
+                                                        <td>" . $qrBuscaModulos['NOM_FANTASI'] . "</td>
+                                                        <td>" . fnDataFull($qrBuscaModulos['DAT_CADASTR']) . "</td>
+                                                        <td>" . $qrBuscaModulos['DES_MSG'] . "</td>
+                                                        <td>" . $qrBuscaModulos['CHAVE_CLIENTE'] . "</td>    
+                                                        <td>" . $cliCadastrado . "</td>
+                                                        <td>" . $statusToken . "</td>
+                                                        <td>" . $reenvioTkn . "</td>
+                                                    </tr>
 
-                                                                                                ";
+                                                ";
                                             }
 
 

@@ -1,37 +1,37 @@
-<?php 
+<?php
 
-	include '_system/_functionsMain.php'; 
-	require_once 'js/plugins/Spout/Autoloader/autoload.php';
-	
-	use Box\Spout\Writer\WriterFactory;
-	use Box\Spout\Common\Type;	
+include '_system/_functionsMain.php';
+require_once 'js/plugins/Spout/Autoloader/autoload.php';
 
-	//echo fnDebug('true');
+use Box\Spout\Writer\WriterFactory;
+use Box\Spout\Common\Type;
 
-	
-    $opcao = $_GET['opcao'];
-	$filtro = fnLimpaCampo($_POST['VAL_PESQUISA']);			
-	$val_pesquisa = fnLimpaCampo($_POST['INPUT']);
-    $andAtivo = "AND LOG_ATIVO = 'S'";
+//echo fnDebug('true');
+fnEscreveArray($_REQUEST);
 
-	if($filtro != ""){
-		$andFiltro = " AND $filtro LIKE '%$val_pesquisa%' ";
-	}else{
-		$andFiltro = " ";
-	}
-	
-		
-			$nomeRel = $_GET['nomeRel'];
-			$arquivo = 'media/excel/3_'.$nomeRel.'.csv';
+$opcao = $_GET['opcao'];
+$filtro = fnLimpaCampo($_POST['VAL_PESQUISA']);
+$val_pesquisa = fnLimpaCampo($_POST['INPUT']);
+$andAtivo = "AND LOG_ATIVO = 'S'";
 
-			fnEscreve($arquivo);
-		
-			$writer = WriterFactory::create(Type::CSV);
-			$writer->setFieldDelimiter(';');
-			$writer->openToFile($arquivo);
-			       
-			if ($_SESSION["SYS_COD_MASTER"] == "2" ) {
-				$sql = "SELECT STATUSSISTEMA.DES_STATUS, empresas.*,
+if ($filtro != "") {
+	$andFiltro = " AND $filtro LIKE '%$val_pesquisa%' ";
+} else {
+	$andFiltro = " ";
+}
+
+
+$nomeRel = $_GET['nomeRel'];
+$arquivo = 'media/excel/3_' . $nomeRel . '.csv';
+
+fnEscreve($arquivo);
+
+$writer = WriterFactory::create(Type::CSV);
+$writer->setFieldDelimiter(';');
+$writer->openToFile($arquivo);
+
+if ($_SESSION["SYS_COD_MASTER"] == "2") {
+	$sql = "SELECT STATUSSISTEMA.DES_STATUS, empresas.*,
                                                 (select count(B.COD_DATABASE) FROM tab_database B where B.COD_EMPRESA = empresas.COD_EMPRESA) as COD_DATABASE,
                                                 (select NOM_USUARIO from webtools.usuarios where cod_empresa=3 and cod_usuario=empresas.cod_consultor) as NOM_CONSULTOR, 
                                                 (SELECT count(*) FROM UNIDADEVENDA UV WHERE UV.COD_EMPRESA = empresas.COD_EMPRESA) AS LOJAS,	
@@ -46,9 +46,8 @@
                                                 $andFiltro
                                                 $andAtivo
                                                 ORDER by NOM_FANTASI";
-			
-			}else {
-				$sql = "SELECT STATUSSISTEMA.DES_STATUS,empresas.*,
+} else {
+	$sql = "SELECT STATUSSISTEMA.DES_STATUS,empresas.*,
                                                 (select count(B.COD_DATABASE) FROM tab_database B where B.COD_EMPRESA = empresas.COD_EMPRESA) as COD_DATABASE, 
                                                 (select NOM_USUARIO from webtools.usuarios where cod_empresa=3 and cod_usuario=empresas.cod_consultor) as NOM_CONSULTOR, 
                                                 (SELECT count(*) FROM UNIDADEVENDA UV WHERE UV.COD_EMPRESA = empresas.COD_EMPRESA) AS LOJAS,	
@@ -59,43 +58,38 @@
                                                 FROM empresas  
                                                 LEFT JOIN STATUSSISTEMA ON STATUSSISTEMA.COD_STATUS=empresas.COD_STATUS
                                                 LEFT JOIN tab_database B ON B.cod_empresa=empresas.COD_EMPRESA 
-                                                WHERE empresas.COD_EMPRESA IN (".$_SESSION["SYS_COD_MULTEMP"].")
+                                                WHERE empresas.COD_EMPRESA IN (" . $_SESSION["SYS_COD_MULTEMP"] . ")
                                                 $andFiltro
                                                 $andAtivo
                                                 ORDER by NOM_FANTASI";
-			}
+}
 
-			// fnEscreve($sql);
-					
-			$arrayQuery = mysqli_query($connAdm->connAdm(),$sql);
+fnEscreve($sql);
 
-			$array = array();
-			while($row = mysqli_fetch_assoc($arrayQuery)){
-				  $newRow = array();
-				  
-				  $cont = 0;
-				  foreach ($row as $objeto) {
+$arrayQuery = mysqli_query($connAdm->connAdm(), $sql);
 
-                                    array_push($newRow, $objeto);
-					
-				
-					$cont++;
+$array = array();
+while ($row = mysqli_fetch_assoc($arrayQuery)) {
+	$newRow = array();
 
-				  }
+	$cont = 0;
+	foreach ($row as $objeto) {
 
-				$array[] = $newRow;
-			}
-			
-			$arrayColumnsNames = array();
-			while($row = mysqli_fetch_field($arrayQuery))
-			{
-				array_push($arrayColumnsNames, $row->name);
-			}			
+		array_push($newRow, $objeto);
 
-			$writer->addRow($arrayColumnsNames);
-			$writer->addRows($array);
 
-			$writer->close();
+		$cont++;
+	}
 
-	
-?>
+	$array[] = $newRow;
+}
+
+$arrayColumnsNames = array();
+while ($row = mysqli_fetch_field($arrayQuery)) {
+	array_push($arrayColumnsNames, $row->name);
+}
+
+$writer->addRow($arrayColumnsNames);
+$writer->addRows($array);
+
+$writer->close();
