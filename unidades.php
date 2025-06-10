@@ -117,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
 		$cod_empresa = fnLimpacampoZero(@$_REQUEST['COD_EMPRESA']);
-		$cod_cadastr = '1';
+		$cod_cadastr = $_SESSION["SYS_COD_USUARIO"];
 		$nom_univend = fnLimpacampo(@$_REQUEST['NOM_UNIVEND']);
 		$nom_respons = fnLimpacampo(@$_REQUEST['NOM_RESPONS']);
 		$num_cgcecpf = fnLimpacampo(@$_REQUEST['NUM_CGCECPF']);

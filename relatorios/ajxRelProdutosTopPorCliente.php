@@ -21,7 +21,6 @@ $cod_produtos = "";
 $dias30 = "";
 $hoje = "";
 $temUnivend = "";
-$groupBy = "";
 $andProdutos = "";
 $andCategor = "";
 $andSubCate = "";
@@ -78,8 +77,6 @@ if ($cod_univend == "9999") {
 	$temUnivend = "S";
 }
 
-$groupBy = "GROUP BY A.COD_UNIVEND,B.COD_PRODUTO";
-
 if ($cod_produtos != 0 && $cod_produtos != "") {
 	$cod_produto = $cod_produtos;
 	$andProdutos = "AND B.COD_PRODUTO IN ( $cod_produto )  ";
@@ -115,6 +112,7 @@ switch ($opcao) {
 	D.NOM_CLIENTE,
 	D.COD_CLIENTE,
 	D.NUM_CGCECPF,
+	D.NUM_CELULAR AS CELULAR,
 	A.COD_UNIVEND,
 	E.NOM_FANTASI,
 	Sum(B.QTD_PRODUTO)   QTD_PRODUTO,
@@ -145,6 +143,7 @@ switch ($opcao) {
 	GROUP  BY A.COD_CLIENTE
 	ORDER  BY A.COD_VENDA DESC, A.COD_CLIENTE";
 
+		// fnEscreve($sql);
 		$arrayQuery = mysqli_query(connTemp($cod_empresa, ''), $sql);
 
 		$arquivo = fopen($arquivoCaminho, 'w', 0);
@@ -159,6 +158,7 @@ switch ($opcao) {
 			$row['COD_CLIENTE'] = $row['COD_CLIENTE'];
 			$row['NOM_CLIENTE'] = $row['NOM_CLIENTE'];
 			$row['NUM_CGCECPF'] = $row['NUM_CGCECPF'];
+			$row['CELULAR'] = fnmasktelefone($row['CELULAR']);
 			$row['NOM_FANTASI'] = $row['NOM_FANTASI'];
 			$row['NOM_VENDEDOR'] = $row['NOM_VENDEDOR'];
 			$row['COD_PRODUTO'] = $row['COD_PRODUTO'];
@@ -193,6 +193,7 @@ switch ($opcao) {
 	D.NOM_CLIENTE,
 	D.COD_CLIENTE,
 	D.NUM_CGCECPF,
+	D.NUM_CELULAR AS CELULAR,
 	A.COD_UNIVEND,
 	E.NOM_FANTASI,
 	Sum(B.QTD_PRODUTO)   QTD_PRODUTO,
@@ -237,6 +238,7 @@ switch ($opcao) {
 			$row['COD_CLIENTE'] = $row['COD_CLIENTE'];
 			$row['NOM_CLIENTE'] = $row['NOM_CLIENTE'];
 			$row['NUM_CGCECPF'] = $row['NUM_CGCECPF'];
+			$row['CELULAR'] = fnmasktelefone($row['CELULAR']);
 			$row['NOM_FANTASI'] = $row['NOM_FANTASI'];
 			$row['NOM_VENDEDOR'] = $row['NOM_VENDEDOR'];
 			$row['COD_PRODUTO'] = $row['COD_PRODUTO'];
@@ -319,7 +321,6 @@ switch ($opcao) {
 	ORDER  BY A.COD_VENDA DESC, A.COD_CLIENTE
 	LIMIT $inicio,$itens_por_pagina";
 
-		// fnEscreve($sql);
 
 		$arrayQuery = mysqli_query(connTemp($cod_empresa, ''), $sql);
 

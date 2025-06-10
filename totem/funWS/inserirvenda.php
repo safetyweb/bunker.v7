@@ -47,8 +47,8 @@ function inserirvenda($arraydadoscad, $dadoslogin, $itensxml)
                                             <idloja>" . $dadoslogin['2'] . "</idloja>
                                             <idmaquina>" . $dadoslogin['3'] . "</idmaquina>
                                             <idcliente>" . $dadoslogin['4'] . "</idcliente>
-                                            <codvendedor>" . $dadoslogin['5'] . "</codvendedor>
-                                            <nomevendedor>" . $dadoslogin['6'] . "</nomevendedor>
+                                            <codvendedor>" . @$dadoslogin['5'] . "</codvendedor>
+                                            <nomevendedor>" . @$dadoslogin['6'] . "</nomevendedor>
                                         </dadosLogin>
                                     </fid:InsereVenda>
                                 </soapenv:Body>

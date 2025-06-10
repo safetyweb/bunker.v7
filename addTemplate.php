@@ -87,7 +87,7 @@ if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
 	$sql = "SELECT NOM_EMPRESA FROM EMPRESAS WHERE COD_EMPRESA = " . $cod_empresa;
 
 	//fnEscreve($sql);
-	$arrayQuery = mysqli_query($connAdm->connAdm(), $sql) or die(mysqli_error());
+	$arrayQuery = mysqli_query($connAdm->connAdm(), $sql);
 	$qrBuscaEmpresa = mysqli_fetch_assoc($arrayQuery);
 
 	if (isset($qrBuscaEmpresa)) {
@@ -104,7 +104,7 @@ if (is_numeric(fnLimpacampo(fnDecode($_GET['idT'])))) {
 	$sql = "SELECT * FROM TEMPLATE WHERE COD_TEMPLATE = " . $cod_template;
 
 	//fnEscreve($sql);
-	$arrayQuery = mysqli_query(connTemp($cod_empresa, ''), $sql) or die(mysqli_error());
+	$arrayQuery = mysqli_query(connTemp($cod_empresa, ''), $sql);
 	$qrBuscaTemplate = mysqli_fetch_assoc($arrayQuery);
 
 	if (isset($qrBuscaTemplate)) {
@@ -122,6 +122,32 @@ if (is_numeric(fnLimpacampo(fnDecode($_GET['idT'])))) {
 	$abv_template = "";
 	$des_template = "";
 	$des_msgerro = "";
+}
+
+$sqlBusca = "SELECT * FROM tab_encurtador WHERE COD_EMPRESA = $cod_empresa AND tip_url = 'TKT'";
+$arrayBusca = mysqli_query($adm, $sqlBusca);
+if (mysqli_num_rows($arrayBusca) == 0) {
+	$sql = "SELECT COD_TEMPLATE, NOM_TEMPLATE FROM TEMPLATE WHERE COD_EMPRESA = $cod_empresa AND LOG_ATIVO = 'S' LIMIT 1";
+	$array = mysqli_query($conn, $sql);
+	if (mysqli_num_rows($array) > 0) {
+		$sqlProd = "SELECT * FROM PRODUTOTKT WHERE COD_EMPRESA = $cod_empresa AND LOG_ATIVOTK = 'S'";
+		$arrayProd = mysqli_query($conn, $sqlProd);
+		if (mysqli_num_rows($arrayProd) > 0) {
+			$qrTkt = mysqli_fetch_assoc($array);
+			$titulo = $qrTkt['NOM_TEMPLATE'] . ' #' . $qrTkt['COD_TEMPLATE'];
+			fnEncurtador($titulo, '', '', '', 'TKT', $cod_empresa, $connAdm->connAdm(), $qrTkt['COD_TEMPLATE']);
+		}
+	}
+}
+
+// BUSCA LINK ENCURTADO
+$urlEncurtada = '';
+$sql = "SELECT * FROM TAB_ENCURTADOR WHERE COD_EMPRESA = " . $cod_empresa . " AND TIP_URL = 'TKT'";
+// fnEscreve($sql);
+$arrayQuery = mysqli_query($connAdm->connAdm(), $sql);
+if (mysqli_num_rows($arrayQuery) > 0) {
+	$qrBuscaLink = mysqli_fetch_assoc($arrayQuery);
+	$urlEncurtada = "tkt.far.br/" . short_url_encode($qrBuscaLink['id']);
 }
 
 ?>
@@ -210,7 +236,7 @@ if (is_numeric(fnLimpacampo(fnDecode($_GET['idT'])))) {
 
 							<div class="row">
 
-								<div class="col-md-2">
+								<div class="col-md-1">
 									<div class="form-group">
 										<label for="inputName" class="control-label required">Código</label>
 										<input type="text" class="form-control input-sm leitura" readonly="readonly" name="COD_TEMPLATE" id="COD_TEMPLATE" value="<?php echo $cod_template ?>">
@@ -242,7 +268,7 @@ if (is_numeric(fnLimpacampo(fnDecode($_GET['idT'])))) {
 									<div class="help-block with-errors"></div>
 								</div>
 
-								<div class="col-md-2">
+								<div class="col-md-1">
 									<div class="form-group">
 										<label for="inputName" class="control-label">Ativo</label>
 										<div class="push5"></div>
@@ -253,6 +279,41 @@ if (is_numeric(fnLimpacampo(fnDecode($_GET['idT'])))) {
 										<div class="help-block with-errors"></div>
 									</div>
 								</div>
+
+								<?php if ($urlEncurtada != '') { ?>
+
+									<div class="col-md-2">
+										<button type="button" class="btn btn-default" id="btnPesquisa" <?= $disableBtn ?>><i class="fas fa-copy" aria-hidden="true"></i>&nbsp; Copiar Link</button>
+										<script type="text/javascript">
+											$("#btnPesquisa").click(function() {
+												if (navigator.userAgent.match(/ipad|ipod|iphone/i)) {
+													var el = $("#linkPesquisa").get(0);
+													var editable = el.contentEditable;
+													var readOnly = el.readOnly;
+													el.contentEditable = true;
+													el.readOnly = false;
+													var range = document.createRange();
+													range.selectNodeContents(el);
+													var sel = window.getSelection();
+													sel.removeAllRanges();
+													sel.addRange(range);
+													el.setSelectionRange(0, 999999);
+													el.contentEditable = editable;
+													el.readOnly = readOnly;
+												} else {
+													$("#linkPesquisa").select();
+												}
+												document.execCommand('copy');
+												$("#linkPesquisa").blur();
+												$("#btnPesquisa").text("Link Copiado");
+												setTimeout(function() {
+													$("#btnPesquisa").html("<i class='fas fa-copy' aria-hidden='true'></i>&nbsp; Copiar Link");
+												}, 2000);
+											});
+										</script>
+										<input type="hidden" id="linkPesquisa" class="form-control input-md pull-right text-center" value='<?= $urlEncurtada ?>' readonly>
+									</div>
+								<?php } ?>
 
 								<div class="col-md-12">
 									<div class="form-group">

@@ -1,38 +1,36 @@
 <?php
 include '../../_system/_functionsMain.php';
 //and cod_empresa=77 and cod_empresa in (77,292)
-if($_GET['dtexec']!='')
-{
-    $dat_inicialparam=$_GET['dtexec'].'-01';
-    $dat_inicial = date("Y-m-d", strtotime("-1 month",strtotime($dat_inicialparam)));
-    $dat_final= date("Y-m-t", strtotime($dat_inicial));
-  
-    
-}else{
-    $dat_inicialparam=date('Y-m').'-01';
-    $dat_inicial = date("Y-m-d", strtotime("-1 month",strtotime($dat_inicialparam)));
-    $dat_final= date("Y-m-t", strtotime($dat_inicial));
-}    
-if($_GET['emp']!='')
-{
-   $empresa="and cod_empresa=$_GET[emp]";
-}    
- echo $dat_inicialparam.'<br>'.$dat_inicial .'<br>'.$dat_final;
+if ($_GET['dtexec'] != '') {
+  $dat_inicialparam = $_GET['dtexec'] . '-01';
+  $dat_inicial = date("Y-m-d", strtotime("-1 month", strtotime($dat_inicialparam)));
+  $dat_final = date("Y-m-t", strtotime($dat_inicial));
+} else {
+  $dat_inicialparam = date('Y-m') . '-01';
+  $dat_inicial = date("Y-m-d", strtotime("-1 month", strtotime($dat_inicialparam)));
+  $dat_final = date("Y-m-t", strtotime($dat_inicial));
+}
+if ($_GET['emp'] != '') {
+  $empresa = "and e.cod_empresa=$_GET[emp]";
+}
+echo $dat_inicialparam . '<br>' . $dat_inicial . '<br>' . $dat_final;
 
 
 
-$conadmmysql=$connAdm->connAdm();
-$sqlempresa = "SELECT COD_EMPRESA,NOM_FANTASI,COD_SISTEMAS,COD_SEGMENT FROM empresas WHERE log_ativo='S' $empresa";
+$conadmmysql = $connAdm->connAdm();
+$sqlempresa = "SELECT e.COD_EMPRESA,e.NOM_FANTASI,e.COD_SISTEMAS,e.COD_SEGMENT FROM empresas e 
+                INNER JOIN tab_database t ON t.cod_empresa=e.COD_EMPRESA
+                WHERE e.log_ativo='S' $empresa";
 $rwempresa = mysqli_query($conadmmysql, $sqlempresa);
-while ($rsempresa = mysqli_fetch_assoc($rwempresa)){
-	
-    $connboard=$Cdashboard->connUser();      
-    $contemp= connTemp($rsempresa[COD_EMPRESA], '');
-    
-	$limparepro="DELETE FROM dash_consultor WHERE DATA_INICIAL='$dat_inicial' and COD_EMPRESA=$rsempresa[COD_EMPRESA];";
-        mysqli_query($connboard,$limparepro);
+while ($rsempresa = mysqli_fetch_assoc($rwempresa)) {
 
-    $sqldados= "SELECT  
+  $connboard = $Cdashboard->connUser();
+  $contemp = connTemp($rsempresa['COD_EMPRESA'], '');
+
+  $limparepro = "DELETE FROM dash_consultor WHERE DATA_INICIAL='$dat_inicial' and COD_EMPRESA=$rsempresa[COD_EMPRESA];";
+  mysqli_query($connboard, $limparepro);
+
+  $sqldados = "SELECT  
                        COD_EMPRESA,
                        DATE_FORMAT('$dat_inicial','%Y-%m') ANO_MES,
                        CAST('$dat_inicial' AS DATE) DATA_INICIAL,
@@ -152,33 +150,30 @@ while ($rsempresa = mysqli_fetch_assoc($rwempresa)){
                                                             ORDER BY QTD_RESGATE desc
                     )tmpvendadas GROUP BY COD_EMPRESA 
              ";
-     
-   /* echo $sqldados;
-   exit();*/  
-     
-	$rwdash=mysqli_query($contemp, $sqldados);
-    while ($camposfild=mysqli_fetch_field($rwdash))
-    {    
-        
-       $fildscampos.=$camposfild->name.',';
+
+  /* echo $sqldados;
+   exit();*/
+
+  $rwdash = mysqli_query($contemp, $sqldados);
+  while ($camposfild = mysqli_fetch_field($rwdash)) {
+
+    $fildscampos .= $camposfild->name . ',';
+  }
+  $fildscampos = rtrim($fildscampos, ',');
+  $dadosinserir = mysqli_fetch_assoc($rwdash);
+
+  if (isset($dadosinserir['COD_EMPRESA'])) {
+    $dados = "'" . implode("','", $dadosinserir) . "'";
+    $insert = "INSERT INTO dash_consultor ($fildscampos)values($dados)";
+
+    $insdash = mysqli_query($connboard, $insert);
+    if (!$insdash) {
+      echo '<br>' . $insert . '<br>';
     }
-   $fildscampos=rtrim($fildscampos,',');
-   $dadosinserir= mysqli_fetch_assoc($rwdash);
-  
-   if(isset($dadosinserir[COD_EMPRESA]))
-   {
-        $dados= "'" . implode("','", $dadosinserir) . "'";  
-        $insert="INSERT INTO dash_consultor ($fildscampos)values($dados)";
-      
-	    $insdash=mysqli_query($connboard, $insert); 
-        if(!$insdash)
-        {
-          echo '<br>'.$insert.'<br>';  
-        }
-		  //capturar ultimo ID gerado
-		  $COD_LOG= mysqli_insert_id($connboard);
-		  //selecionar a lista para atualização
-		    $LOGACESSO="SELECT
+    //capturar ultimo ID gerado
+    $COD_LOG = mysqli_insert_id($connboard);
+    //selecionar a lista para atualização
+    $LOGACESSO = "SELECT
 					        LG.COD_EMPRESA,
 					        COUNT(LG.ID_CESSO) QTD_ACESSO,
 					         max(LG.DATA_ACESSO) DAT_ULT_ACESSO,
@@ -189,78 +184,70 @@ while ($rsempresa = mysqli_fetch_assoc($rwempresa)){
 					FROM log_acesso LG
 					WHERE LG.cod_empresa=$rsempresa[COD_EMPRESA] AND date(LG.DATA_ACESSO) BETWEEN '$dat_inicial' AND '$dat_final';
 			";
-     		$rwlogacesso=mysqli_fetch_assoc(mysqli_query($conadmmysql,$LOGACESSO));
-			if(isset($rwlogacesso[DAT_ULT_ACESSO]))
-			{		
-				 //alterar a quantidade de log X acesso no sistema
-                                $updatelogacess="UPDATE dash_consultor 
+    $rwlogacesso = mysqli_fetch_assoc(mysqli_query($conadmmysql, $LOGACESSO));
+    if (isset($rwlogacesso['DAT_ULT_ACESSO'])) {
+      //alterar a quantidade de log X acesso no sistema
+      $updatelogacess = "UPDATE dash_consultor 
                                                                     SET 
                                                                           QTD_ACESSO='$rwlogacesso[QTD_ACESSO]', 
                                                                           DAT_ULT_ACESSO='$rwlogacesso[DAT_ULT_ACESSO]',
                                                                           QTD_USUARIO='$rwlogacesso[QTD_USUARIO]' 
 								WHERE  ID=$COD_LOG;";
-				$rwupdatelogacess=mysqli_query($connboard, $updatelogacess); 
-				if(!$rwupdatelogacess)
-				{
-				  echo '<br>'.$updatelogacess.'<br>';  
-				}
-			}
-			//LGPD_POR EMPRESA
-			$lgpd="SELECT LOG_LGPD FROM controle_termo WHERE LOG_LGPD = 'S' and cod_empresa=$rsempresa[COD_EMPRESA]";
-			$rwlgpd=mysqli_fetch_assoc(mysqli_query($contemp,$lgpd));
-			if(isset($rwlgpd[LOG_LGPD]))
-			{	
-				$iploglgpd="UPDATE dash_consultor SET LGPD='$rwlgpd[LOG_LGPD]' WHERE  ID=$COD_LOG;";
-			    $rwiploglgpd=mysqli_query($connboard, $iploglgpd); 
-				if(!$rwiploglgpd)
-				{
-				  echo '<br>'.$iploglgpd.'<br>';  
-				}
-			}
-		//produtos do Ticke de ofertas
-		$vrificatemplate="SELECT COD_EMPRESA FROM TEMPLATE WHERE cod_empresa = $rsempresa[COD_EMPRESA] AND LOG_ATIVO='S' ORDER BY NOM_TEMPLATE";	
-		$RWvrificatemplate=mysqli_query($contemp,$vrificatemplate);
-		if($RWvrificatemplate->num_rows > 0)
-		{	
-	         //contador de produtos do ticket
-			 $qtdprod="SELECT  COUNT(1) QTD_PRODTKT FROM produtotkt
+      $rwupdatelogacess = mysqli_query($connboard, $updatelogacess);
+      if (!$rwupdatelogacess) {
+        echo '<br>' . $updatelogacess . '<br>';
+      }
+    }
+    //LGPD_POR EMPRESA
+    $lgpd = "SELECT LOG_LGPD FROM controle_termo WHERE LOG_LGPD = 'S' and cod_empresa=$rsempresa[COD_EMPRESA]";
+    $rwlgpd = mysqli_fetch_assoc(mysqli_query($contemp, $lgpd));
+    if (isset($rwlgpd['LOG_LGPD'])) {
+      $iploglgpd = "UPDATE dash_consultor SET LGPD='$rwlgpd[LOG_LGPD]' WHERE  ID=$COD_LOG;";
+      $rwiploglgpd = mysqli_query($connboard, $iploglgpd);
+      if (!$rwiploglgpd) {
+        echo '<br>' . $iploglgpd . '<br>';
+      }
+    }
+    //produtos do Ticke de ofertas
+    $vrificatemplate = "SELECT COD_EMPRESA FROM TEMPLATE WHERE cod_empresa = $rsempresa[COD_EMPRESA] AND LOG_ATIVO='S' ORDER BY NOM_TEMPLATE";
+    $RWvrificatemplate = mysqli_query($contemp, $vrificatemplate);
+    if ($RWvrificatemplate->num_rows > 0) {
+      //contador de produtos do ticket
+      $qtdprod = "SELECT  COUNT(1) QTD_PRODTKT FROM produtotkt
                                                                             WHERE LOG_ATIVOTK='S' AND 
                                                                             date(DAT_INIPTKT) >= '$dat_inicial' AND
-                                                                        cod_empresa=$rsempresa[COD_EMPRESA]"; 
-			$rwqtdprod=mysqli_fetch_assoc(mysqli_query($contemp,$qtdprod));
-			if($rwqtdprod[QTD_PRODTKT] > 0)
-			{	
-			  $upprodtkt="UPDATE dash_consultor SET QTD_PRODTKT='$rwqtdprod[QTD_PRODTKT]' WHERE  ID=$COD_LOG";
-			  $rwupprodtkt=mysqli_query($connboard, $upprodtkt); 
-				if(!$rwupprodtkt)
-				{
-				  echo '<br>'.$upprodtkt.'<br>';  
-				}
-			}
-		}
-		//quantidade de envio comunicação
-		$qtd_disparo="SELECT 
+                                                                        cod_empresa=$rsempresa[COD_EMPRESA]";
+      $rwqtdprod = mysqli_fetch_assoc(mysqli_query($contemp, $qtdprod));
+      if ($rwqtdprod['QTD_PRODTKT'] > 0) {
+        $upprodtkt = "UPDATE dash_consultor SET QTD_PRODTKT='$rwqtdprod[QTD_PRODTKT]' WHERE  ID=$COD_LOG";
+        $rwupprodtkt = mysqli_query($connboard, $upprodtkt);
+        if (!$rwupprodtkt) {
+          echo '<br>' . $upprodtkt . '<br>';
+        }
+      }
+    }
+    //quantidade de envio comunicação
+    $qtd_disparo = "SELECT 
                                 (SELECT COUNT(1) FROM sms_lista_ret where cod_empresa=$rsempresa[COD_EMPRESA] AND date(DAT_CADASTR) BETWEEN '$dat_inicial' AND '$dat_final') QTD_COMUNICACAO_SMS,
                                 (SELECT  count(COD_LISTA) FROM email_lista_ret where cod_empresa=$rsempresa[COD_EMPRESA] AND date(DAT_CADASTR) BETWEEN '$dat_inicial' AND '$dat_final') QTD_COMUNICACAO_EMAIL
 		";
-		$RWqtd_disparo=mysqli_fetch_assoc(mysqli_query($contemp,$qtd_disparo));
-                $upcomunica="UPDATE dash_consultor 
+    $RWqtd_disparo = mysqli_fetch_assoc(mysqli_query($contemp, $qtd_disparo));
+    $upcomunica = "UPDATE dash_consultor 
                                             SET 
                                                 QTD_COMUNICACAO_SMS='$RWqtd_disparo[QTD_COMUNICACAO_SMS]' ,
                                                 QTD_COMUNICACAO_EMAIL='$RWqtd_disparo[QTD_COMUNICACAO_EMAIL]'
 		 WHERE  ID=$COD_LOG";
-		$rwcomunica=mysqli_query($connboard, $upcomunica); 
-		if(!$rwcomunica)
-		{
-		  echo '<br>'.$upcomunica.'<br>';  
-		}
-		//QUANTIDADE DE DEBITOS EMAIL/SMS
-		/*
+    $rwcomunica = mysqli_query($connboard, $upcomunica);
+    if (!$rwcomunica) {
+      echo '<br>' . $upcomunica . '<br>';
+    }
+    //QUANTIDADE DE DEBITOS EMAIL/SMS
+    /*
 		  canal.cod_tpcom =1 email
            canal.cod_tpcom= 2 sms 
 		*/
-		
-                $SQLDEBITOSCOM="SELECT 
+
+    $SQLDEBITOSCOM = "SELECT 
 							(SELECT 
 							case when SUM(ROUND(pedido.QTD_PRODUTO,0)) is NOT NULL then SUM(ROUND(pedido.QTD_PRODUTO,0)) ELSE '0' end		
 							FROM pedido_marka pedido 
@@ -281,21 +268,20 @@ while ($rsempresa = mysqli_fetch_assoc($rwempresa)){
                                                          pedido.TIP_LANCAMENTO='D' and   
 							date(pedido.DAT_CADASTR) BETWEEN '$dat_inicial' AND '$dat_final' AND canal.COD_TPCOM=2) QTD_DEBITOS_SMS
 							";
-		$RWDEBITOSCOM=mysqli_fetch_assoc(mysqli_query($conadmmysql,$SQLDEBITOSCOM));
-        	$upDEBITOSCOM="UPDATE dash_consultor 
+    $RWDEBITOSCOM = mysqli_fetch_assoc(mysqli_query($conadmmysql, $SQLDEBITOSCOM));
+    $upDEBITOSCOM = "UPDATE dash_consultor 
 		                                 SET 
                                                         QTD_DEBITOS_EMAIL='$RWDEBITOSCOM[QTD_DEBITOS_EMAIL]',
                                                         QTD_DEBITOS_SMS='$RWDEBITOSCOM[QTD_DEBITOS_SMS]'
 		 WHERE  ID=$COD_LOG";
-		$rwDEBITOSCOM=mysqli_query($connboard, $upDEBITOSCOM); 
-		if(!$rwDEBITOSCOM)
-		{
-		  echo '<br>'.$upDEBITOSCOM.'<br>';  
-		}
-                
-                //quantidade de itens 
-                
-               $qtd_ITENS="
+    $rwDEBITOSCOM = mysqli_query($connboard, $upDEBITOSCOM);
+    if (!$rwDEBITOSCOM) {
+      echo '<br>' . $upDEBITOSCOM . '<br>';
+    }
+
+    //quantidade de itens 
+
+    $qtd_ITENS = "
                                 SELECT
                                        IFNULL(SUM(CASE WHEN A.COD_AVULSO= 1 THEN itm.QTD_PRODUTO ELSE 0 END),0) QTD_ITEM_AVULSA, 
                                        IFNULL(SUM(CASE WHEN A.COD_AVULSO= 2 THEN itm.QTD_PRODUTO ELSE 0 END),0) QTD_ITEM_FIDELIZA
@@ -304,39 +290,35 @@ while ($rsempresa = mysqli_fetch_assoc($rwempresa)){
                                   WHERE A.COD_STATUSCRED IN(0,1,2,3,4,5,7,8,9) AND DATE(A.DAT_CADASTR) BETWEEN '$dat_inicial' AND '$dat_final' 
                                   AND A.COD_EMPRESA=$rsempresa[COD_EMPRESA] GROUP BY A.COD_EMPRESA
                              ";
-		$RWqtd_itens=mysqli_fetch_assoc(mysqli_query($contemp,$qtd_ITENS));
-                $upitens="UPDATE dash_consultor 
+    $RWqtd_itens = mysqli_fetch_assoc(mysqli_query($contemp, $qtd_ITENS));
+    $upitens = "UPDATE dash_consultor 
                                             SET 
                                                 QTD_ITEM_AVULSA='$RWqtd_itens[QTD_ITEM_AVULSA]' ,
                                                 QTD_ITEM_FIDELIZA='$RWqtd_itens[QTD_ITEM_FIDELIZA]'
 		 WHERE  ID=$COD_LOG";
-		$rwitens=mysqli_query($connboard, $upitens); 
-		if(!$rwitens)
-		{
-		  echo '<br>'.$upitens.'<br>';  
-		}
-                
-                
-                
-                
-                
-		//update in dados empresa
-                $upempresadash="UPDATE dash_consultor 
+    $rwitens = mysqli_query($connboard, $upitens);
+    if (!$rwitens) {
+      echo '<br>' . $upitens . '<br>';
+    }
+
+
+
+
+
+    //update in dados empresa
+    $upempresadash = "UPDATE dash_consultor 
 		                                 SET 
                                                 NOM_FANTASI='$rsempresa[NOM_FANTASI]',
                                                 COD_SISTEMAS='$rsempresa[COD_SISTEMAS]',
                                                 COD_SEGMENT= '$rsempresa[COD_SEGMENT]'    
 		             WHERE  ID=$COD_LOG";
-		$rwDEBITOSCOM=mysqli_query($connboard, $upempresadash); 
-		if(!$rwDEBITOSCOM)
-		{
-		  echo '<br>'.$upempresadash.'<br>';  
-		}
-                 
-   }
-    unset($fildscampos);
-    unset($insert);
-	
-   mysqli_close($connboard);
+    $rwDEBITOSCOM = mysqli_query($connboard, $upempresadash);
+    if (!$rwDEBITOSCOM) {
+      echo '<br>' . $upempresadash . '<br>';
+    }
+  }
+  unset($fildscampos);
+  unset($insert);
+
+  mysqli_close($connboard);
 }
-?>

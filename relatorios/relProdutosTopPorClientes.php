@@ -446,14 +446,10 @@ if ($cod_persona_url != 0 && $cod_persona_url != '') {
 
 										<?php
 
-
-
+										$andGroupby = "GROUP BY A.COD_CLIENTE";
 										if ($cod_produtos != 0 && $cod_produtos != "") {
 											$cod_produto = $cod_produtos;
 											$andProdutos = "AND B.COD_PRODUTO IN ( $cod_produto )  ";
-											$andGroupby = " GROUP BY B.COD_PRODUTO ";
-										} else {
-											$andGroupby = "GROUP BY A.COD_CLIENTE";
 										}
 
 										if ($cod_categor != 0 && $cod_categor != "") {
@@ -556,7 +552,7 @@ if ($cod_persona_url != 0 && $cod_persona_url != '') {
 																ORDER  BY A.COD_VENDA DESC, A.COD_CLIENTE
 			                                                    LIMIT $inicio,$itens_por_pagina";
 
-										//fnEscreve($sql);
+										// fnEscreve($sql);
 
 										$arrayQuery = mysqli_query(connTemp($cod_empresa, ''), $sql);
 

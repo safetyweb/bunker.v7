@@ -463,6 +463,16 @@ if (!empty($_POST["LOG_DESTAQUE"]) && $_POST["LOG_DESTAQUE"] == "S") {
 	$andDestaque = " AND PRODUTOTKT.LOG_OFERTAS = 'S'";
 }
 
+// BUSCA LINK ENCURTADO
+$urlEncurtada = '';
+$sql = "SELECT * FROM TAB_ENCURTADOR WHERE COD_EMPRESA = " . $cod_empresa . " AND TIP_URL = 'TKT'";
+// fnEscreve($sql);
+$arrayQuery = mysqli_query($connAdm->connAdm(), $sql);
+if (mysqli_num_rows($arrayQuery) > 0) {
+	$qrBuscaLink = mysqli_fetch_assoc($arrayQuery);
+	$urlEncurtada = "tkt.far.br/" . short_url_encode($qrBuscaLink['id']);
+}
+
 ?>
 
 <style>
@@ -567,6 +577,43 @@ if (!empty($_POST["LOG_DESTAQUE"]) && $_POST["LOG_DESTAQUE"] == "S") {
 												<span></span>
 											</label>
 										</div>
+									</div>
+
+									<div class="col-md-3">
+										<input type="text" id="linkPesquisa" class="form-control input-md pull-right text-center" value='<?= $urlEncurtada ?>' readonly>
+										<input type="hidden" id="LINK_SEMCLI" value='<?= $urlEncurtada ?>'>
+									</div>
+
+
+									<div class="col-md-2">
+										<button type="button" class="btn btn-default" id="btnPesquisa" <?= $disableBtn ?>><i class="fas fa-copy" aria-hidden="true"></i>&nbsp; Copiar Link</button>
+										<script type="text/javascript">
+											$("#btnPesquisa").click(function() {
+												if (navigator.userAgent.match(/ipad|ipod|iphone/i)) {
+													var el = $("#linkPesquisa").get(0);
+													var editable = el.contentEditable;
+													var readOnly = el.readOnly;
+													el.contentEditable = true;
+													el.readOnly = false;
+													var range = document.createRange();
+													range.selectNodeContents(el);
+													var sel = window.getSelection();
+													sel.removeAllRanges();
+													sel.addRange(range);
+													el.setSelectionRange(0, 999999);
+													el.contentEditable = editable;
+													el.readOnly = readOnly;
+												} else {
+													$("#linkPesquisa").select();
+												}
+												document.execCommand('copy');
+												$("#linkPesquisa").blur();
+												$("#btnPesquisa").text("Link Copiado");
+												setTimeout(function() {
+													$("#btnPesquisa").html("<i class='fas fa-copy' aria-hidden='true'></i>&nbsp; Copiar Link");
+												}, 2000);
+											});
+										</script>
 									</div>
 
 								</div>

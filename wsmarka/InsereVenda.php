@@ -27,9 +27,10 @@ function InsereVenda($fase, $venda, $dadosLogin)
     $cartao = fnlimpaCPF($venda['cartao']);
     $dadosLogin['idloja'] = preg_replace('/\s+/', '', $dadosLogin['idloja']);
     //|| $cartao == '02631868900'
-    if ($cartao == '69660031076'  || $cartao == '31448359864') {
-        http_response_code(400);
-        /*   $arquivo = fopen('new_teste.txt', 'w');
+
+    //if ($cartao == '69660031076'  || $cartao == '31448359864') {
+    //    http_response_code(400);
+    /*   $arquivo = fopen('new_teste.txt', 'w');
         fwrite($arquivo, file_get_contents("php://input"));
         fclose($arquivo);
         sleep(40);
@@ -37,8 +38,8 @@ function InsereVenda($fase, $venda, $dadosLogin)
             'msgerro' => 'Valor Resgate maior que o permitido',
             'coderro' => '45'
         ));*/
-        exit();
-    }
+    //    exit();
+    // }
     //  $cartao=$venda['cartao'];
 
     /* $sql = "CALL SP_VERIFICA_ACESSO_WEBSERVICE('" . $dadosLogin['login'] . "', '" . fnEncode($dadosLogin['senha']) . "','','','" . $dadosLogin['idcliente'] . "','','')";
@@ -76,7 +77,7 @@ function InsereVenda($fase, $venda, $dadosLogin)
         if ($row !== null) {
             file_put_contents($cacheFile, json_encode($row));
         } else {
-            return  array('BuscaConsumidorResponse' => array(
+            return array('InsereVendaResponse' => array(
                 'msgerro' => 'Dados Login Invalidos!',
                 'coderro' => '80'
             ));

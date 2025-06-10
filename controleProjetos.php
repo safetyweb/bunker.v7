@@ -461,7 +461,16 @@ if (isset($log_todas) && $log_todas == 'S') {
 
                                     $andCnpj = "";
                                     if ($num_cgcecpf != "") {
-                                        $andCnpj .= " AND E.NUM_CGCECPF = '$num_cgcecpf' ";
+                                        // Verifica se existe uma empresa ou unidade de venda com o CNPJ digitado
+                                        $andCnpj .= " AND (
+                                            REPLACE(REPLACE(REPLACE(E.NUM_CGCECPF, '.', ''), '-', ''), '/', '') = '$num_cgcecpf'
+                                            OR EXISTS (
+                                                SELECT 1 FROM UNIDADEVENDA UV
+                                                WHERE UV.COD_EMPRESA = E.COD_EMPRESA
+                                                AND REPLACE(REPLACE(REPLACE(UV.NUM_CGCECPF, '.', ''), '-', ''), '/', '') = '$num_cgcecpf'
+                                            )
+                                        )
+                                        ";
                                     }
 
                                     $andEmp = "";

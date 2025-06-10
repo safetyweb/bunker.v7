@@ -154,28 +154,27 @@ if ($des_dominio == "") {
 }
 
 $tinyUrl =  file_get_contents("http://tinyurl.com/api-create.php?url=" . "https://" . $des_dominio . ".fidelidade.mk/pesquisa?idP=" . fnEncode($cod_pesquisa));
-if ($_SESSION['SYS_COD_EMPRESA'] == 2) {
-	$parte = explode("/", $tinyUrl);
-	$chave_encurtada = end($parte);
-	$url_original = "https://" . $des_dominio . ".fidelidade.mk/pesquisa?idP=" . fnEncode($cod_pesquisa);
 
-	$sql = "SELECT * FROM TAB_ENCURTADOR WHERE URL_ORIGINAL = '$url_original' AND COD_EMPRESA = $cod_empresa";
-	$arrayQuery = mysqli_query($connAdm->connAdm(), $sql);
-	if (mysqli_num_rows($arrayQuery) == 0) {
-		$titulo = "Pesquisa NPS - " . $des_pesquisa . " #" . $cod_pesquisa;
-		$funcao = fnEncurtador($titulo, $chave_encurtada, $tinyUrl, $url_original, 'NPS', $cod_empresa, $connAdm->connAdm(), $cod_campanha);
-		if ($funcao) {
-			$urlEncurtada = "tkt.far.br/" . $funcao;
-		} else {
-			$urlEncurtada = "";
-			$msgRetorno = "Ocorreu um erro ao encurtar a URL, se persistir entre em contato com o suporte.";
-			$msgTipo = 'alert-danger';
-			$tipoAlert = "alert-danger";
-		}
+$parte = explode("/", $tinyUrl);
+$chave_encurtada = end($parte);
+$url_original = "https://" . $des_dominio . ".fidelidade.mk/pesquisa?idP=" . fnEncode($cod_pesquisa);
+
+$sql = "SELECT * FROM TAB_ENCURTADOR WHERE URL_ORIGINAL = '$url_original' AND COD_EMPRESA = $cod_empresa";
+$arrayQuery = mysqli_query($connAdm->connAdm(), $sql);
+if (mysqli_num_rows($arrayQuery) == 0) {
+	$titulo = "Pesquisa NPS - " . $des_pesquisa . " #" . $cod_pesquisa;
+	$funcao = fnEncurtador($titulo, $chave_encurtada, $tinyUrl, $url_original, 'NPS', $cod_empresa, $connAdm->connAdm(), $cod_campanha);
+	if ($funcao) {
+		$urlEncurtada = "https://tkt.far.br/" . $funcao . '/';
 	} else {
-		$qrResult = mysqli_fetch_assoc($arrayQuery);
-		$urlEncurtada = "tkt.far.br/" . short_url_encode($qrResult['id']);
+		$urlEncurtada = "";
+		$msgRetorno = "Ocorreu um erro ao encurtar a URL, se persistir entre em contato com o suporte.";
+		$msgTipo = 'alert-danger';
+		$tipoAlert = "alert-danger";
 	}
+} else {
+	$qrResult = mysqli_fetch_assoc($arrayQuery);
+	$urlEncurtada = "https://tkt.far.br/" . short_url_encode($qrResult['id']) . '/';
 }
 
 ?>
@@ -932,6 +931,12 @@ if ($_SESSION['SYS_COD_EMPRESA'] == 2) {
 									<input type="hidden" name="COD_PESQUISA" id="COD_PESQUISA" value="<?php echo $cod_pesquisa ?>">
 								</div>
 
+
+
+								<div class="col-md-1 col-sm-1 col-xs-1 pull-right ">
+									<a href="javascript:void(0)" class="btn btn-info addBox pull-right" data-size="modal-md" data-title="Configurações" data-url="action.do?mod=<?= fnEncode(1255) ?>&id=<?= fnEncode($cod_empresa) ?>&idc=<?= fnEncode($cod_campanha) ?>&idP=<?= fnEncode($cod_pesquisa) ?>&tipo=<?= fnEncode('ALT') ?>&pop=true"><span class="fal fa-cogs"></span></a>
+								</div>
+
 								<div class="col-md-1 col-sm-1 col-xs-1 pull-right ">
 									<div class="disabledBlock"></div>
 									<div class="form-group">
@@ -1345,7 +1350,7 @@ if ($_SESSION['SYS_COD_EMPRESA'] == 2) {
 												</div>
 
 												<div class="col-xs-3">
-													<input type="text" id="COD_CLIENTE" class="form-control input-md pull-right text-center int" placeholder="Cód. Cliente" value="<?= $urlEncurtada ?>" onkeyup="shortenUrl($(this).val())">
+													<input type="text" id="COD_CLIENTE" class="form-control input-md pull-right text-center int" placeholder="Cód. Cliente" value="" onkeyup="shortenUrl($(this).val())">
 												</div>
 
 											</div>
@@ -1965,39 +1970,51 @@ if ($_SESSION['SYS_COD_EMPRESA'] == 2) {
 	var timer = null;
 
 	function shortenUrl(cod_cliente) {
-		if (cod_cliente != "") {
+		var linkBase = $('#LINK_SEMCLI').val();
 
-			if (timer) {
-				clearTimeout(timer); //cancel the previous timer.
-				timer = null;
-			}
-
-			timer = setTimeout(function() {
-				$.ajax({
-					method: 'POST',
-					url: 'ajxBlocoNovaPesquisa.do?opcao=shortenUrl',
-					data: {
-						COD_EMPRESA: '<?= fnEncode($cod_empresa); ?>',
-						COD_CLIENTE: cod_cliente,
-						COD_PESQUISA: <?= $cod_pesquisa ?>,
-						DES_DOMINIO: "<?= $des_dominio ?>"
-					},
-					beforeSend: function() {
-						$('#linkPesquisa').val('Gerando link...');
-					},
-					success: function(data) {
-						console.log(data);
-						$('#linkPesquisa').val(data);
-						$('#btnLink').attr('href', data);
-					}
-				});
-			}, 600);
-
+		if (cod_cliente != '') {
+			var linkFinal = linkBase + '/' + cod_cliente;
 		} else {
-			$('#linkPesquisa').val($('#LINK_SEMCLI').val());
-			$('#btnLink').attr('href', $('#LINK_SEMCLI').val());
+			var linkFinal = linkBase;
 		}
+		$('#linkPesquisa').val(linkFinal);
+		$('#btnLink').attr('href', linkFinal);
 	}
+
+	// function shortenUrl(cod_cliente) {
+	// 	if (cod_cliente != "") {
+
+	// 		if (timer) {
+	// 			clearTimeout(timer); //cancel the previous timer.
+	// 			timer = null;
+	// 		}
+
+	// 		timer = setTimeout(function() {
+	// 			$.ajax({
+	// 				method: 'POST',
+	// 				url: 'ajxBlocoNovaPesquisa.do?opcao=shortenUrl',
+	// 				data: {
+	// 					COD_EMPRESA: '<?= fnEncode($cod_empresa); ?>',
+	// 					COD_CLIENTE: cod_cliente,
+	// 					COD_PESQUISA: <?= $cod_pesquisa ?>,
+	// 					DES_DOMINIO: "<?= $des_dominio ?>"
+	// 				},
+	// 				beforeSend: function() {
+	// 					$('#linkPesquisa').val('Gerando link...');
+	// 				},
+	// 				success: function(data) {
+	// 					console.log(data);
+	// 					$('#linkPesquisa').val(data);
+	// 					$('#btnLink').attr('href', data);
+	// 				}
+	// 			});
+	// 		}, 600);
+
+	// 	} else {
+	// 		$('#linkPesquisa').val($('#LINK_SEMCLI').val());
+	// 		$('#btnLink').attr('href', $('#LINK_SEMCLI').val());
+	// 	}
+	// }
 
 	// ----------------------------------------------------------------------------------------
 

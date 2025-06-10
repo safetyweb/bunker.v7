@@ -156,7 +156,7 @@
 			<?php 
 				$sql = "SELECT * FROM PESQUISA WHERE COD_EMPRESA = $cod_empresa AND COD_CAMPANHA = $cod_campanha order by DES_PESQUISA";
 						
-				$arrayQuery = mysqli_query(connTemp($cod_empresa,''),$sql) or die(mysqli_error());
+				$arrayQuery = mysqli_query(connTemp($cod_empresa,''),$sql);
 				
 				$count=0;
 				while ($qrBuscaModulos = mysqli_fetch_assoc($arrayQuery))

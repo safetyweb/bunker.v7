@@ -141,7 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$cod_lancamen = fnLimpacampoZero(@$_REQUEST['COD_LANCAMEN']);
 		$cod_ocorren = fnLimpacampoZero(@$_REQUEST['COD_OCORREN']);
 		$cod_univend = fnLimpacampoZero(@$_REQUEST['COD_UNIVEND']);
-		$cod_formapa = fnLimpacampoZero(@$_REQUEST['COD_FORMAPA']);
+		$cod_formapa = fnLimpacampo(@$_REQUEST['COD_FORMAPA']);
 		$tem_prodaux = fnLimpacampoZero(@$_REQUEST['TEM_PRODAUX']);
 		$des_comenta = fnLimpaCampo(@$_REQUEST['DES_COMENTA']);
 		$val_totprodu = fnLimpacampo(@$_REQUEST['VAL_TOTPRODU']);
@@ -419,11 +419,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 				// echo "<pre>";
 				// print_r($vendaitem);
 				// echo "</pre>";
-
-				// echo "<pre>";
-				// print_r($arrayVenda);
-				// echo "</pre>";
-				// exit();
+				// if ($_SESSION['SYS_COD_EMPRESA'] == 2) {
+				// 	echo $cod_formapa;
+				// 	echo "<pre>";
+				// 	print_r($arrayVenda);
+				// 	echo "</pre>";
+				// 	exit();
+				// }
 
 
 
@@ -674,7 +676,7 @@ if ($cod_orcamento == 0) {
 //fnEscreve($cod_orcamento);
 //fnEscreve($log_pontuar);
 //fnEscreve($log_funciona);
-
+// fnEscreve('subiu');
 ?>
 
 <div class="push30"></div>
@@ -881,7 +883,7 @@ if ($cod_orcamento == 0) {
 
 											while ($qrBuscaPagamento = mysqli_fetch_assoc($arrayQuery)) {
 												echo "
-																  <option value='" . $qrBuscaPagamento['COD_FORMAPA'] . "'>" . $qrBuscaPagamento['DES_FORMAPA'] . "</option> 
+																  <option value='" . $qrBuscaPagamento['DES_FORMAPA'] . "'>" . $qrBuscaPagamento['DES_FORMAPA'] . "</option> 
 																";
 											}
 											?>

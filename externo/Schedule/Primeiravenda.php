@@ -6,8 +6,8 @@ $conadmmysql = $connAdm->connAdm();
 $to['email6'] = 'margareth@markafidelizacao.com.br;coordenacaoti@markafidelizacao.com.br;marcio@markafidelizacao.com.br';
 $subject = 'Aviso de primeira venda';
 $headers = "From: comunicacao@bunker.mk\r\n" .
-"Reply-To: \r\n" .
-"Content-Type: text/html; charset=UTF-8\r\n";
+	"Reply-To: \r\n" .
+	"Content-Type: text/html; charset=UTF-8\r\n";
 
 $sql = "SELECT * FROM empresas WHERE LOG_ATIVO='S' AND LOG_INTEGRADORA = 'N' AND COD_SISTEMAS NOT IN (2,12,19,16,21,13,15) AND DAT_EXCLUSA IS NULL";
 $query = mysqli_query($conadmmysql, $sql);
@@ -38,15 +38,14 @@ while ($result = mysqli_fetch_assoc($query)) {
 		$queryVend = mysqli_query(connTemp($cod_empresa, ''), $sqlVend);
 
 		$dias = 0;
-		while ($resu = mysqli_fetch_assoc($queryVend)){
+		while ($resu = mysqli_fetch_assoc($queryVend)) {
 
 			$cod_univend = $resu['cod_univend'];
 
 			$dias++;
-
 		}
 
-		if($dias >=5){
+		if ($dias >= 5) {
 
 			//fnEscreve("entrou");
 
@@ -227,9 +226,11 @@ while ($result = mysqli_fetch_assoc($query)) {
 				'Marka Fidelização',
 				$mensagem,
 				$subject,
-                                'Marka Fidelização',
+				'Marka Fidelização',
 				$connAdm->connAdm(),
-				connTemp($cod_empresa,""),$cod_empresa);
+				connTemp(3, ""),
+				3
+			);
 
 			/*echo "<pre>";
 			print_r($retorno);
@@ -238,7 +239,5 @@ while ($result = mysqli_fetch_assoc($query)) {
 
 			//mail($to, $subject, $mensagem, $headers);
 		}
-
 	}
 }
-?>

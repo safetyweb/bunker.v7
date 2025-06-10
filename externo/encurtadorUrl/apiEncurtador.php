@@ -101,63 +101,75 @@ if ($_REQUEST["idr"] == "") {
         if (isset($_REQUEST["cdr"]) && $_REQUEST["cdr"] != "") {
             $cdr = fnLimpaCampo(fnEncode($_REQUEST["cdr"]));
             $cod_cliente = fnLimpaCampo($_REQUEST["cdr"]);
+        }
 
-            switch ($row['tip_url']) {
+        switch ($row['tip_url']) {
 
-                case 'NPS':
+            case 'NPS':
+                $andParam = "";
 
+                if ($cdr != "") {
                     $andParam = "&idc=" . $cdr;
+                }
+                $url = $row['url_original'];
+                $data["url"] = $url . $andParam;
+                http_response_code(200);
+                echo json_encode($data);
+                break;
+
+            case 'TKT':
+
+                if ($cod_cliente != '') {
+                    //SE TIVER CODIGO DO CLIENTE, CONSULTA SOAP DO DIOGO PARA BUSCAR A URL DO TICKET DO CLIENTE
+                    $sql = "SELECT COD_UNIVEND, NUM_CGCECPF FROM CLIENTES WHERE COD_CLIENTE = $cod_cliente AND COD_EMPRESA = " . $row['cod_empresa'];
+                    $arrayQuery = mysqli_query(connTemp($row['cod_empresa'], ""), $sql);
+                    if (mysqli_num_rows($arrayQuery) > 0) {
+                        $rowCliente = mysqli_fetch_assoc($arrayQuery);
+                        $cod_univend = $rowCliente['COD_UNIVEND'];
+                        $cpf = $rowCliente['NUM_CGCECPF'];
+
+                        $sqlWs = "SELECT LOG_USUARIO,DES_SENHAUS,COD_EMPRESA FROM usuarios  WHERE cod_empresa=" . $row['cod_empresa'] . " AND COD_TPUSUARIO=10 AND log_estatus='S' AND FIND_IN_SET('18', COD_UNIVEND) limit 1";
+                        $queryWs = mysqli_query($connadmtemp, $sqlWs);
+                        $qrResult = mysqli_fetch_assoc($queryWs);
+                        $log_usuario = $qrResult['LOG_USUARIO'];
+                        $des_senhaus = fnDecode($qrResult['DES_SENHAUS']);
+
+                        $response = consultaCliente($cpf, $row['cod_empresa'], $log_usuario, $des_senhaus, $cod_univend);
+                        $url = $response["body"]["envelope"]["body"]["buscaconsumidorresponse"]["buscaconsumidorresponse"]["acao_b_ticket_de_ofertas"]["url_ticketdeofertas"];
+
+                        if ($url != "") {
+                            $data["url"] = $url . "&print=no";
+                            http_response_code(200);
+                            echo json_encode($data);
+                            exit;
+                        }
+
+                        $data["errors"]["message"] = "Ocorreu um erro, se persistir entre em contato com o suporte!";
+                        http_response_code(400);
+                        echo json_encode($data);
+                        exit;
+                    } else {
+                        $data["errors"]["message"] = "Ocorreu um erro, se persistir entre em contato com o suporte!";
+                        http_response_code(400);
+                        echo json_encode($data);
+                        exit;
+                    }
+                } else {
+                    //SE NÃO TIVER CLIENTE, RETORNA A URL AVULSA
                     $url = $row['url_original'];
                     $data["url"] = $url . $andParam;
                     http_response_code(200);
                     echo json_encode($data);
-                    break;
-                case 'TKT':
+                }
+                break;
 
-                    if ($cod_cliente != '') {
-                        //SE TIVER CODIGO DO CLIENTE, CONSULTA SOAP DO DIOGO PARA BUSCAR A URL DO TICKET DO CLIENTE
-                        $sql = "SELECT COD_UNIVEND, NUM_CGCECPF FROM CLIENTES WHERE COD_CLIENTE = $cod_cliente AND COD_EMPRESA = " . $row['cod_empresa'];
-                        $arrayQuery = mysqli_query(connTemp($row['cod_empresa'], ""), $sql);
-                        if (mysqli_num_rows($arrayQuery) > 0) {
-                            $rowCliente = mysqli_fetch_assoc($arrayQuery);
-                            $cod_univend = $rowCliente['COD_UNIVEND'];
-                            $cpf = $rowCliente['NUM_CGCECPF'];
-
-                            $sqlWs = "SELECT LOG_USUARIO,DES_SENHAUS,COD_EMPRESA FROM usuarios  WHERE cod_empresa=" . $row['cod_empresa'] . " AND COD_TPUSUARIO=10 AND log_estatus='S' AND cod_univend IN ($cod_univend) limit 1";
-                            $queryWs = mysqli_query($connadmtemp, $sqlWs);
-                            $qrResult = mysqli_fetch_assoc($queryWs);
-                            $log_usuario = $qrResult['LOG_USUARIO'];
-                            $des_senhaus = fnDecode($qrResult['DES_SENHAUS']);
-
-                            $response = consultaCliente($cpf, $row['cod_empresa'], $log_usuario, $des_senhaus, $cod_univend);
-                            $url = $response["body"]["envelope"]["body"]["buscaconsumidorresponse"]["buscaconsumidorresponse"]["acao_b_ticket_de_ofertas"]["url_ticketdeofertas"];
-
-                            if ($url != "") {
-                                $data["url"] = $url . "&print=no";
-                                http_response_code(200);
-                                echo json_encode($data);
-                                exit;
-                            }
-
-                            $data["errors"]["message"] = "Ocorreu um erro, se persistir entre em contato com o suporte!";
-                            http_response_code(400);
-                            echo json_encode($data);
-                            exit;
-                        } else {
-                            $data["errors"]["message"] = "Ocorreu um erro, se persistir entre em contato com o suporte!";
-                            http_response_code(400);
-                            echo json_encode($data);
-                            exit;
-                        }
-                    } else {
-                        //SE NÃO TIVER CLIENTE, RETORNA A URL AVULSA
-                        $url = $row['url_original'];
-                        $data["url"] = $url . $andParam;
-                        http_response_code(200);
-                        echo json_encode($data);
-                    }
-                    break;
-            }
+            default:
+                //SE FOR OUTRO TIPO DE URL, RETORNA A URL AVULSA
+                $url = $row['url_original'];
+                $data["url"] = $url;
+                http_response_code(200);
+                echo json_encode($data);
+                break;
         }
 
         $sis_operacional = '';
