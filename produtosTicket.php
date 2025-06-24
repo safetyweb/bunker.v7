@@ -465,12 +465,24 @@ if (!empty($_POST["LOG_DESTAQUE"]) && $_POST["LOG_DESTAQUE"] == "S") {
 
 // BUSCA LINK ENCURTADO
 $urlEncurtada = '';
-$sql = "SELECT * FROM TAB_ENCURTADOR WHERE COD_EMPRESA = " . $cod_empresa . " AND TIP_URL = 'TKT'";
-// fnEscreve($sql);
-$arrayQuery = mysqli_query($connAdm->connAdm(), $sql);
-if (mysqli_num_rows($arrayQuery) > 0) {
-	$qrBuscaLink = mysqli_fetch_assoc($arrayQuery);
-	$urlEncurtada = "tkt.far.br/" . short_url_encode($qrBuscaLink['id']);
+$sqlBusca = "SELECT * FROM TAB_ENCURTADOR WHERE COD_EMPRESA = $cod_empresa AND TIP_URL = 'TKT'";
+$arrayBusca = mysqli_query($connAdm->connAdm(), $sqlBusca);
+if (mysqli_num_rows($arrayBusca) == 0) {
+	$sql = "SELECT COD_TEMPLATE, NOM_TEMPLATE FROM TEMPLATE WHERE COD_EMPRESA = $cod_empresa AND LOG_ATIVO = 'S' LIMIT 1";
+	$array = mysqli_query($conn, $sql);
+	if (mysqli_num_rows($array) > 0) {
+		$sqlProd = "SELECT * FROM PRODUTOTKT WHERE COD_EMPRESA = $cod_empresa AND LOG_ATIVOTK = 'S'";
+		$arrayProd = mysqli_query($conn, $sqlProd);
+		if (mysqli_num_rows($arrayProd) > 0) {
+			$qrTkt = mysqli_fetch_assoc($array);
+			$titulo = $qrTkt['NOM_TEMPLATE'] . ' #' . $qrTkt['COD_TEMPLATE'];
+			$code = fnEncurtador($titulo, '', '', '', 'TKT', $cod_empresa, $connAdm->connAdm(), $qrTkt['COD_TEMPLATE']);
+			$urlEncurtada = "https://tkt.far.br/" . $code . "/";
+		}
+	}
+} else {
+	$qrBuscaLink = mysqli_fetch_assoc($arrayBusca);
+	$urlEncurtada = "https://tkt.far.br/" . short_url_encode($qrBuscaLink['id']) . "/";
 }
 
 ?>

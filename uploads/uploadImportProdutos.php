@@ -14,6 +14,7 @@ if ($_SESSION['SYS_COD_EMPRESA'] == 2) {
 	error_reporting(E_ALL);
 }
 
+$acao = "";
 $cod_empresa = fnLimpaCampoZero($_GET['id']);
 if (isset($_GET['acao'])) $acao = fnLimpaCampo($_GET['acao']);
 $cod_usucada = $_SESSION["SYS_COD_USUARIO"];
@@ -626,6 +627,7 @@ switch ($acao) {
 				AND c.DES_CATEGOR = i.DES_CATEGOR
 				WHERE c.DES_CATEGOR IS NULL
 				AND i.DES_CATEGOR != ''
+				AND i.COD_EMPRESA = $cod_empresa
 				GROUP BY i.DES_CATEGOR;
 
 				UPDATE categoria c
@@ -636,6 +638,7 @@ switch ($acao) {
 				AND c.DES_CATEGOR <> i.DES_CATEGOR
 				AND i.DES_CATEGOR != ''
 				AND i.COD_EXTCAT IS NOT NULL
+				AND i.COD_EMPRESA = $cod_empresa
 				AND i.COD_EXTCAT != ''
 				AND i.COD_EXTCAT != 0;";
 			mysqli_multi_query(connTemp($cod_empresa, ""), trim($sqlCategorias));
@@ -659,6 +662,7 @@ switch ($acao) {
 					AND s.COD_CATEGOR = c.COD_CATEGOR
 					AND s.DES_SUBCATE = i.DES_SUBCATE
 					AND i.DES_SUBCATE != ''
+					AND i.COD_EMPRESA = $cod_empresa
 				)
 				AND i.DES_SUBCATE != ''
 				AND i.COD_EMPRESA = $cod_empresa
@@ -701,7 +705,8 @@ switch ($acao) {
 					AND f.NOM_FORNECEDOR <> i.NOM_FORNECEDOR
 					AND i.COD_EXTFORN != ''
 					AND i.COD_EXTFORN != 0
-					AND i.COD_EXTFORN IS NOT NULL;";
+					AND i.COD_EXTFORN IS NOT NULL
+					AND i.COD_EMPRESA = $cod_empresa;";
 			mysqli_multi_query(connTemp($cod_empresa, ""), trim($sqlFornecedor));
 			// sleep(2);
 
@@ -731,6 +736,7 @@ switch ($acao) {
 					ip.COD_FORNECEDOR = forn.COD_FORNECEDOR
 				WHERE ip.COD_EMPRESA = $cod_empresa;";
 			$result = mysqli_query(connTemp($cod_empresa, ""), $sqlUpdt);
+			fnEscreveArray($result);
 			if (!$result) {
 				// Se houve erro, exibe a mensagem do erro
 				fnEscreve(mysqli_error(connTemp($cod_empresa, "")));

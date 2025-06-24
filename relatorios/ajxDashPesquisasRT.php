@@ -695,7 +695,7 @@ switch ($opcao) {
 								   CL.NUM_CGCECPF,
 								   CL.NUM_CELULAR, 	
 							   	   CL.DES_EMAILUS, 
-								   DPI.COD_UNIVEND, 
+								   DP.COD_UNIVEND, 
 								   DPI.RESPOSTA_TEXTO,
 								   DP.DT_HORAFINAL
 							FROM DADOS_PESQUISA_ITENS DPI

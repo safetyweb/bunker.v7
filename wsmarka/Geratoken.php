@@ -844,6 +844,13 @@ function Geratoken($tipoGeracao, $nome, $cpf, $celular, $email, $dadosLogin)
                             )
                         );
                         $responsetwilo = fnenviosms($array);
+                        /* if ($celular == '48996243831') {
+                            return  array('retornatoken' => array(
+                                'token' => '0',
+                                'msgerro' =>  print_r($responsetwilo),
+                                'coderro' => '95'
+                            ));
+                        }*/
                         //  }
                         /*else{
                                                     
@@ -866,6 +873,7 @@ function Geratoken($tipoGeracao, $nome, $cpf, $celular, $email, $dadosLogin)
 
                         $codinternoParcomu = 22;
                     }
+
                     //enviar a mesma msg via whatsapp
                     if ($rscampanhaSMS['LOG_PROCESSA_WHATSAPP'] == 'S') {
                         include_once '../_system/whatsapp/wstAdorai.php';

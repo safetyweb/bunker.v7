@@ -128,7 +128,8 @@ if ($_REQUEST["idr"] == "") {
                         $cod_univend = $rowCliente['COD_UNIVEND'];
                         $cpf = $rowCliente['NUM_CGCECPF'];
 
-                        $sqlWs = "SELECT LOG_USUARIO,DES_SENHAUS,COD_EMPRESA FROM usuarios  WHERE cod_empresa=" . $row['cod_empresa'] . " AND COD_TPUSUARIO=10 AND log_estatus='S' AND FIND_IN_SET('18', COD_UNIVEND) limit 1";
+                        $sqlWs = "SELECT LOG_USUARIO,DES_SENHAUS,COD_EMPRESA FROM usuarios  WHERE cod_empresa=" . $row['cod_empresa'] . " AND COD_TPUSUARIO=10 AND log_estatus='S' AND FIND_IN_SET('$cod_univend', COD_UNIVEND) limit 1";
+
                         $queryWs = mysqli_query($connadmtemp, $sqlWs);
                         $qrResult = mysqli_fetch_assoc($queryWs);
                         $log_usuario = $qrResult['LOG_USUARIO'];

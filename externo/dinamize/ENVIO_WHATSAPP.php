@@ -1,4 +1,5 @@
 <?php
+exit();
 require '../../_system/_functionsMain.php';
 //require '../../_system/func_nexux/func_nexux.php';
 include '../../_system/whatsapp/wstAdorai.php';

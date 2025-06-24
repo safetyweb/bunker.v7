@@ -2,7 +2,7 @@
 // Caminho para o diretório que contém os arquivos
 include '../../_system/_functionsMain.php';
 // Definindo o intervalo de tempo
-$startTime = date('Y-m-d\TH:i:s\Z', strtotime('-300 hour'));
+$startTime = date('Y-m-d\TH:i:s\Z', strtotime('-1 hour'));
 $endTime = date('Y-m-d\TH:i:s\Z');
 $empresa = "SELECT * FROM empresas emp
              INNER JOIN senhas_parceiro apar ON apar.cod_empresa = emp.COD_EMPRESA

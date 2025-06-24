@@ -562,6 +562,7 @@ $qrConfig = mysqli_fetch_assoc($arrayConfig);
 
 								<?php
 								$sql = "SELECT * FROM CONTROLE_METAS_DESC WHERE COD_EMPRESA = $cod_empresa";
+
 								$arrayQuery = mysqli_query(connTemp($cod_empresa, ""), $sql);
 								$lbl = array();
 								while ($linha = mysqli_fetch_assoc($arrayQuery)) {
@@ -577,6 +578,7 @@ $qrConfig = mysqli_fetch_assoc($arrayConfig);
 										$disp_fideliz = $linha["LOG_STATUS"];
 									}
 								}
+
 								$lbl["VAL_METAPROD"] = (@$lbl["VAL_METAPROD"] <> "" ? $lbl["VAL_METAPROD"] : "ABASTECIMENTOS");
 								$lbl["VAL_METADEST"] = (@$lbl["VAL_METADEST"] <> "" ? $lbl["VAL_METADEST"] : "% ADITIVADA");
 								$lbl["VAL_ALERTMIN"] = (@$lbl["VAL_ALERTMIN"] <> "" ? $lbl["VAL_ALERTMIN"] : "+ 20 LITROS");

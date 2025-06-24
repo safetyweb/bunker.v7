@@ -103,11 +103,12 @@ while ($rsdatabases = mysqli_fetch_assoc($rwdatabases)) {
 
                 // unset($sqlleitura3ARRAY[$key1]); 
                 $SETUPDATE = rtrim($SETUPDATE, ',');
-                $updatevalues = "UPDATE usuarios SET $SETUPDATE  WHERE COD_EMPRESA in ($values[COD_EMPRESA],2,3) and COD_USUARIO=" . $rsunidadevenda_adm[COD_USUARIO];
+                $updatevalues = "UPDATE usuarios SET $SETUPDATE  WHERE COD_EMPRESA in ($values[COD_EMPRESA],2,3) and COD_USUARIO=" . $rsunidadevenda_adm['COD_USUARIO'];
                 //   echo $updatevalues.'<br>';
                 $sqlup = mysqli_query($CONNTEMPERARIA, $updatevalues);
                 if (!$sqlup) {
-                    echo $rsdatabases['COD_EMPRESA'] . '<br>erro : ' . $sqlup . '<br>';
+                    echo $rsdatabases['COD_EMPRESA'] . '<br>erro : ' . $updatevalues . '<br>';
+                    print_r($CONNTEMPERARIA);
                 }
             } else {
                 // Echo '<br>Não tem alterção<br>';

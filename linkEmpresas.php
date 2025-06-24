@@ -137,7 +137,8 @@ if ($val_pesquisa != '') {
 										<!-- <li class="divider"></li> -->
 										<li><a href="#NOM_EMPRESA">Razão social</a></li>
 										<li><a href="#NOM_FANTASI">Nome fantasia</a></li>
-										<li><a href="#NUM_CGCECPF">CNPJ</a></li>
+										<li><a href="#NUM_CGCECPF">CNPJ Empresa</a></li>
+										<li><a href="#NUM_CGCECPFGERAL">CNPJ Geral</a></li>
 										<li><a href="#NOM_SEGMENT">Segmento</a></li>
 										<li><a href="#DES_SISTEMA">Sistema</a></li>
 									</ul>
@@ -218,6 +219,14 @@ if ($val_pesquisa != '') {
 											} else {
 												$andFiltro = "";
 											}
+										} else if ($filtro == "NUM_CGCECPFGERAL") {
+											$andFiltro = "AND (
+														REPLACE(REPLACE(REPLACE(empresas.NUM_CGCECPF, '.', ''), '-', ''), '/', '') LIKE '%" . fnLimpaDoc($val_pesquisa) . "%'
+														OR empresas.COD_EMPRESA IN (
+															SELECT COD_EMPRESA FROM unidadevenda 
+															WHERE REPLACE(REPLACE(REPLACE(NUM_CGCECPF, '.', ''), '-', ''), '/', '') LIKE '%" . fnLimpaDoc($val_pesquisa) . "%'
+														)
+														) ";
 										} else {
 											$andFiltro = " AND $filtro LIKE '%$val_pesquisa%' ";
 										}

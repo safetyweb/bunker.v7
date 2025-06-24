@@ -375,18 +375,26 @@ $mod = fnLimpacampo(fnDecode(@$_GET['mod']));
 										$classeExc = "";
 
 										while ($qrBuscaProdutos = mysqli_fetch_assoc($arrayQuery)) {
+											// fnEscreveArray($qrBuscaProdutos);
 
 											$count++;
 											$tootlip = "";
-											if (@$qrBuscaProdutos['EXCLUIDO'] != 1) {
+											if (@$qrBuscaProdutos['EXCLUIDO'] == 3) {
 												$valorTTotal = $valorTTotal + $qrBuscaProdutos['VAL_TOTPRODU'];
 												$valorTResgate = $valorTResgate + $qrBuscaProdutos['VAL_RESGATE'];
 												$valorResgate = $qrBuscaProdutos['VAL_RESGATE'];
 												$valorTDesconto = $valorTDesconto + $qrBuscaProdutos['VAL_DESCONTO'];
 												$valorTvenda = $valorTvenda + $qrBuscaProdutos['VAL_TOTVENDA'];
 												$classeExc = "";
-											} else {
+											} else if (@$qrBuscaProdutos['EXCLUIDO'] == 1) {
 												$classeExc = "text-danger";
+											} else {
+												$valorTTotal = $valorTTotal + $qrBuscaProdutos['VAL_TOTPRODU'];
+												$valorTResgate = $valorTResgate + $qrBuscaProdutos['VAL_RESGATE'];
+												$valorResgate = $qrBuscaProdutos['VAL_RESGATE'];
+												$valorTDesconto = $valorTDesconto + $qrBuscaProdutos['VAL_DESCONTO'];
+												$valorTvenda = $valorTvenda + $qrBuscaProdutos['VAL_TOTVENDA'];
+												$classeExc = "text-warning";
 											}
 
 											$count++;
@@ -394,11 +402,14 @@ $mod = fnLimpacampo(fnDecode(@$_GET['mod']));
 												$tooltip = 'data-toggle="tooltip" data-placement="top" data-html="true" data-original-title="Extornado em ' . fnDataFull($qrBuscaProdutos['DAT_EXCLUSAO']) . '"';
 												$dat_expira = "";
 											}
-											if ($qrBuscaProdutos['EXCLUIDO'] == 0) {
+											if ($qrBuscaProdutos['EXCLUIDO'] == 3) {
 												$classeExc2 = "";
 												$mostraItemExcluido = "";
-											} else {
+											} else if ($qrBuscaProdutos['EXCLUIDO'] == 1) {
 												$classeExc2 = "text-danger";
+												$mostraItemExcluido = "<i class='fal fa-minus-circle' aria-hidden='true' $tooltip></i>";
+											} else {
+												$classeExc2 = "text-warning";
 												$mostraItemExcluido = "<i class='fal fa-minus-circle' aria-hidden='true' $tooltip></i>";
 											}
 

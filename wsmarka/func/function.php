@@ -908,7 +908,7 @@ fngravalogMSG($arrayDados['connadm'],$arrayDados['login'],$arrayDados['cod_empre
                 // exibi itens na lista de ws    
                 while ($rwtkt = mysqli_fetch_assoc($tktexec)) {
                     if ($rwtkt['DES_IMAGEM'] != "") {
-                        $IMG1 = "http://img.bunker.mk/media/clientes/$cod_empresa/produtos/" . $rwtkt['DES_IMAGEM'] . "";
+                        $IMG1 = "https://img.bunker.mk/media/clientes/$cod_empresa/produtos/" . $rwtkt['DES_IMAGEM'] . "";
                     }
 
                     $cod_tkt .= $rwtkt['COD_PRODUTO'] . ',';
@@ -975,7 +975,7 @@ fngravalogMSG($arrayDados['connadm'],$arrayDados['login'],$arrayDados['cod_empre
                 // exibi itens na lista de ws    
                 while ($rwdesc = mysqli_fetch_assoc($descexec)) {
                     if ($rwdesc['DES_IMAGEM'] != "") {
-                        $IMG2 = "http://img.bunker.mk/media/clientes/$cod_empresa/produtos/" . $rwdesc['DES_IMAGEM'] . "";
+                        $IMG2 = "https://img.bunker.mk/media/clientes/$cod_empresa/produtos/" . $rwdesc['DES_IMAGEM'] . "";
                     }
                     $cod_oferta .= $rwdesc['COD_PRODUTO'] . ',';
                     $ofertapromocao[] = array(
@@ -1963,7 +1963,7 @@ function fnreturn($array)
                         $acaoRetorno .= $ResultFase['KEY_ACAOINT'] . ',';
 
                         $acao2 = array(
-                            'url_ticketdeofertas' => 'http://ticket.fidelidade.mk/?tkt=' . $id,
+                            'url_ticketdeofertas' => 'https://ticket.fidelidade.mk/?tkt=' . $id,
                             'urltotem' => "https://totem.bunker.mk/consulta_V2.do?key=$urltotem&r=" . date("Ymdhis") . round(microtime(true) * 1000),
                             'regrapreco' => $regrapreco,
                             'ofertasHabito' => array('produtoHabito' => $fngeratkt['produtoHabito']),
@@ -2024,7 +2024,7 @@ function fnreturn($array)
                 $msgr = 'acao_C_campanha!';
                 fngravalogMSG($array['conn'], $array['login'], $array['empresa'], $array['cpf'], $array['idloja'], $array['idmaquina'], $array['codvendedor'], $array['nomevendedor'], $array['pagina'], $msgr, $array['LOG_WS']);
                 if ($DES_DOMINIO != "") {
-                    $site = "http://$DES_DOMINIO.fidelidade.mk/";
+                    $site = "https://$DES_DOMINIO.fidelidade.mk/";
                     $msg = "Modelo Padrão de hot site";
                     $cod = '59';
                     $xamls = addslashes($msg);
@@ -2175,7 +2175,7 @@ function fnreturn($array)
 
                             $cod_empresa = $array['empresa'];
                             if ($sqlretorno['DES_IMAGEM'] != "") {
-                                $IMG = "http://img.bunker.mk/media/clientes/$cod_empresa/produtos/" . $sqlretorno['DES_IMAGEM'] . "";
+                                $IMG = "https://img.bunker.mk/media/clientes/$cod_empresa/produtos/" . $sqlretorno['DES_IMAGEM'] . "";
                             }
                             $msg = 'OK';
 

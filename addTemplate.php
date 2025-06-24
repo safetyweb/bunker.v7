@@ -124,8 +124,11 @@ if (is_numeric(fnLimpacampo(fnDecode($_GET['idT'])))) {
 	$des_msgerro = "";
 }
 
-$sqlBusca = "SELECT * FROM tab_encurtador WHERE COD_EMPRESA = $cod_empresa AND tip_url = 'TKT'";
-$arrayBusca = mysqli_query($adm, $sqlBusca);
+
+// BUSCA LINK ENCURTADO
+$urlEncurtada = '';
+$sqlBusca = "SELECT * FROM TAB_ENCURTADOR WHERE COD_EMPRESA = $cod_empresa AND TIP_URL = 'TKT'";
+$arrayBusca = mysqli_query($connAdm->connAdm(), $sqlBusca);
 if (mysqli_num_rows($arrayBusca) == 0) {
 	$sql = "SELECT COD_TEMPLATE, NOM_TEMPLATE FROM TEMPLATE WHERE COD_EMPRESA = $cod_empresa AND LOG_ATIVO = 'S' LIMIT 1";
 	$array = mysqli_query($conn, $sql);
@@ -135,19 +138,13 @@ if (mysqli_num_rows($arrayBusca) == 0) {
 		if (mysqli_num_rows($arrayProd) > 0) {
 			$qrTkt = mysqli_fetch_assoc($array);
 			$titulo = $qrTkt['NOM_TEMPLATE'] . ' #' . $qrTkt['COD_TEMPLATE'];
-			fnEncurtador($titulo, '', '', '', 'TKT', $cod_empresa, $connAdm->connAdm(), $qrTkt['COD_TEMPLATE']);
+			$code = fnEncurtador($titulo, '', '', '', 'TKT', $cod_empresa, $connAdm->connAdm(), $qrTkt['COD_TEMPLATE']);
+			$urlEncurtada = "https://tkt.far.br/" . $code . "/";
 		}
 	}
-}
-
-// BUSCA LINK ENCURTADO
-$urlEncurtada = '';
-$sql = "SELECT * FROM TAB_ENCURTADOR WHERE COD_EMPRESA = " . $cod_empresa . " AND TIP_URL = 'TKT'";
-// fnEscreve($sql);
-$arrayQuery = mysqli_query($connAdm->connAdm(), $sql);
-if (mysqli_num_rows($arrayQuery) > 0) {
-	$qrBuscaLink = mysqli_fetch_assoc($arrayQuery);
-	$urlEncurtada = "tkt.far.br/" . short_url_encode($qrBuscaLink['id']);
+} else {
+	$qrBuscaLink = mysqli_fetch_assoc($arrayBusca);
+	$urlEncurtada = "https://tkt.far.br/" . short_url_encode($qrBuscaLink['id']) . "/";
 }
 
 ?>
@@ -283,36 +280,45 @@ if (mysqli_num_rows($arrayQuery) > 0) {
 								<?php if ($urlEncurtada != '') { ?>
 
 									<div class="col-md-2">
-										<button type="button" class="btn btn-default" id="btnPesquisa" <?= $disableBtn ?>><i class="fas fa-copy" aria-hidden="true"></i>&nbsp; Copiar Link</button>
-										<script type="text/javascript">
-											$("#btnPesquisa").click(function() {
-												if (navigator.userAgent.match(/ipad|ipod|iphone/i)) {
-													var el = $("#linkPesquisa").get(0);
-													var editable = el.contentEditable;
-													var readOnly = el.readOnly;
-													el.contentEditable = true;
-													el.readOnly = false;
-													var range = document.createRange();
-													range.selectNodeContents(el);
-													var sel = window.getSelection();
-													sel.removeAllRanges();
-													sel.addRange(range);
-													el.setSelectionRange(0, 999999);
-													el.contentEditable = editable;
-													el.readOnly = readOnly;
-												} else {
-													$("#linkPesquisa").select();
-												}
-												document.execCommand('copy');
-												$("#linkPesquisa").blur();
+										<button type="button" class="btn btn-default" id="btnPesquisa" <?= $disableBtn ?>>
+											<i class="fas fa-copy" aria-hidden="true"></i>&nbsp; Copiar Link
+										</button>
+
+										<input type="hidden" id="linkPesquisa" value="<?= $urlEncurtada ?>">
+									</div>
+
+									<script type="text/javascript">
+										$("#btnPesquisa").click(function() {
+											var link = $("#linkPesquisa").val();
+
+											if (navigator.clipboard) {
+												navigator.clipboard.writeText(link)
+													.then(function() {
+														$("#btnPesquisa").text("Link Copiado");
+														setTimeout(function() {
+															$("#btnPesquisa").html("<i class='fas fa-copy' aria-hidden='true'></i>&nbsp; Copiar Link");
+														}, 2000);
+													})
+													.catch(function(err) {
+														console.error("Falha ao copiar: ", err);
+													});
+											} else {
+												// fallback para browsers antigos
+												var tempInput = document.createElement("textarea");
+												tempInput.value = link;
+												document.body.appendChild(tempInput);
+												tempInput.select();
+												document.execCommand("copy");
+												document.body.removeChild(tempInput);
+
 												$("#btnPesquisa").text("Link Copiado");
 												setTimeout(function() {
 													$("#btnPesquisa").html("<i class='fas fa-copy' aria-hidden='true'></i>&nbsp; Copiar Link");
 												}, 2000);
-											});
-										</script>
-										<input type="hidden" id="linkPesquisa" class="form-control input-md pull-right text-center" value='<?= $urlEncurtada ?>' readonly>
-									</div>
+											}
+										});
+									</script>
+
 								<?php } ?>
 
 								<div class="col-md-12">

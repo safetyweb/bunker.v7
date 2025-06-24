@@ -21,6 +21,7 @@ $conadmmysql = $connAdm->connAdm();
 $sqlempresa = "SELECT e.COD_EMPRESA,e.NOM_FANTASI,e.COD_SISTEMAS,e.COD_SEGMENT FROM empresas e 
                 INNER JOIN tab_database t ON t.cod_empresa=e.COD_EMPRESA
                 WHERE e.log_ativo='S' $empresa";
+
 $rwempresa = mysqli_query($conadmmysql, $sqlempresa);
 while ($rsempresa = mysqli_fetch_assoc($rwempresa)) {
 

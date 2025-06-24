@@ -1,5 +1,13 @@
 <?php
 
+// if ($_SESSION['SYS_COD_EMPRESA'] == 2) {
+// 	echo fnDebug('true');
+// 	ini_set('display_errors', 1);
+// 	ini_set('display_startup_errors', 1);
+// 	error_reporting(E_ALL);
+// 	fnEscreve("Debug Ativado");
+// }
+
 // definir o numero de itens por pagina
 $itens_por_pagina = 50;
 $pagina  = "1";

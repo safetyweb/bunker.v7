@@ -637,7 +637,9 @@ $comboTexto = array(
 				COLUNA: coluna,
 				STATUS: status
 			},
-			success: function(data) {},
+			success: function(data) {
+				console.log(data);
+			},
 			error: function(XMLHttpRequest, textStatus, errorThrown) {
 				alert("Ocorreu um erro. Tente novamente mais tarde.");
 			}

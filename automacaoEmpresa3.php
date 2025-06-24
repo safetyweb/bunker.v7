@@ -223,23 +223,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 					///FIM INSERE CLIENTE
 
 					/// INSERE CLIENTE AVULSO
-					$sqlBusca = "SELECT COD_CLIENTE_AV FROM EMPRESAS WHERE COD_EMPRESA = $cod_empresa";
-					$arrayQuery = mysqli_query($connAdm->connAdm(), $sqlBusca);
-					if (mysqli_num_rows($arrayQuery) == 0) {
-						$sql = "CALL SP_CADASTRA_CLIENTE_AVULSO (
+					$sql = "CALL SP_CADASTRA_CLIENTE_AVULSO (
 								'" . $cod_empresa . "', 
 								'S'   
 								) ";
 
-						//fnEscreve($sql);														
-						$arrayQuery = mysqli_query(connTemp($cod_empresa, ''), $sql);
-						$qrBuscaClienteAvulso = mysqli_fetch_assoc($arrayQuery);
+					//fnEscreve($sql);														
+					$arrayQuery = mysqli_query(connTemp($cod_empresa, ''), $sql);
+					$qrBuscaClienteAvulso = mysqli_fetch_assoc($arrayQuery);
 
-						$cod_avulso = $qrBuscaClienteAvulso['COD_CLIENTE'];
+					$cod_avulso = $qrBuscaClienteAvulso['COD_CLIENTE'];
 
-						$sql2 = "UPDATE EMPRESAS SET COD_CLIENTE_AV = $cod_avulso WHERE COD_EMPRESA = $cod_empresa ";
-						$arrayQuery2 = mysqli_query($connAdm->connAdm(), $sql2);
-					}
+					$sql2 = "UPDATE EMPRESAS SET COD_CLIENTE_AV = $cod_avulso WHERE COD_EMPRESA = $cod_empresa ";
+					$arrayQuery2 = mysqli_query($connAdm->connAdm(), $sql2);
 
 
 					/// FIM INSERE CLIENTE AVULSO
