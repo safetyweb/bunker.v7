@@ -133,7 +133,7 @@ switch ($opcao) {
 		$sql = "CALL LISTA_COMPRA('$cod_cliente', '$cod_empresa', '$itens_carregar_mais', '15')";
 
 		//fnEscreve(fnDecode("7T3jekr0Xfk¢"));
-		fnEscreve($sql);
+		// fnEscreve($sql);
 		$arrayQuery = mysqli_query(connTemp($cod_empresa, ''), $sql);
 
 		$count = 0;
