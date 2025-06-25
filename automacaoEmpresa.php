@@ -26,6 +26,8 @@ $log_pontuar = 'N';
 $log_negativo = 'N';
 $nom_respons = "";
 $num_telefon = "";
+$desa_maiscash = "";
+$check_maiscash = "";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$request = md5(serialize($_POST));
