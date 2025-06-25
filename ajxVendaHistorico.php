@@ -146,24 +146,34 @@ switch ($opcao) {
 
 		while ($qrBuscaProdutos = mysqli_fetch_assoc($arrayQuery)) {
 			$count++;
-			if ($qrBuscaProdutos['EXCLUIDO'] != 1) {
+			if (@$qrBuscaProdutos['EXCLUIDO'] == 3) {
 				$valorTTotal = $valorTTotal + $qrBuscaProdutos['VAL_TOTPRODU'];
 				$valorTResgate = $valorTResgate + $qrBuscaProdutos['VAL_RESGATE'];
 				$valorResgate = $qrBuscaProdutos['VAL_RESGATE'];
 				$valorTDesconto = $valorTDesconto + $qrBuscaProdutos['VAL_DESCONTO'];
 				$valorTvenda = $valorTvenda + $qrBuscaProdutos['VAL_TOTVENDA'];
 				$classeExc = "";
-			} else {
+			} else if (@$qrBuscaProdutos['EXCLUIDO'] == 1) {
 				$classeExc = "text-danger";
+			} else {
+				$valorTTotal = $valorTTotal + $qrBuscaProdutos['VAL_TOTPRODU'];
+				$valorTResgate = $valorTResgate + $qrBuscaProdutos['VAL_RESGATE'];
+				$valorResgate = $qrBuscaProdutos['VAL_RESGATE'];
+				$valorTDesconto = $valorTDesconto + $qrBuscaProdutos['VAL_DESCONTO'];
+				$valorTvenda = $valorTvenda + $qrBuscaProdutos['VAL_TOTVENDA'];
+				$classeExc = "text-warning";
 			}
 
 			$count++;
-			if ($qrBuscaProdutos['EXCLUIDO'] == 0) {
+			if ($qrBuscaProdutos['EXCLUIDO'] == 3) {
 				$classeExc2 = "";
 				$mostraItemExcluido = "";
-			} else {
+			} else if ($qrBuscaProdutos['EXCLUIDO'] == 1) {
 				$classeExc2 = "text-danger";
-				$mostraItemExcluido = "<i class='fal fa-minus-circle' aria-hidden='true'></i>";
+				$mostraItemExcluido = "<i class='fal fa-minus-circle' aria-hidden='true' $tooltip></i>";
+			} else {
+				$classeExc2 = "text-warning";
+				$mostraItemExcluido = "<i class='fal fa-minus-circle' aria-hidden='true' $tooltip></i>";
 			}
 
 
