@@ -1,5 +1,5 @@
 <?php
-if ($_SESSION['SYS_COD_USUARIO'] == 127937) {
+if ($_SESSION['SYS_COD_EMPRESA'] == 2) {
 	echo fnDebug('true');
 	ini_set('display_errors', 1);
 	ini_set('display_startup_errors', 1);

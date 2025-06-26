@@ -6,9 +6,10 @@ $val_minresg = 0;
 $val_maxresg_pct = 0;
 $ro_min = "";
 $ro_max = "";
+$cod_mailusu = "";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	$request = md5(implode($_POST));
+	$request = md5(serialize($_POST));
 
 	if (isset($_SESSION['last_request']) && $_SESSION['last_request'] == $request) {
 		$msgRetorno = 'Essa página já foi utilizada';

@@ -1,7 +1,7 @@
 <?php
- ini_set('display_errors', 1);
-        ini_set('display_startup_errors', 1);
-        error_reporting(E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 //echo ini_get('mysqli.allow_persistent');
 session_cache_expire(300);
@@ -87,8 +87,8 @@ function fnEncode($str)
     $data = $str . $padding;
     $key = make_openssl_blowfish_key('123456');
     $encrypted = openssl_encrypt($data, 'BF-ECB', $key, OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING);
-     if ($encrypted === false) {
-         echo "Erro na criptografia: " . openssl_error_string();
+    if ($encrypted === false) {
+        echo "Erro na criptografia: " . openssl_error_string();
     }
 
     $encrypted = utf8_decode(base64_encode($encrypted));
@@ -784,7 +784,7 @@ function fnCompletaDoc($cpfcnpj, $tipo)
 
 function recursive_array_search($needle, $haystack)
 {
-    if(!empty($haystack)){
+    if (!empty($haystack)) {
         foreach ($haystack as $key => $value) {
             $current_key = $key;
             if ($needle === $value or (is_array($value) && recursive_array_search($needle, $value) !== false)) {
@@ -2388,7 +2388,7 @@ function fnScan($arquivo)
             }
         }
     }
-    
+
     return array(
         'RESULTADO' => -1,
         'MSG' => 'Erro na conexão com Antivirus'
@@ -3344,6 +3344,178 @@ function fnBase64DecodeImg($mensagem_codificada, $chave = '0123456789abcdef01234
     } else {
         return $mensagem_codificada;
     }
+}
+
+function short_array()
+{
+    return array(
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "I",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "O",
+        "P",
+        "Q",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "i",
+        "j",
+        "k",
+        "l",
+        "m",
+        "n",
+        "o",
+        "p",
+        "q",
+        "r",
+        "s",
+        "t",
+        "u",
+        "v",
+        "w",
+        "x",
+        "y",
+        "z",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+    );
+}
+
+function short_delimiter()
+{
+    return "0";
+}
+
+
+function short_url_encode($str)
+{
+    function short_encode($str)
+    {
+        $arr = short_array();
+        $max = sizeof($arr);
+        $ret = "";
+        $n = round(preg_replace("/[^0-9]/", "", $str));
+        $ret = ($n < $max ? $arr[$n] : short_encode(floor($n / $max)) . $arr[($n % $max)]);
+        return $ret;
+    }
+
+    $d = short_delimiter();
+    $str = preg_replace("/[^0-9]/", "-", $str);
+    $ret = "";
+    $e = explode("-", $str);
+    foreach ($e as $k => $n) {
+        $ret .= ($k > 0 ? $d : "") . short_encode($n);
+    }
+    return $ret;
+}
+
+function short_url_decode($str)
+{
+    function short_decode($str)
+    {
+        $arr = short_array();
+        $max = sizeof($arr);
+        $ret = 0;
+        $n = $str;
+
+        $c = str_split($n);
+        $c = array_reverse($c);
+        foreach ($c as $k => $ch) {
+            $ret += ((pow($max, $k)) * array_search($ch, $arr));
+        }
+        return $ret;
+    }
+
+    $d = short_delimiter();
+    $ret = "";
+    $e = explode($d, $str);
+    foreach ($e as $k => $n) {
+        $ret .= ($k > 0 ? "-" : "") . short_decode($n);
+    }
+    return $ret;
+}
+
+function fnEncurtador($titulo = "", $chave_encurtada = "", $url_encurtada = "", $url_Original = "", $tip_url = "", $cod_empresa, $connAdm, $cod_campanha = 0)
+{
+
+    $sql = "INSERT INTO TAB_ENCURTADOR (
+                TITULO,
+	 			CHAVE_ENCURTADA,
+				URL_ENCURTADA,
+				URL_ORIGINAL,
+				TIP_URL,
+				COD_EMPRESA,
+                COD_CAMPANHA,
+				DAT_CADASTR,
+				COD_CADASTR
+				) VALUES (
+                '$titulo',
+				'$chave_encurtada', 
+				'$url_encurtada', 
+				'$url_Original', 
+				'$tip_url', 
+				$cod_empresa,
+                $cod_campanha,
+				NOW(), 
+				$_SESSION[SYS_COD_USUARIO]
+				)";
+    $query = mysqli_query($connAdm, $sql);
+
+    if ($query) {
+        $ultimo_id = mysqli_insert_id($connAdm);
+        $id_encode = short_url_encode($ultimo_id);
+        $url_encurtada = 'https://tkt.far.br/' . $id_encode . '/';
+        $sql = "UPDATE TAB_ENCURTADOR SET
+                CHAVE_ENCURTADA = '$id_encode',
+                URL_ENCURTADA = '$url_encurtada'
+                WHERE id = $ultimo_id";
+        mysqli_query($connAdm, $sql);
+
+        return $id_encode;
+    } else {
+        return false;
+    }
+}
+
+function fnAltEncurtador($titulo = "", $id = 0, $cod_empresa, $connAdm, $linkOriginal)
+{
+    $sql = "UPDATE TAB_ENCURTADOR SET
+            titulo = '$titulo',
+            url_original = '$linkOriginal'
+            WHERE cod_empresa = $cod_empresa AND id = $id";
+    mysqli_query($connAdm, $sql);
 }
 
 
