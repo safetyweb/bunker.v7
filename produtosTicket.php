@@ -108,6 +108,7 @@ $valores = "";
 $iconePersona = "";
 $obj = "";
 $log_destaque = "";
+$disableBtn = "";
 
 
 $hashLocal = mt_rand();
