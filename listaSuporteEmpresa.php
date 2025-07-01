@@ -432,7 +432,7 @@ include "unidadesAutorizadas.php";
 												$selectSolicitante = "('') AS NOM_SOLICITANTE";
 											}
 
-											if ($qrSac['COD_USURES'] != '') {
+											if (isset($qrSac['COD_USURES']) && $qrSac['COD_USURES'] != '') {
 												$selectRespons = "(SELECT NOM_USUARIO FROM USUARIOS WHERE COD_USUARIO = $qrSac[COD_USURES]) AS NOM_RESPONSAVEL";
 											} else {
 												$selectRespons = "('') AS NOM_RESPONSAVEL";
