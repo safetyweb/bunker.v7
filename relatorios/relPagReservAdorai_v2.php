@@ -1,4 +1,60 @@
 <?php
+if ($_SESSION['SYS_COD_USUARIO'] == 127937) {
+    echo fnDebug('true');
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+}
+$hashLocal = "";
+$hoje = "";
+$dias30 = "";
+$des_owner = "";
+$msgRetorno = "";
+$msgTipo = "";
+$dat_ini = "";
+$dat_fim = "";
+$cod_propriedade = "";
+$tip_credito = "";
+$cod_chale = "";
+$opcao = "";
+$hHabilitado = "";
+$hashForm = "";
+$arrayQuery = [];
+$qrBuscaEmpresa = "";
+$nom_empresa = "";
+$lojasSelecionadas = "";
+$sqlPropriedades = "";
+$query = "";
+$vlPropriedades = "";
+$qrResult = "";
+$sqlHotel = "";
+$arrayHotel = [];
+$qrHotel = "";
+$sqlTip = "";
+$arrayTip = [];
+$qrTip = "";
+$and_propriedade = "";
+$and_chale = "";
+$andTip = "";
+$andTipCred = "";
+$andowner = "";
+$andOwn = "";
+$val_creditos = "";
+$val_debitos = "";
+$qrListaVendas = "";
+$exibe_valdebitos = "";
+$exibe_valcreditos = "";
+$tdDropMenu = "";
+$chkConciliado = "";
+$qrLista = "";
+$nomBanco = "";
+$propriedade = "";
+$vl = "";
+$countFooter = "";
+$tipo = "";
+$vl2 = "";
+$content = "";
+
 
 //echo fnDebug('true');
 
@@ -17,7 +73,7 @@ $dias30 = fnFormatDate(date('Y-m-01'));
 $des_owner = "9999";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $request = md5(implode($_POST));
+    $request = md5(serialize($_POST));
 
     if (isset($_SESSION['last_request']) && $_SESSION['last_request'] == $request) {
         $msgRetorno = 'Essa página já foi utilizada';
@@ -25,27 +81,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         $_SESSION['last_request']  = $request;
 
-        $cod_empresa = fnLimpaCampoZero($_POST['COD_EMPRESA']);
-        $dat_ini = fnDataSql($_POST['DAT_INI']);
-        $dat_fim = fnDataSql($_POST['DAT_FIM']);
-        $cod_propriedade = fnLimpaCampo($_POST['COD_PROPRIEDADE']);
-        $tip_credito = fnLimpaCampo($_POST['TIP_CREDITO']);
-        $cod_chale = fnLimpaCampo($_POST['COD_CHALE']);
-        $des_owner = fnLimpaCampo($_REQUEST['DES_OWNER']);
+        $cod_empresa = fnLimpaCampoZero(@$_POST['COD_EMPRESA']);
+        $dat_ini = fnDataSql(@$_POST['DAT_INI']);
+        $dat_fim = fnDataSql(@$_POST['DAT_FIM']);
+        $cod_propriedade = fnLimpaCampo(@$_POST['COD_PROPRIEDADE']);
+        $tip_credito = fnLimpaCampo(@$_POST['TIP_CREDITO']);
+        $cod_chale = fnLimpaCampo(@$_POST['COD_CHALE']);
+        $des_owner = fnLimpaCampo(@$_REQUEST['DES_OWNER']);
 
-        $opcao = $_REQUEST['opcao'];
-        $hHabilitado = $_REQUEST['hHabilitado'];
-        $hashForm = $_REQUEST['hashForm'];
+        $opcao = @$_REQUEST['opcao'];
+        $hHabilitado = @$_REQUEST['hHabilitado'];
+        $hashForm = @$_REQUEST['hashForm'];
 
-        if ($opcao != '') {
+        if ($opcao != '' && $opcao != 0) {
         }
     }
 }
 
 //busca dados url
-if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
+if (is_numeric(fnLimpacampo(fnDecode(@$_GET['id'])))) {
     //busca dados da empresa
-    $cod_empresa = fnDecode($_GET['id']);
+    $cod_empresa = fnDecode(@$_GET['id']);
     $sql = "SELECT COD_EMPRESA, NOM_FANTASI, COD_CLIENTE_AV, TIP_RETORNO FROM empresas where COD_EMPRESA = '" . $cod_empresa . "' ";
     //fnEscreve($sql);
     $arrayQuery = mysqli_query($connAdm->connAdm(), $sql);
@@ -294,13 +350,13 @@ while ($qrResult = mysqli_fetch_assoc($query)) {
                                     } else {
                                         $and_propriedade = "AND UNV.COD_EXTERNO = $cod_propriedade";
                                     }
-                                    if ($cod_chale != "") {
+                                    if ($cod_chale != '' && $cod_chale != 0) {
                                         $and_chale = "AND AC.COD_EXTERNO = $cod_chale";
                                     } else {
                                         $and_chale = " ";
                                     }
 
-                                    if ($tip_credito != "") {
+                                    if ($tip_credito != '' && $tip_credito != 0) {
                                         $andTip = "AND cx.COD_TIPO = $tip_credito";
                                         $andTipCred = "AND TC.COD_TIPO = $tip_credito";
                                     } else {
