@@ -6,13 +6,10 @@ if ($_SESSION['SYS_COD_USUARIO'] == 127937) {
 	error_reporting(E_ALL);
 }
 $opcao = "";
-$hotel = "";
-$log_diaria = "";
-$num_adultos = "";
-$num_criancas = "";
-$cod_hotel = "";
-$num_pessoas = "";
-$filtro_data = "";
+$num_adultos = 2;
+$num_criancas = 0;
+$cod_hotel = "2957,3010,3008,956";
+$num_pessoas = 0;
 $ontem = "";
 $dat_ini = "";
 $dat_fim = "";
@@ -51,7 +48,7 @@ $and_chale = "";
 $andDat = "";
 $sql2 = "";
 $retorno = "";
-$totalitens_por_pagina = 0;
+$totalitens_por_pagina = 50;
 $inicio = "";
 $andStatusPag = "";
 $andFormaPag = "";
