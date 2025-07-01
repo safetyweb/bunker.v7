@@ -1,4 +1,60 @@
 <?php
+if ($_SESSION['SYS_COD_USUARIO'] == 127937) {
+	echo fnDebug('true');
+	ini_set('display_errors', 1);
+	ini_set('display_startup_errors', 1);
+	error_reporting(E_ALL);
+}
+$opcao = "";
+$hotel = "";
+$log_diaria = "";
+$num_adultos = "";
+$num_criancas = "";
+$cod_hotel = "";
+$num_pessoas = "";
+$hoje = "";
+$ontem = "";
+$hashLocal = "";
+$msgRetorno = "";
+$msgTipo = "";
+$valorpag = "";
+$cod_propriedade = "";
+$cod_chale = "";
+$cod_formapag = "";
+$dat_ini = "";
+$dat_fim = "";
+$filtro_status = "";
+$id_reserva = "";
+$nom_usuario = "";
+$actual_link = "";
+$MODULO = "";
+$COD_MODULO = "";
+$hHabilitado = "";
+$hashForm = "";
+$arrayQuery = [];
+$qrBuscaEmpresa = "";
+$nom_empresa = "";
+$formBack = "";
+$abaAdorai = "";
+$abaManutencaoAdorai = "";
+$abaUsuario = "";
+$sqlHotel = "";
+$arrayHotel = [];
+$qrHotel = "";
+$qrStatuspag = "";
+$andreserva = "";
+$andData = "";
+$andTip = "";
+$and_propriedade = "";
+$and_chale = "";
+$sqlParcelas = "";
+$arrParcelas = "";
+$num_parcelas = "";
+$qrBusca = "";
+$status = "";
+$dat_comp = "";
+$dat_alterac = "";
+
 
 //echo "<h5>_".$opcao."</h5>";
 
@@ -11,50 +67,49 @@ $num_pessoas = 0;
 
 //inicialização de variáveis
 $hoje = fnFormatDate(date("Y-m-d"));
-$ontem = fnFormatDate(date('Y-m-d', strtotime($ontem. '-1 days')));
+$ontem = fnFormatDate(date('Y-m-d', strtotime($ontem . '-1 days')));
 
 $hashLocal = mt_rand();
 $adm = $connAdm->connAdm();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	$request = md5(implode($_POST));
+	$request = md5(serialize($_POST));
 
 	if (isset($_SESSION['last_request']) && $_SESSION['last_request'] == $request) {
 		$msgRetorno = 'Essa página já foi utilizada';
 		$msgTipo = 'alert-warning';
 	} else {
 		$_SESSION['last_request']  = $request;
-		
-		
-		$valorpag = fnLimpaCampo($_REQUEST['VALOR']);
-		$cod_empresa = fnLimpaCampo($_POST['COD_EMPRESA']);
-		$cod_propriedade = fnLimpaCampo($_POST['COD_PROPRIEDADE']);
-		$cod_chale = fnLimpaCampo($_POST['COD_CHALE']);
-		$cod_formapag = fnLimpaCampo($_POST['COD_FORMAPAG']);
-		$dat_ini = fnDataSql($_POST['DAT_INI']);
-		$dat_fim = fnDataSql($_POST['DAT_FIM']);
-		$filtro_status = fnLimpaCampo($_POST['FILTRO_STATUS']);
-		$id_reserva = fnLimpacampoZero($_REQUEST['ID_RESERVA']);
+
+
+		$valorpag = fnLimpaCampo(@$_REQUEST['VALOR']);
+		$cod_empresa = fnLimpaCampo(@$_POST['COD_EMPRESA']);
+		$cod_propriedade = fnLimpaCampo(@$_POST['COD_PROPRIEDADE']);
+		$cod_chale = fnLimpaCampo(@$_POST['COD_CHALE']);
+		$cod_formapag = fnLimpaCampo(@$_POST['COD_FORMAPAG']);
+		$dat_ini = fnDataSql(@$_POST['DAT_INI']);
+		$dat_fim = fnDataSql(@$_POST['DAT_FIM']);
+		$filtro_status = fnLimpaCampo(@$_POST['FILTRO_STATUS']);
+		$id_reserva = fnLimpacampoZero(@$_REQUEST['ID_RESERVA']);
 
 		// fnEscreve($cod_hotel);
 
 		$nom_usuario = $_SESSION["SYS_NOM_USUARIO"];
 		$actual_link = "$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-		$MODULO = $_GET['mod'];
-		$COD_MODULO = fndecode($_GET['mod']);
+		$MODULO = @$_GET['mod'];
+		$COD_MODULO = fndecode(@$_GET['mod']);
 
-		$opcao = $_REQUEST['opcao'];
-		$hHabilitado = $_REQUEST['hHabilitado'];
-		$hashForm = $_REQUEST['hashForm'];
-
+		$opcao = @$_REQUEST['opcao'];
+		$hHabilitado = @$_REQUEST['hHabilitado'];
+		$hashForm = @$_REQUEST['hashForm'];
 	}
 }
 
 
 //busca dados da url	
-if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
+if (is_numeric(fnLimpacampo(fnDecode(@$_GET['id'])))) {
 	//busca dados da empresa
-	$cod_empresa = fnDecode($_GET['id']);
+	$cod_empresa = fnDecode(@$_GET['id']);
 	$sql = "SELECT COD_EMPRESA, NOM_FANTASI FROM empresas where COD_EMPRESA = '" . $cod_empresa . "' ";
 	//fnEscreve($sql);
 	$arrayQuery = mysqli_query($adm, $sql);
@@ -76,11 +131,11 @@ if (strlen($dat_ini) == 0 || $dat_ini == "1969-12-31") {
 }
 if (strlen($dat_fim) == 0 || $dat_fim == "1969-12-31") {
 
-	$dat_fim = fnDataSql($hoje );
+	$dat_fim = fnDataSql($hoje);
 }
 
 
-$conn = conntemp($cod_empresa,"");
+$conn = conntemp($cod_empresa, "");
 
 
 ?>
@@ -89,12 +144,13 @@ $conn = conntemp($cod_empresa,"");
 	.hiddenRow {
 		padding: 0 !important;
 	}
-	tr{
-		border-bottom: none!important;
+
+	tr {
+		border-bottom: none !important;
 	}
-	#blocker
-	{
-		display:none; 
+
+	#blocker {
+		display: none;
 		position: fixed;
 		top: 0;
 		left: 0;
@@ -105,8 +161,7 @@ $conn = conntemp($cod_empresa,"");
 		z-index: 1000;
 	}
 
-	#blocker div
-	{
+	#blocker div {
 		position: absolute;
 		top: 30%;
 		left: 48%;
@@ -118,7 +173,7 @@ $conn = conntemp($cod_empresa,"");
 	}
 
 	/*Menu DropDown*/
-	.menu{
+	.menu {
 		top: 0 !important;
 		left: -100px !important;
 		width: 100px !important;
@@ -128,25 +183,27 @@ $conn = conntemp($cod_empresa,"");
 
 
 
-	.menu li a{
-		color: #3c3c3c!important;
+	.menu li a {
+		color: #3c3c3c !important;
 	}
 
 
 
-	.menu-down-right,.menu-down-left,.menu.menu--right{
-		transform-origin: top left !important;	
+	.menu-down-right,
+	.menu-down-left,
+	.menu.menu--right {
+		transform-origin: top left !important;
 	}
-	
-	@media screen and (max-width:778px){
-		.dropleft ul{
+
+	@media screen and (max-width:778px) {
+		.dropleft ul {
 			right: inherit !important;
 		}
 	}
 </style>
 
 <div id="blocker">
-	<div style="text-align: center;"><img src="images/loading2.gif"><br/> Aguarde. Processando... ;-)</div>
+	<div style="text-align: center;"><img src="images/loading2.gif"><br /> Aguarde. Processando... ;-)</div>
 </div>
 
 <div class="push30"></div>
@@ -177,14 +234,14 @@ $conn = conntemp($cod_empresa,"");
 					</div>
 				<?php } ?>
 
-				<?php 
+				<?php
 				$abaAdorai = 2006;
-				include "abasAdorai.php"; 
+				include "abasAdorai.php";
 
 				$abaManutencaoAdorai = 2019;
-					//echo $abaUsuario;
+				//echo $abaUsuario;
 
-					//se não for sistema de campanhas
+				//se não for sistema de campanhas
 
 				echo ('<div class="push20"></div>');
 				include "abasSistemaAdorai.php";
@@ -197,23 +254,23 @@ $conn = conntemp($cod_empresa,"");
 					<form data-toggle="validator" role="form2" method="post" id="formulario" action="<?php echo $cmdPage; ?>">
 
 						<fieldset>
-							<legend>Filtros</legend> 
+							<legend>Filtros</legend>
 
 							<div class="row">
 
 								<div class="col-xs-4">
 									<div class="form-group">
 										<label for="inputName" class="control-label ">Propriedades</label>
-										<select data-placeholder="Selecione os hotéis" name="COD_PROPRIEDADE" id="COD_PROPRIEDADE" class="chosen-select-deselect" >
+										<select data-placeholder="Selecione os hotéis" name="COD_PROPRIEDADE" id="COD_PROPRIEDADE" class="chosen-select-deselect">
 											<option value="9999">Todas</option>
 											<?php
 											$sqlHotel = "SELECT COD_EXTERNO, NOM_FANTASI FROM UNIDADEVENDA WHERE COD_EMPRESA = $cod_empresa AND LOG_ESTATUS = 'S'";
-											$arrayHotel = mysqli_query(connTemp($cod_empresa,''), $sqlHotel);
+											$arrayHotel = mysqli_query(connTemp($cod_empresa, ''), $sqlHotel);
 
 											while ($qrHotel = mysqli_fetch_assoc($arrayHotel)) {
-												?>
-												<option value="<?=$qrHotel[COD_EXTERNO]?>"><?=$qrHotel[NOM_FANTASI]?></option>
-												<?php 
+											?>
+												<option value="<?= $qrHotel['COD_EXTERNO'] ?>"><?= $qrHotel['NOM_FANTASI'] ?></option>
+											<?php
 											}
 											?>
 										</select>
@@ -232,7 +289,7 @@ $conn = conntemp($cod_empresa,"");
 											</select>
 										</div>
 										<script>
-											
+
 										</script>
 										<div class="help-block with-errors"></div>
 									</div>
@@ -242,7 +299,7 @@ $conn = conntemp($cod_empresa,"");
 										<label for="inputName" class="control-label">Data Inicial</label>
 
 										<div class="input-group date datePicker" id="DAT_INI_GRP">
-											<input type='text' class="form-control input-sm data" name="DAT_INI" id="DAT_INI" value="<?=$dat_ini?>"/>
+											<input type='text' class="form-control input-sm data" name="DAT_INI" id="DAT_INI" value="<?= $dat_ini ?>" />
 											<span class="input-group-addon">
 												<span class="glyphicon glyphicon-calendar"></span>
 											</span>
@@ -256,7 +313,7 @@ $conn = conntemp($cod_empresa,"");
 										<label for="inputName" class="control-label">Data Final</label>
 
 										<div class="input-group date datePicker" id="DAT_FIM_GRP">
-											<input type='text' class="form-control input-sm data" name="DAT_FIM" id="DAT_FIM" value="<?=$dat_fim?>"/>
+											<input type='text' class="form-control input-sm data" name="DAT_FIM" id="DAT_FIM" value="<?= $dat_fim ?>" />
 											<span class="input-group-addon">
 												<span class="glyphicon glyphicon-calendar"></span>
 											</span>
@@ -271,9 +328,9 @@ $conn = conntemp($cod_empresa,"");
 										<select data-placeholder="Selecione o Tipo" name="FILTRO_STATUS" id="FILTRO_STATUS" class="chosen-select-deselect">
 											<option value="">Todos</option>
 											<option value="A">Aberta</option>
-											<option value="V">Vencida</option>             
-											<option value="C">Cancelada</option>             
-											<option value="L">Liquidada</option>             
+											<option value="V">Vencida</option>
+											<option value="C">Cancelada</option>
+											<option value="L">Liquidada</option>
 										</select>
 										<div class="help-block with-errors"></div>
 										<script>
@@ -297,16 +354,16 @@ $conn = conntemp($cod_empresa,"");
 								<div class="col-xs-2">
 									<div class="form-group">
 										<label for="inputName" class="control-label ">Forma de Pagamento</label>
-										<select data-placeholder="Selecione o status" name="COD_FORMAPAG" id="COD_FORMAPAG" class="chosen-select-deselect" >
+										<select data-placeholder="Selecione o status" name="COD_FORMAPAG" id="COD_FORMAPAG" class="chosen-select-deselect">
 											<option value=""></option>
 											<?php
 											$sql = "SELECT * FROM ADORAI_FORMAPAG WHERE COD_EXCLUSA IS NULL";
 											$arrayQuery = mysqli_query(connTemp($cod_empresa, ''), $sql);
 
 											while ($qrStatuspag = mysqli_fetch_assoc($arrayQuery)) {
-												?>
-												<option value="<?=$qrStatuspag['COD_FORMAPAG']?>"><?=$qrStatuspag['ABV_FORMAPAG']?></option>
-												<?php 
+											?>
+												<option value="<?= $qrStatuspag['COD_FORMAPAG'] ?>"><?= $qrStatuspag['ABV_FORMAPAG'] ?></option>
+											<?php
 											}
 											?>
 										</select>
@@ -324,11 +381,11 @@ $conn = conntemp($cod_empresa,"");
 
 							</div>
 
-						</fieldset>	
+						</fieldset>
 
 						<div class="push10"></div>
 						<hr>
-						
+
 
 						<div class="push10"></div>
 
@@ -342,7 +399,7 @@ $conn = conntemp($cod_empresa,"");
 
 					<div class="push50"></div>
 
-					
+
 
 					<div class="no-more-tables">
 
@@ -367,38 +424,37 @@ $conn = conntemp($cod_empresa,"");
 
 									<?php
 
-									if($id_reserva != "" && $id_reserva != 0){
+									if ($id_reserva != "" && $id_reserva != 0) {
 										$andreserva = "AND AP.ID_RESERVA = $id_reserva";
-									}else{
+									} else {
 										$andreserva = "";
 									}
 
-									if($dat_ini != "" && $dat_fim != ""){
+									if ($dat_ini != "" && $dat_fim != "") {
 										$andData = "AND PC.DAT_VENCIMEN >= '$dat_ini'
 													AND PC.DAT_VENCIMEN <= '$dat_fim'";
-									}else{
+									} else {
 										$andData = "";
 									}
 
-									if($filtro_status != ""){
+									if ($filtro_status != '' && $filtro_status != 0) {
 										$andTip = "AND PC.TIP_PARCELA = '$filtro_status'";
-									}else{
+									} else {
 										$andTip = "";
 									}
 
 
-									if ($cod_propriedade == "" OR $cod_propriedade == 9999){
+									if ($cod_propriedade == "" or $cod_propriedade == 9999) {
 										$and_propriedade = " ";
-									}else{
+									} else {
 										$and_propriedade = "AND UNV.COD_EXTERNO = $cod_propriedade";
-
 									}
-									if ($cod_chale != ""){
+									if ($cod_chale != '' && $cod_chale != 0) {
 										$and_chale = "AND AC.COD_EXTERNO = $cod_chale";
-									}else{
+									} else {
 										$and_chale = " ";
 									}
-									
+
 
 									$sqlParcelas = "SELECT PC.*, AP.ID_RESERVA FROM adorai_parcelas AS PC
 													INNER JOIN adorai_pedido AS AP ON PC.COD_PEDIDO = AP.COD_PEDIDO
@@ -413,8 +469,8 @@ $conn = conntemp($cod_empresa,"");
 													$andreserva
 													GROUP BY PC.COD_PARCELA
 													ORDER BY PC.DAT_VENCIMEN";
-									
-									$arrParcelas = mysqli_query(connTemp($cod_empresa,''),$sqlParcelas);
+
+									$arrParcelas = mysqli_query(connTemp($cod_empresa, ''), $sqlParcelas);
 
 									$num_parcelas = mysqli_num_rows($arrParcelas);
 									$count = 0;
@@ -424,87 +480,87 @@ $conn = conntemp($cod_empresa,"");
 
 										switch ($qrBusca['TIP_PARCELA']) {
 											case 'L':
-											$status = "Liquidada";
-											break;
+												$status = "Liquidada";
+												break;
 											case 'C':
-											$status = "Cancelada";
-											break;
+												$status = "Cancelada";
+												break;
 											case 'A':
-											$status = "Aberta";
-											break;
+												$status = "Aberta";
+												break;
 											case 'V':
-											$status = "Vencida";
-											break;
+												$status = "Vencida";
+												break;
 										}
 
-										?>
+									?>
 										<tr>
-											<?php if($qrBusca['TIP_PARCELA'] == 'A'){ ?>
-												<td class='text-center'><input type='checkbox' name='radio_<?=$qrBusca['COD_PARCELA']?>_<?=$qrBusca['COD_PEDIDO']?>'>&nbsp;</td>
-											<?php }else {?>
+											<?php if ($qrBusca['TIP_PARCELA'] == 'A') { ?>
+												<td class='text-center'><input type='checkbox' name='radio_<?= $qrBusca['COD_PARCELA'] ?>_<?= $qrBusca['COD_PEDIDO'] ?>'>&nbsp;</td>
+											<?php } else { ?>
 												<td width="50"></td>
-											<?php }?>
-											<td class='text-center'><small><?=$qrBusca['COD_PARCELA']?></small></td>
-											<td class='text-center'><small><?=$qrBusca['ID_RESERVA']?></small></td>
-											<td class='text-center'><small><?=$qrBusca['NUM_PARCELA']?></small></td>
-											<td class='text-right'><small>R$</small> <?=fnValor($qrBusca['VAL_PARCELA'],2)?></td>
-											<td class='text-center'><small><?=fnDataShort($qrBusca['DAT_VENCIMEN'])?></small></td>
-											<td class='text-right'><small>R$</small> <?=fnValor($qrBusca['VAL_JUROS'],2)?></td>
-											<td class='text-right'><small>R$</small> <?=fnValor($qrBusca['VAL_MULTA'],2)?></td>
-											<td class='text-center'><small><?=$status?></small></td>
-											<td class='text-center'><small><?=fnDataFull($qrBusca['DAT_CADASTR'])?></small></td>
-											<?php if($qrBusca['TIP_PARCELA'] == 'A'){ ?>
-											<td width='40' class='text-center transparency'>
-												<small>
-													<div class='btn-group dropdown dropleft'>
-														<a href='javascript:void(0)' class="btn btn-xs btn-info" data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-															&nbsp;&nbsp;<span class="fal fa-cog"></span>&nbsp;&nbsp;
-														</a>
-														<ul class='dropdown-menu' role='menu' aria-labelledby='dropdownMenu'>
-															<li>
-																<a href='javascript:void(0)' onclick="pagarParcelas(<?=$qrBusca['COD_PARCELA'].','.$qrBusca['COD_PEDIDO']?>,'<?=fnDataShort($qrBusca['DAT_VENCIMEN'])?>')">
-																	<div class="row">
-																		<div class="col-xs-2 text-center" style="padding: 0;">
-																			<div class="push5"></div>
-																			<span class="fal fa-dollar-sign"></span>
+											<?php } ?>
+											<td class='text-center'><small><?= $qrBusca['COD_PARCELA'] ?></small></td>
+											<td class='text-center'><small><?= $qrBusca['ID_RESERVA'] ?></small></td>
+											<td class='text-center'><small><?= $qrBusca['NUM_PARCELA'] ?></small></td>
+											<td class='text-right'><small>R$</small> <?= fnValor($qrBusca['VAL_PARCELA'], 2) ?></td>
+											<td class='text-center'><small><?= fnDataShort($qrBusca['DAT_VENCIMEN']) ?></small></td>
+											<td class='text-right'><small>R$</small> <?= fnValor($qrBusca['VAL_JUROS'], 2) ?></td>
+											<td class='text-right'><small>R$</small> <?= fnValor($qrBusca['VAL_MULTA'], 2) ?></td>
+											<td class='text-center'><small><?= $status ?></small></td>
+											<td class='text-center'><small><?= fnDataFull($qrBusca['DAT_CADASTR']) ?></small></td>
+											<?php if ($qrBusca['TIP_PARCELA'] == 'A') { ?>
+												<td width='40' class='text-center transparency'>
+													<small>
+														<div class='btn-group dropdown dropleft'>
+															<a href='javascript:void(0)' class="btn btn-xs btn-info" data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+																&nbsp;&nbsp;<span class="fal fa-cog"></span>&nbsp;&nbsp;
+															</a>
+															<ul class='dropdown-menu' role='menu' aria-labelledby='dropdownMenu'>
+																<li>
+																	<a href='javascript:void(0)' onclick="pagarParcelas(<?= $qrBusca['COD_PARCELA'] . ',' . $qrBusca['COD_PEDIDO'] ?>,'<?= fnDataShort($qrBusca['DAT_VENCIMEN']) ?>')">
+																		<div class="row">
+																			<div class="col-xs-2 text-center" style="padding: 0;">
+																				<div class="push5"></div>
+																				<span class="fal fa-dollar-sign"></span>
+																			</div>
+																			<div class="col-xs-9" style="padding: 0;">
+																				&nbsp;&nbsp;Pagar
+																			</div>
 																		</div>
-																		<div class="col-xs-9" style="padding: 0;">
-																			&nbsp;&nbsp;Pagar
+																	</a>
+																</li>
+																<li>
+																	<a href='javascript:void(0)' onclick="cancelarParcela(<?= $qrBusca['COD_PARCELA'] . ',' . $qrBusca['COD_PEDIDO'] ?>,'<?= fnDataShort($qrBusca['DAT_VENCIMEN']) ?>')">
+																		<div class="row">
+																			<div class="col-xs-2 text-center" style="padding: 0;">
+																				<div class="push5"></div>
+																				<span class="fal fa-times text-danger"></span>
+																			</div>
+																			<div class="col-xs-9" style="padding: 0;">
+																				&nbsp;&nbsp;Cancelar
+																			</div>
 																		</div>
-																	</div>
-																</a>
-															</li>
-															<li>
-																<a href='javascript:void(0)' onclick="cancelarParcela(<?=$qrBusca['COD_PARCELA'].','.$qrBusca['COD_PEDIDO']?>,'<?=fnDataShort($qrBusca['DAT_VENCIMEN'])?>')">
-																	<div class="row">
-																		<div class="col-xs-2 text-center" style="padding: 0;">
-																			<div class="push5"></div>
-																			<span class="fal fa-times text-danger"></span>
-																		</div>
-																		<div class="col-xs-9" style="padding: 0;">
-																			&nbsp;&nbsp;Cancelar
-																		</div>
-																	</div>
-																</a>
-															</li>
-															<!-- <li class='divider'></li> -->
-														</ul>
-													</div>
-												</small>
-											</td>
-											<?php }else {?>
+																	</a>
+																</li>
+																<!-- <li class='divider'></li> -->
+															</ul>
+														</div>
+													</small>
+												</td>
+											<?php } else { ?>
 												<td width="50"></td>
-											<?php }?>									
+											<?php } ?>
 										</tr>
-										<?php 
+									<?php
 
 									}
-									?>	
+									?>
 
 								</tbody>
 
 								<div class="push20"></div>
-								
+
 								<tfoot>
 
 									<tr>
@@ -514,7 +570,7 @@ $conn = conntemp($cod_empresa,"");
 													&nbsp; Ação Selecionados&nbsp;
 													<span class="fas fa-caret-down"></span>
 												</button>
-												<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">							
+												<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
 													<li><a class="btn btn-sm pagarLote" data-attr="all" style="text-align: left"><span class="fal fa-dollar-sign"></span>&nbsp; Pagar </a></li>
 													<li><a class="btn btn-sm cancelarLote" data-attr="univend" style="text-align: left"><span class="fal fa-times text-danger"></span>&nbsp; Cancelar </a></li>
 												</ul>
@@ -546,7 +602,7 @@ $conn = conntemp($cod_empresa,"");
 		<!-- fim Portlet -->
 	</div>
 
-	<div class="modal fade" id="popModal"  tabindex='-1'>
+	<div class="modal fade" id="popModal" tabindex='-1'>
 		<div class="modal-dialog " style="max-width: 93% !important;">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -555,7 +611,7 @@ $conn = conntemp($cod_empresa,"");
 				</div>
 				<div class="modal-body">
 					<iframe frameborder="0" style="width: 100%; height: 80%"></iframe>
-				</div>		
+				</div>
 			</div><!-- /.modal-content -->
 		</div><!-- /.modal-dialog -->
 	</div><!-- /.modal -->
@@ -570,9 +626,8 @@ $conn = conntemp($cod_empresa,"");
 <link rel="stylesheet" href="css/bootstrap-datetimepicker.css" />
 
 <script type="text/javascript">
-
 	$(document).ready(function() {
-		$('#selectAll').click(function () {
+		$('#selectAll').click(function() {
 			$(this).closest('table').find('td input:checkbox').prop('checked', this.checked);
 		});
 
@@ -584,7 +639,7 @@ $conn = conntemp($cod_empresa,"");
 
 		$("#DAT_INI_GRP").on("dp.change", function(e) {
 			$('#DAT_FIM_GRP').data("DateTimePicker").minDate(e.date);
-		});	
+		});
 
 		$("#DAT_FIM_GRP").on("dp.change", function(e) {
 			$('#DAT_INI_GRP').data("DateTimePicker").maxDate(e.date);
@@ -595,16 +650,16 @@ $conn = conntemp($cod_empresa,"");
 		$("#DAT_COMP").val("<?= fnDataShort($dat_comp) ?>");
 		$("#DAT_ALTERAC").val("<?= fnDataShort($dat_alterac) ?>");
 
-			// ajax
+		// ajax
 		$("#COD_PROPRIEDADE").change(function() {
 			var codBusca = $("#COD_PROPRIEDADE").val();
 			var codBusca3 = $("#COD_EMPRESA").val();
 			buscaSubCat(codBusca, codBusca3);
 		});
 
-		$(".pagarLote").click(function(){
+		$(".pagarLote").click(function() {
 			var valores = [];
-			$("input[type='checkbox']:checked").not('#selectAll').each(function(){
+			$("input[type='checkbox']:checked").not('#selectAll').each(function() {
 				var name = $(this).attr('name');
 				var valoresSeparados = name.split('_');
 				var obj = {
@@ -617,11 +672,11 @@ $conn = conntemp($cod_empresa,"");
 			$.confirm({
 				title: 'Pagamento em Lote',
 				content: '' +
-				'<form action="" class="formName">' +
-				'<div class="form-group">' +
-				'<label>Deseja Realmente confirmar o pagamento em lote de  '+ quant + ' Parcelas</label>' +
-				'</div>' +
-				'</form>',
+					'<form action="" class="formName">' +
+					'<div class="form-group">' +
+					'<label>Deseja Realmente confirmar o pagamento em lote de  ' + quant + ' Parcelas</label>' +
+					'</div>' +
+					'</form>',
 				buttons: {
 					formSubmit: {
 						text: 'Confirmar',
@@ -634,7 +689,7 @@ $conn = conntemp($cod_empresa,"");
 								content: function() {
 									var self = this;
 									return $.ajax({
-										url: "ajxRelParcelasAdorai.do?opcao=LTPAG&id=<?=fnEncode($cod_empresa)?>",
+										url: "ajxRelParcelasAdorai.do?opcao=LTPAG&id=<?= fnEncode($cod_empresa) ?>",
 										method: 'POST',
 										data: JSON.stringify(valores)
 									}).done(function(response) {
@@ -659,9 +714,9 @@ $conn = conntemp($cod_empresa,"");
 			});
 		});
 
-		$(".cancelarLote").click(function(){
+		$(".cancelarLote").click(function() {
 			var valores = [];
-			$("input[type='checkbox']:checked").not('#selectAll').each(function(){
+			$("input[type='checkbox']:checked").not('#selectAll').each(function() {
 				var name = $(this).attr('name');
 				var valoresSeparados = name.split('_');
 				var obj = {
@@ -674,11 +729,11 @@ $conn = conntemp($cod_empresa,"");
 			$.confirm({
 				title: 'Cancelamento em Lote',
 				content: '' +
-				'<form action="" class="formName">' +
-				'<div class="form-group">' +
-				'<label>Deseja Realmente confirmar o cancelamento em lote de  '+ quant + ' Parcelas</label>' +
-				'</div>' +
-				'</form>',
+					'<form action="" class="formName">' +
+					'<div class="form-group">' +
+					'<label>Deseja Realmente confirmar o cancelamento em lote de  ' + quant + ' Parcelas</label>' +
+					'</div>' +
+					'</form>',
 				buttons: {
 					formSubmit: {
 						text: 'Confirmar',
@@ -691,7 +746,7 @@ $conn = conntemp($cod_empresa,"");
 								content: function() {
 									var self = this;
 									return $.ajax({
-										url: "ajxRelParcelasAdorai.do?opcao=CNLOTE&id=<?=fnEncode($cod_empresa)?>",
+										url: "ajxRelParcelasAdorai.do?opcao=CNLOTE&id=<?= fnEncode($cod_empresa) ?>",
 										method: 'POST',
 										data: JSON.stringify(valores)
 									}).done(function(response) {
@@ -717,129 +772,128 @@ $conn = conntemp($cod_empresa,"");
 		});
 	});
 
-function pagarParcelas(codParcela, codPedido, datVencimen){
+	function pagarParcelas(codParcela, codPedido, datVencimen) {
 
-	var codParcela = codParcela;
-	var codPedido = codPedido;
-	var datVencimen = datVencimen;
+		var codParcela = codParcela;
+		var codPedido = codPedido;
+		var datVencimen = datVencimen;
 
-	$.confirm({
-		title: 'Pagamento',
-		content: '' +
-		'<form action="" class="formName">' +
-		'<div class="form-group">' +
-		'<label>Deseja Realmente confirmar o pagamento da parcela '+ codParcela + '</label>' +
-		'<label>Referente a Reserva: '+codPedido+'</label></br>' +
-		'<label>Com vencimento em: '+ datVencimen +'</label>' +
-		'</div>' +
-		'</form>',
-		buttons: {
-			formSubmit: {
-				text: 'Confirmar',
-				btnClass: 'btn-green',
-				action: function() {
-					$.confirm({
-						title: 'Mensagem',
-						type: 'green',
-						icon: 'fa fa-check-square-o',
-						content: function() {
-							var self = this;
-							return $.ajax({
-								url: "ajxRelParcelasAdorai.do?opcao=PAG&id=<?=fnEncode($cod_empresa)?>&idp="+codPedido+"&cdp="+codParcela,
-								method: 'POST'
-							}).done(function(response) {
-								self.setContentAppend('<div>Parcela paga com sucesso.</div>');
-								location.reload();
-							}).fail(function() {
-								self.setContentAppend('<div>Erro ao realizar o procedimento!</div>');
-							});
-						},
-						buttons: {
-							fechar: function() {
-										//close
+		$.confirm({
+			title: 'Pagamento',
+			content: '' +
+				'<form action="" class="formName">' +
+				'<div class="form-group">' +
+				'<label>Deseja Realmente confirmar o pagamento da parcela ' + codParcela + '</label>' +
+				'<label>Referente a Reserva: ' + codPedido + '</label></br>' +
+				'<label>Com vencimento em: ' + datVencimen + '</label>' +
+				'</div>' +
+				'</form>',
+			buttons: {
+				formSubmit: {
+					text: 'Confirmar',
+					btnClass: 'btn-green',
+					action: function() {
+						$.confirm({
+							title: 'Mensagem',
+							type: 'green',
+							icon: 'fa fa-check-square-o',
+							content: function() {
+								var self = this;
+								return $.ajax({
+									url: "ajxRelParcelasAdorai.do?opcao=PAG&id=<?= fnEncode($cod_empresa) ?>&idp=" + codPedido + "&cdp=" + codParcela,
+									method: 'POST'
+								}).done(function(response) {
+									self.setContentAppend('<div>Parcela paga com sucesso.</div>');
+									location.reload();
+								}).fail(function() {
+									self.setContentAppend('<div>Erro ao realizar o procedimento!</div>');
+								});
+							},
+							buttons: {
+								fechar: function() {
+									//close
+								}
 							}
-						}
-					});
-				}
-			},
-			cancelar: function() {
-						//close
-			},
-		}
-	});
-};
+						});
+					}
+				},
+				cancelar: function() {
+					//close
+				},
+			}
+		});
+	};
 
-function cancelarParcela(codParcela, codPedido, datVencimen){
+	function cancelarParcela(codParcela, codPedido, datVencimen) {
 
-	var codParcela = codParcela;
-	var codPedido = codPedido;
-	var datVencimen = datVencimen;
+		var codParcela = codParcela;
+		var codPedido = codPedido;
+		var datVencimen = datVencimen;
 
-	$.confirm({
-		title: 'Cancelamento',
-		content: '' +
-		'<form action="" class="formName">' +
-		'<div class="form-group">' +
-		'<label>Deseja Realmente confirmar o cancelamento da parcela '+ codParcela + '</label>' +
-		'<label>Referente a Reserva: '+codPedido+'</label></br>' +
-		'<label>Com vencimento em: '+ datVencimen +'</label>' +
-		'</div>' +
-		'</form>',
-		buttons: {
-			formSubmit: {
-				text: 'Confirmar',
-				btnClass: 'btn-red',
-				action: function() {
-					$.confirm({
-						title: 'Mensagem',
-						type: 'red',
-						icon: 'fa fa-check-square-o',
-						content: function() {
-							var self = this;
-							return $.ajax({
-								url: "ajxRelParcelasAdorai.do?opcao=CNL&id=<?=fnEncode($cod_empresa)?>&idp="+codPedido+"&cdp="+codParcela,
-								method: 'POST'
-							}).done(function(response) {
-								self.setContentAppend('<div>Parcela cancelada com sucesso.</div>');
-								location.reload();
-							}).fail(function() {
-								self.setContentAppend('<div>Erro ao realizar o procedimento!</div>');
-							});
-						},
-						buttons: {
-							fechar: function() {
-										//close
+		$.confirm({
+			title: 'Cancelamento',
+			content: '' +
+				'<form action="" class="formName">' +
+				'<div class="form-group">' +
+				'<label>Deseja Realmente confirmar o cancelamento da parcela ' + codParcela + '</label>' +
+				'<label>Referente a Reserva: ' + codPedido + '</label></br>' +
+				'<label>Com vencimento em: ' + datVencimen + '</label>' +
+				'</div>' +
+				'</form>',
+			buttons: {
+				formSubmit: {
+					text: 'Confirmar',
+					btnClass: 'btn-red',
+					action: function() {
+						$.confirm({
+							title: 'Mensagem',
+							type: 'red',
+							icon: 'fa fa-check-square-o',
+							content: function() {
+								var self = this;
+								return $.ajax({
+									url: "ajxRelParcelasAdorai.do?opcao=CNL&id=<?= fnEncode($cod_empresa) ?>&idp=" + codPedido + "&cdp=" + codParcela,
+									method: 'POST'
+								}).done(function(response) {
+									self.setContentAppend('<div>Parcela cancelada com sucesso.</div>');
+									location.reload();
+								}).fail(function() {
+									self.setContentAppend('<div>Erro ao realizar o procedimento!</div>');
+								});
+							},
+							buttons: {
+								fechar: function() {
+									//close
+								}
 							}
-						}
-					});
-				}
-			},
-			cancelar: function() {
-						//close
-			},
-		}
-	});
-};
+						});
+					}
+				},
+				cancelar: function() {
+					//close
+				},
+			}
+		});
+	};
 
-function buscaSubCat(codprop, idEmp) 
-{
-	$.ajax({
-		type: "GET",
-		url: "ajxCheckoutAdorai.do?opcao=SubBusca",
-		data: {
-			COD_PROPRIEDADE: codprop,
-			COD_EMPRESA: idEmp
-		},
+	function buscaSubCat(codprop, idEmp) {
+		$.ajax({
+			type: "GET",
+			url: "ajxCheckoutAdorai.do?opcao=SubBusca",
+			data: {
+				COD_PROPRIEDADE: codprop,
+				COD_EMPRESA: idEmp
+			},
 
-		beforeSend: function() {
-			$('#divId_sub').html('<div class="loading" style="width: 100%;"></div>');
-		},
-		success: function(data) {
-			$("#divId_sub").html(data);
-		},
-		error: function() {
-			$('#divId_sub').html('<p class="error" style="margin-top: 10px;"><strong>Oops!</strong> Registros não encontrados...</p>');
-		}
-	});
-}
+			beforeSend: function() {
+				$('#divId_sub').html('<div class="loading" style="width: 100%;"></div>');
+			},
+			success: function(data) {
+				$("#divId_sub").html(data);
+			},
+			error: function() {
+				$('#divId_sub').html('<p class="error" style="margin-top: 10px;"><strong>Oops!</strong> Registros não encontrados...</p>');
+			}
+		});
+	}
 </script>
