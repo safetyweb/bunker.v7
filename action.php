@@ -30,11 +30,7 @@ if (@$_GET['security'] != 'OFF') {
 	fnLogin();
 
 	fncompress(@$connAdm->connAdm(), '30');
-	$userConn = @$connUser->connUser();
-	if (isset($userConn) && $userConn !== null) {
-		fncompress($userConn, '30');
-	}
-
+	fncompress(@$connUser->connUser(), '30');
 	$arraypost = addslashes(str_replace(array("\n", ""), array("", " "), var_export(gravapos(), true)));
 	fnMemInicial($connAdm->connAdm(), 'true', $_SESSION["usuario"], $arraypost);
 	$i = tempoinicial();
