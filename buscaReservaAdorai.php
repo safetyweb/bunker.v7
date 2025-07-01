@@ -823,8 +823,8 @@ if ($filtro_data == "") {
 										}
 
 										$val_descPix = 0;
-										if ($qrBusca['PIX_50'] != "S") {
-											$val_descPix = $qrBusca['DESCONTO_PIX'];
+										if (@$qrBusca['PIX_50'] != "S") {
+											$val_descPix = @$qrBusca['DESCONTO_PIX'];
 										} else {
 											$val_descPix = 0;
 										}
