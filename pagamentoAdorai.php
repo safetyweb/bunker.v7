@@ -14,12 +14,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$_SESSION['last_request']  = $request;
 
 		$cod_usucada = $_SESSION['SYS_COD_USUARIO'];
-		
+
 		$cod_empresa = fnLimpaCampoZero($_REQUEST['COD_EMPRESA']);
 		$cod_pagamento =  fnLimpaCampoZero($_REQUEST['COD_FORMAPAG']);
 		$cod_propriedade =  fnLimpaCampoZero($_REQUEST['COD_PROPRIEDADE']);
 		$des_formapag = fnLimpaCampo($_REQUEST['DES_FORMAPAG']);
-		$abv_formapag= fnLimpaCampo($_REQUEST['ABV_FORMAPAG']);
+		$abv_formapag = fnLimpaCampo($_REQUEST['ABV_FORMAPAG']);
 		$des_pagamento = fnLimpaCampo($_REQUEST['DES_PAGAMENTO']);
 		$des_imagem = fnLimpaCampo($_REQUEST['DES_IMAGEM']);
 
@@ -31,12 +31,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$hHabilitado = $_REQUEST['hHabilitado'];
 		$hashForm = $_REQUEST['hashForm'];
 
-		if ($opcao != '') {			
+		if ($opcao != '') {
 
 			//mensagem de retorno
 			switch ($opcao) {
 				case 'CAD':
-				$sql = "INSERT INTO ADORAI_FORMAPAG(
+					$sql = "INSERT INTO ADORAI_FORMAPAG(
 					COD_EMPRESA,
 					COD_PROPRIEDADE,
 					COD_USUCADA,
@@ -54,19 +54,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 					)
 				";
 
-				$arrayProc = mysqli_query(connTemp($cod_empresa,''),$sql);
+					$arrayProc = mysqli_query(connTemp($cod_empresa, ''), $sql);
 
-				if (!$arrayProc){
-					$cod_error = Log_error_comand($connAdm->connAdm(),$connTemp($cod_empresa, ''), $cod_empresa, $actual_link, $MODULO, $COD_MODULO, $sql, $nom_usuarioSESSION);
-				}
-				if ($cod_erro == 0 || $cod_erro ==  "") {
-					$msgRetorno = "Registro gravado com <strong>sucesso!</strong>";
-				} else {
-					$msgRetorno = "Não foi possível cadastrar o registro : $cod_erro";
-				}
-				break;
+					if (!$arrayProc) {
+						$cod_error = Log_error_comand($connAdm->connAdm(), $connTemp($cod_empresa, ''), $cod_empresa, $actual_link, $MODULO, $COD_MODULO, $sql, $nom_usuarioSESSION);
+					}
+					if ($cod_erro == 0 || $cod_erro ==  "") {
+						$msgRetorno = "Registro gravado com <strong>sucesso!</strong>";
+					} else {
+						$msgRetorno = "Não foi possível cadastrar o registro : $cod_erro";
+					}
+					break;
 				case 'ALT':
-				$sql = "UPDATE ADORAI_FORMAPAG SET 
+					$sql = "UPDATE ADORAI_FORMAPAG SET 
 				COD_ALTERAC = $cod_usucada,
 				COD_PROPRIEDADE = $cod_propriedade,
 				DES_FORMAPAG = '$des_formapag',
@@ -77,28 +77,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 				COD_FORMAPAG = $cod_pagamento AND COD_EMPRESA = $cod_empresa
 				";
 
-				fnEscreve($sql);
-				$arrayProc = mysqli_query(connTemp($cod_empresa,''),$sql);
-				if ($cod_erro == 0 || $cod_erro ==  "") {
-					$msgRetorno = "Registro gravado com <strong>sucesso!</strong>";
-				} else {
-					$msgRetorno = "Não foi possível alterar o registro : $cod_erro";
-				}
-				break;
+					fnEscreve($sql);
+					$arrayProc = mysqli_query(connTemp($cod_empresa, ''), $sql);
+					if ($cod_erro == 0 || $cod_erro ==  "") {
+						$msgRetorno = "Registro gravado com <strong>sucesso!</strong>";
+					} else {
+						$msgRetorno = "Não foi possível alterar o registro : $cod_erro";
+					}
+					break;
 				case 'EXC':
-				$sql = "UPDATE ADORAI_FORMAPAG SET 
+					$sql = "UPDATE ADORAI_FORMAPAG SET 
 				COD_EXCLUSA = $cod_usucada,
 				DAT_EXCLUSA = NOW()
 				WHERE 
 				COD_FORMAPAG = $cod_pagamento AND COD_EMPRESA = $cod_empresa
 				";
-				$arrayProc = mysqli_query(connTemp($cod_empresa,''),$sql);
-				if ($cod_erro == 0 || $cod_erro ==  "") {
-					$msgRetorno = "Registro gravado com <strong>sucesso!</strong>";
-				} else {
-					$msgRetorno = "Não foi possível excluir o registro : $cod_erro";
-				}
-				break;					
+					$arrayProc = mysqli_query(connTemp($cod_empresa, ''), $sql);
+					if ($cod_erro == 0 || $cod_erro ==  "") {
+						$msgRetorno = "Registro gravado com <strong>sucesso!</strong>";
+					} else {
+						$msgRetorno = "Não foi possível excluir o registro : $cod_erro";
+					}
+					break;
 			}
 			if ($cod_erro == 0 || $cod_erro == "") {
 				$msgTipo = 'alert-success';
@@ -128,7 +128,7 @@ if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
 	$cod_empresa = 274;
 }
 
-$conn = conntemp($cod_empresa,"");
+$conn = conntemp($cod_empresa, "");
 
 
 
@@ -138,12 +138,13 @@ $conn = conntemp($cod_empresa,"");
 	.hiddenRow {
 		padding: 0 !important;
 	}
-	tr{
-		border-bottom: none!important;
+
+	tr {
+		border-bottom: none !important;
 	}
-	#blocker
-	{
-		display:none; 
+
+	#blocker {
+		display: none;
 		position: fixed;
 		top: 0;
 		left: 0;
@@ -154,8 +155,7 @@ $conn = conntemp($cod_empresa,"");
 		z-index: 1000;
 	}
 
-	#blocker div
-	{
+	#blocker div {
 		position: absolute;
 		top: 30%;
 		left: 48%;
@@ -168,7 +168,7 @@ $conn = conntemp($cod_empresa,"");
 </style>
 
 <div id="blocker">
-	<div style="text-align: center;"><img src="images/loading2.gif"><br/> Aguarde. Processando... ;-)</div>
+	<div style="text-align: center;"><img src="images/loading2.gif"><br /> Aguarde. Processando... ;-)</div>
 </div>
 
 <div class="push30"></div>
@@ -199,14 +199,14 @@ $conn = conntemp($cod_empresa,"");
 					</div>
 				<?php } ?>
 
-				<?php 
+				<?php
 				$abaAdorai = 2006;
-				include "abasAdorai.php"; 
+				include "abasAdorai.php";
 
 				$abaManutencaoAdorai = 2019;
-					//echo $abaUsuario;
+				//echo $abaUsuario;
 
-					//se não for sistema de campanhas
+				//se não for sistema de campanhas
 
 				echo ('<div class="push20"></div>');
 				include "abasSistemaAdorai.php";
@@ -242,12 +242,12 @@ $conn = conntemp($cod_empresa,"");
 											<option value="9999">Todas</option>
 											<?php
 											$sqlHotel = "SELECT COD_EXTERNO, NOM_FANTASI FROM UNIDADEVENDA WHERE COD_EMPRESA = $cod_empresa AND LOG_ESTATUS = 'S'";
-											$arrayHotel = mysqli_query(connTemp($cod_empresa,''), $sqlHotel);
+											$arrayHotel = mysqli_query(connTemp($cod_empresa, ''), $sqlHotel);
 
 											while ($qrHotel = mysqli_fetch_assoc($arrayHotel)) {
-												?>
-												<option value="<?=$qrHotel[COD_EXTERNO]?>"><?=$qrHotel[NOM_FANTASI]?></option>
-												<?php 
+											?>
+												<option value="<?= $qrHotel['COD_EXTERNO'] ?>"><?= $qrHotel['NOM_FANTASI'] ?></option>
+											<?php
 											}
 											?>
 										</select>
@@ -270,9 +270,9 @@ $conn = conntemp($cod_empresa,"");
 											<a type="button" name="btnBusca" id="btnBusca" style="height:35px;" class="btn btn-primary upload" idinput="DES_IMAGEM" extensao="img"><i class="fal fa-cloud-upload" aria-hidden="true"></i></a>
 										</span>
 										<input type="text" name="DES_IMAGEM" id="DES_IMAGEM" class="form-control input-sm" style="border-radius: 0 3px 3px  0;" maxlength="100" value="<?php echo $des_imagem; ?>">
-									</div>																
+									</div>
 									<span class="help-block">(.png 300px X 80px)</span>
-								</div>	
+								</div>
 
 							</div>
 
@@ -322,7 +322,7 @@ $conn = conntemp($cod_empresa,"");
 									FROM ADORAI_FORMAPAG AS a
 									LEFT JOIN unidadevenda AS UNI ON UNI.COD_EXTERNO = A.COD_PROPRIEDADE
 									WHERE A.COD_EXCLUSA IS NULL AND A.COD_EMPRESA = $cod_empresa order by a.COD_FORMAPAG";
-													//fnEscreve($sql);
+									//fnEscreve($sql);
 									$arrayQuery = mysqli_query(connTemp($cod_empresa, ''), $sql);
 									$count = 0;
 									while ($qrBusca = mysqli_fetch_assoc($arrayQuery)) {
@@ -330,19 +330,19 @@ $conn = conntemp($cod_empresa,"");
 
 										echo "
 										<tr>
-										<td align='center'><input type='radio' name='radio1' onclick='retornaForm(".$count.")'></td>
-										<td>".$qrBusca['COD_FORMAPAG']."</td>";
+										<td align='center'><input type='radio' name='radio1' onclick='retornaForm(" . $count . ")'></td>
+										<td>" . $qrBusca['COD_FORMAPAG'] . "</td>";
 
-										if($qrBusca['COD_PROPRIEDADE'] == 9999){
+										if ($qrBusca['COD_PROPRIEDADE'] == 9999) {
 											echo "<td>Todas Propriedades</td>";
-										}else{
-											echo "<td>".$qrBusca['NOM_FANTASI']."</td>";
+										} else {
+											echo "<td>" . $qrBusca['NOM_FANTASI'] . "</td>";
 										}
 
 										echo "
-										<td>".$qrBusca['DES_FORMAPAG']."</td>
-										<td>".$qrBusca['ABV_FORMAPAG']."</td>
-										<td ><img src='/media/clientes/".$cod_empresa."/".$qrBusca['DES_IMAGEM']."' alt='Descrição da Imagem' width='100' height='40'></td>
+										<td>" . $qrBusca['DES_FORMAPAG'] . "</td>
+										<td>" . $qrBusca['ABV_FORMAPAG'] . "</td>
+										<td ><img src='/media/clientes/" . $cod_empresa . "/" . $qrBusca['DES_IMAGEM'] . "' alt='Descrição da Imagem' width='100' height='40'></td>
 
 														
 										</tr>
@@ -351,7 +351,7 @@ $conn = conntemp($cod_empresa,"");
 										<input type='hidden' id='ret_COD_PROPRIEDADE_" . $count . "' value='" . $qrBusca['COD_PROPRIEDADE'] . "'>
 										<input type='hidden' id='ret_DES_FORMAPAG_" . $count . "' value='" . $qrBusca['DES_FORMAPAG'] . "'>
 										<input type='hidden' id='ret_ABV_FORMAPAG_" . $count . "' value='" . $qrBusca['ABV_FORMAPAG'] . "'>
-										<input type='hidden' id='ret_DES_PAGAMENTO_" . $count . "' value='" . $qrBusca['DES_PAGAMENTO'] . "'>
+										<input type='hidden' id='ret_DES_PAGAMENTO_" . $count . "' value='" . @$qrBusca['DES_PAGAMENTO'] . "'>
 										<input type='hidden' id='ret_DES_IMAGEM_" . $count . "' value='" . $qrBusca['DES_IMAGEM'] . "'>
 										";
 									}
@@ -384,7 +384,6 @@ $conn = conntemp($cod_empresa,"");
 <link rel="stylesheet" href="js/daterangepicker-master/daterangepicker.css" />
 
 <script type="text/javascript">
-
 	function retornaForm(index) {
 		$("#formulario #COD_FORMAPAG").val($("#ret_COD_FORMAPAG_" + index).val());
 		$("#formulario #COD_PROPRIEDADE").val($("#ret_COD_PROPRIEDADE_" + index).val()).trigger("chosen:updated");
@@ -403,14 +402,14 @@ $conn = conntemp($cod_empresa,"");
 		$.dialog({
 			title: 'Arquivo',
 			content: '' +
-			'<form method = "POST" enctype = "multipart/form-data">' +
-			'<input id="' + idField + '" type="file" name="image" style="margin-bottom: 20px;" />' +
-			'<div class="progress" style="display: none">' +
-			'<div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width:0%;">' +
-			'   <span style="position: absolute; display: block; width: 100%; color:#2c3e50;">12</span></div>' +
-			'</div>' +
-			'<a type="button" id="btnUploadFile" class="btn btn-primary btn-sm" style="font-weight: bold" onClick="uploadFile(\'' + idField + '\', \'' + typeFile + '\')">UPLOAD</a>' +
-			'</form>'
+				'<form method = "POST" enctype = "multipart/form-data">' +
+				'<input id="' + idField + '" type="file" name="image" style="margin-bottom: 20px;" />' +
+				'<div class="progress" style="display: none">' +
+				'<div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width:0%;">' +
+				'   <span style="position: absolute; display: block; width: 100%; color:#2c3e50;">12</span></div>' +
+				'</div>' +
+				'<a type="button" id="btnUploadFile" class="btn btn-primary btn-sm" style="font-weight: bold" onClick="uploadFile(\'' + idField + '\', \'' + typeFile + '\')">UPLOAD</a>' +
+				'</form>'
 		});
 	});
 
@@ -418,13 +417,13 @@ $conn = conntemp($cod_empresa,"");
 
 		var nomeArquivo = $('#' + idField)[0].files[0]['name'];
 
-		if(nomeArquivo.indexOf(' ') > 0){
+		if (nomeArquivo.indexOf(' ') > 0) {
 			$.alert({
 				title: "Erro ao efetuar o upload",
 				content: "O nome do arquivo não pode conter espaços, renomeie o arquivo e faça o upload novamente",
 				type: 'red'
 			});
-		}else{
+		} else {
 
 			var formData = new FormData();
 
@@ -453,30 +452,29 @@ $conn = conntemp($cod_empresa,"");
 				url: '../uploads/uploaddoc.php',
 				type: 'POST',
 				data: formData,
-                processData: false, // tell jQuery not to process the data
-                contentType: false, // tell jQuery not to set contentType
-                success: function(data) {
-                	$('.jconfirm-open').fadeOut(300, function() {
-                		$(this).remove();
-                	});
-                	if (!data.trim()) {
-                		$('#' + idField.replace("arqUpload_", "")).val(nomeArquivo);
-                		$.alert({
-                			title: "Mensagem",
-                			content: "Upload feito com sucesso",
-                			type: 'green'
-                		});
+				processData: false, // tell jQuery not to process the data
+				contentType: false, // tell jQuery not to set contentType
+				success: function(data) {
+					$('.jconfirm-open').fadeOut(300, function() {
+						$(this).remove();
+					});
+					if (!data.trim()) {
+						$('#' + idField.replace("arqUpload_", "")).val(nomeArquivo);
+						$.alert({
+							title: "Mensagem",
+							content: "Upload feito com sucesso",
+							type: 'green'
+						});
 
-                	} else {
-                		$.alert({
-                			title: "Erro ao efetuar o upload",
-                			content: data,
-                			type: 'red'
-                		});
-                	}
-                }
-            });
+					} else {
+						$.alert({
+							title: "Erro ao efetuar o upload",
+							content: data,
+							type: 'red'
+						});
+					}
+				}
+			});
 		}
 	}
-
 </script>
