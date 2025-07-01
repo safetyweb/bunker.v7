@@ -1,5 +1,7 @@
 <?php
 sleep(1);
+$result = "";
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -733,7 +735,7 @@ sleep(1);
 							$BLTEMPL = $qrListaModelos['COD_BLTEMPL'];
 
 							for ($i = 0; $i < count($DES_HABITOS); $i++) {
-								if ($DES_HABITOS[$i]['codigoexterno'] != '') {
+								if (@$DES_HABITOS[$i]['codigoexterno'] != '') {
 									echo "
 											  <div class='col-md-12'>&emsp; &bull; &nbsp; " . $DES_HABITOS[$i]['descricao'] . "  
 											  <div class='push'></div>";
