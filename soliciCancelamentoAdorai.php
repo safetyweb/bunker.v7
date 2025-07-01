@@ -1,15 +1,41 @@
 <?php
+if ($_SESSION['SYS_COD_USUARIO'] == 127937) {
+	echo fnDebug('true');
+	ini_set('display_errors', 1);
+	ini_set('display_startup_errors', 1);
+	error_reporting(E_ALL);
+}
+$opcao = "";
+$hoje = "";
+$ontem = "";
+$hashLocal = "";
+$msgRetorno = "";
+$msgTipo = "";
+$dat_ini = "";
+$dat_fim = "";
+$cod_usucada = "";
+$hHabilitado = "";
+$hashForm = "";
+$cod_mes = "";
+$popUp = "";
+$abaAdorai = "";
+$abaManutencaoAdorai = "";
+$abaUsuario = "";
+$andDat = "";
+$array = [];
+$qrFunc = "";
+
 
 //echo "<h5>_".$opcao."</h5>";
 
 //inicialização de variáveis
 $hoje = fnFormatDate(date("Y-m-d"));
-$ontem = fnFormatDate(date('Y-m-d', strtotime($ontem. '-1 days')));
+$ontem = fnFormatDate(date('Y-m-d', strtotime($ontem . '-1 days')));
 
 $hashLocal = mt_rand();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	$request = md5(implode($_POST));
+	$request = md5(serialize($_POST));
 
 	if (isset($_SESSION['last_request']) && $_SESSION['last_request'] == $request) {
 		$msgRetorno = 'Essa página já foi utilizada';
@@ -17,27 +43,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	} else {
 		$_SESSION['last_request']  = $request;
 
-		$cod_empresa = fnLimpaCampo($_REQUEST['COD_EMPRESA']);
-		$dat_ini = fnDataSql($_POST['DAT_INI']);
-		$dat_fim = fnDataSql($_POST['DAT_FIM']);
+		$cod_empresa = fnLimpaCampo(@$_REQUEST['COD_EMPRESA']);
+		$dat_ini = fnDataSql(@$_POST['DAT_INI']);
+		$dat_fim = fnDataSql(@$_POST['DAT_FIM']);
 
-		$cod_usucada = $_SESSION[SYS_COD_USUARIO];
+		$cod_usucada = $_SESSION['SYS_COD_USUARIO'];
 
-		$opcao = $_REQUEST['opcao'];
-		$hHabilitado = $_REQUEST['hHabilitado'];
-		$hashForm = $_REQUEST['hashForm'];
+		$opcao = @$_REQUEST['opcao'];
+		$hHabilitado = @$_REQUEST['hHabilitado'];
+		$hashForm = @$_REQUEST['hashForm'];
 	}
-}	
+}
 
 $cod_empresa = 274;
 
-	//inicialização das variáveis - default	
+//inicialização das variáveis - default	
 if (strlen($dat_ini) == 0 || $dat_ini == "1969-12-31") {
 	$dat_ini = fnDataSql($ontem);
 }
 if (strlen($dat_fim) == 0 || $dat_fim == "1969-12-31") {
 
-	$dat_fim = fnDataSql($hoje );
+	$dat_fim = fnDataSql($hoje);
 }
 
 
@@ -75,14 +101,14 @@ if (strlen($dat_fim) == 0 || $dat_fim == "1969-12-31") {
 						</div>
 					<?php } ?>
 
-					<?php 
+					<?php
 					$abaAdorai = 2006;
-					include "abasAdorai.php"; 
+					include "abasAdorai.php";
 
 					$abaManutencaoAdorai = 2019;
-						//echo $abaUsuario;
+					//echo $abaUsuario;
 
-						//se não for sistema de campanhas
+					//se não for sistema de campanhas
 
 					echo ('<div class="push20"></div>');
 					include "abasSistemaAdorai.php";
@@ -104,7 +130,7 @@ if (strlen($dat_fim) == 0 || $dat_fim == "1969-12-31") {
 											<label for="inputName" class="control-label required">Data Inicial</label>
 
 											<div class="input-group date datePicker" id="DAT_INI_GRP">
-												<input type='text' class="form-control input-sm data" name="DAT_INI" id="DAT_INI" value="<?=fnDataShort($dat_ini)?>" required/>
+												<input type='text' class="form-control input-sm data" name="DAT_INI" id="DAT_INI" value="<?= fnDataShort($dat_ini) ?>" required />
 												<span class="input-group-addon">
 													<span class="glyphicon glyphicon-calendar"></span>
 												</span>
@@ -118,7 +144,7 @@ if (strlen($dat_fim) == 0 || $dat_fim == "1969-12-31") {
 											<label for="inputName" class="control-label required">Data Final</label>
 
 											<div class="input-group date datePicker" id="DAT_FIM_GRP">
-												<input type='text' class="form-control input-sm data" name="DAT_FIM" id="DAT_FIM" value="<?=fnDataShort($dat_fim)?>" required/>
+												<input type='text' class="form-control input-sm data" name="DAT_FIM" id="DAT_FIM" value="<?= fnDataShort($dat_fim) ?>" required />
 												<span class="input-group-addon">
 													<span class="glyphicon glyphicon-calendar"></span>
 												</span>
@@ -204,38 +230,38 @@ if (strlen($dat_fim) == 0 || $dat_fim == "1969-12-31") {
 												ORDER BY A.COD_PEDIDO
 									";
 									$array = mysqli_query(connTemp($cod_empresa, ''), $sql);
-									
+
 									$count = 0;
 									while ($qrFunc = mysqli_fetch_assoc($array)) {
 										$count++;
-										?>
+									?>
 										<tr cod_cliente="<?php echo $qrFunc['ID_RESERVA']; ?>">
-										    <td class='text-center'><a href='javascript:void(0);' onclick='abreDetail(<?php echo $qrFunc['ID_RESERVA']; ?>)'><i class='fal fa-chevron-right' aria-hidden='true'></i></a></td>
-										    <td></td>
-										    <td><?php echo $qrFunc['COD_PEDIDO']; ?></td>
-										    <td><?php echo $qrFunc['NOME']; ?></td>
-										    <td><?php echo $qrFunc['CPF']; ?></td>
-										    <td><?php echo $qrFunc['EMAIL']; ?></td>
-										    <td><?php echo fnmasktelefone($qrFunc['TELEFONE']); ?></td>
-										    <td class='text-right'><?php echo fnValor($qrFunc['tot_val_credito'], 2); ?></td>
-										    <td class='text-right'><?php echo $qrFunc['ABV_FORMAPAG']; ?></td>
-										    <td class='text-right'><?php echo fnDataShort($qrFunc['DAT_PEDIDO']); ?></td>
-										    <td class='text-right'><?php echo $qrFunc['DES_OBSERVA']; ?></td>
-										    <td><?php echo $qrFunc['ABV_STATUSPAG']; ?></td>
-										    <?php if($qrFunc['COD_STATUS'] != 4){ ?>
-										   		<td><a href='javascript:void(0);' id='btnNovo<?php echo $qrFunc['ID_RESERVA']; ?>' class='btn btn-info btn-xs addBox' data-url='action.do?mod=<?php echo fnEncode(2031); ?>&id=<?php echo fnEncode(274); ?>&idr=<?php echo fnEncode($qrFunc['ID_RESERVA']); ?>&pop=true' data-title='Cadastro de Lançamento'><i class='fal fa-plus' aria-hidden='true'></i></a></td>
-										   	<?php }else{ ?>
-										    	<td></td>
-										    <?php } ?>
-										    <td></td>
+											<td class='text-center'><a href='javascript:void(0);' onclick='abreDetail(<?php echo $qrFunc['ID_RESERVA']; ?>)'><i class='fal fa-chevron-right' aria-hidden='true'></i></a></td>
+											<td></td>
+											<td><?php echo $qrFunc['COD_PEDIDO']; ?></td>
+											<td><?php echo $qrFunc['NOME']; ?></td>
+											<td><?php echo $qrFunc['CPF']; ?></td>
+											<td><?php echo $qrFunc['EMAIL']; ?></td>
+											<td><?php echo fnmasktelefone($qrFunc['TELEFONE']); ?></td>
+											<td class='text-right'><?php echo fnValor($qrFunc['tot_val_credito'], 2); ?></td>
+											<td class='text-right'><?php echo $qrFunc['ABV_FORMAPAG']; ?></td>
+											<td class='text-right'><?php echo fnDataShort($qrFunc['DAT_PEDIDO']); ?></td>
+											<td class='text-right'><?php echo $qrFunc['DES_OBSERVA']; ?></td>
+											<td><?php echo $qrFunc['ABV_STATUSPAG']; ?></td>
+											<?php if ($qrFunc['COD_STATUS'] != 4) { ?>
+												<td><a href='javascript:void(0);' id='btnNovo<?php echo $qrFunc['ID_RESERVA']; ?>' class='btn btn-info btn-xs addBox' data-url='action.do?mod=<?php echo fnEncode(2031); ?>&id=<?php echo fnEncode(274); ?>&idr=<?php echo fnEncode($qrFunc['ID_RESERVA']); ?>&pop=true' data-title='Cadastro de Lançamento'><i class='fal fa-plus' aria-hidden='true'></i></a></td>
+											<?php } else { ?>
+												<td></td>
+											<?php } ?>
+											<td></td>
 										</tr>
 										<tr style='display:none; background-color: #fff;' id='abreDetail_<?php echo $qrFunc['ID_RESERVA']; ?>'>
-										    <td></td>
-										    <td colspan='11'>
-										        <div id='mostraDetail_<?php echo $qrFunc['ID_RESERVA']; ?>'></div>
-										    </td>
+											<td></td>
+											<td colspan='11'>
+												<div id='mostraDetail_<?php echo $qrFunc['ID_RESERVA']; ?>'></div>
+											</td>
 										</tr>
-								<?php
+									<?php
 
 									}
 
@@ -253,9 +279,9 @@ if (strlen($dat_fim) == 0 || $dat_fim == "1969-12-31") {
 					</div>
 
 				</div>
+				</div>
+				<!-- fim Portlet -->
 			</div>
-			<!-- fim Portlet -->
-		</div>
 
 	</div>
 
@@ -298,14 +324,14 @@ if (strlen($dat_fim) == 0 || $dat_fim == "1969-12-31") {
 				$('#DAT_INI_GRP').data("DateTimePicker").maxDate(e.date);
 			});
 
-				//chosen
+			//chosen
 			$.fn.validator.Constructor.INPUT_SELECTOR = ':input:not([type="submit"], button):enabled, .requiredChk';
 			$('#formulario').validator();
 
-				//modal close
+			//modal close
 			$('.modal').on('hidden.bs.modal', function() {
-					//reloadPage(current_page);
-					//alert("fechou...");
+				//reloadPage(current_page);
+				//alert("fechou...");
 			});
 
 
@@ -314,5 +340,4 @@ if (strlen($dat_fim) == 0 || $dat_fim == "1969-12-31") {
 		function abreDetail(idCli) {
 			refreshCaixa(idCli);
 		}
-
 	</script>
