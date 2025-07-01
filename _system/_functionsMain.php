@@ -3284,37 +3284,65 @@ function codificar($string)
     return strtr(base64_encode($stringCompactada), '/&$%', '-_#');
 }
 
+// function decodificar($stringCompactada)
+// {
+//     // Verifica se a string recebida está vazia
+//     if (empty($stringCompactada)) {
+//         return "";
+//     }
+
+
+//     // Verifica se a string contém apenas caracteres válidos para Base64 customizado
+//     if (preg_match('/[^A-Za-z0-9\-_#]/', $stringCompactada)) {
+//         // Se não for codificada, retorna como está
+//         return $stringCompactada;
+//     }
+
+//     // Substitui os caracteres customizados de volta para os originais
+//     $stringCompactada = strtr($stringCompactada, '-_#', '/&$%');
+
+//     // Decodifica a string Base64
+//     $dadosDecodificados = base64_decode($stringCompactada);
+
+//     // Verifica se a decodificação foi bem-sucedida
+//     if ($dadosDecodificados === false) {
+//         die("Erro: Não foi possível decodificar a string Base64.");
+//     }
+
+//     // Descompacta a string usando gzip
+//     $stringDescompactada = gzuncompress($dadosDecodificados);
+
+//     // Verifica se a descompactação foi bem-sucedida
+//     if ($stringDescompactada === false) {
+//         die("Erro: Não foi possível descompactar a string.");
+//     }
+
+//     return $stringDescompactada;
+// }
+
+
 function decodificar($stringCompactada)
 {
-    // Verifica se a string recebida está vazia
     if (empty($stringCompactada)) {
         return "";
     }
 
-
-    // Verifica se a string contém apenas caracteres válidos para Base64 customizado
     if (preg_match('/[^A-Za-z0-9\-_#]/', $stringCompactada)) {
-        // Se não for codificada, retorna como está
         return $stringCompactada;
     }
 
-    // Substitui os caracteres customizados de volta para os originais
     $stringCompactada = strtr($stringCompactada, '-_#', '/&$%');
 
-    // Decodifica a string Base64
-    $dadosDecodificados = base64_decode($stringCompactada);
-
-    // Verifica se a decodificação foi bem-sucedida
+    $dadosDecodificados = base64_decode($stringCompactada, true);
     if ($dadosDecodificados === false) {
-        die("Erro: Não foi possível decodificar a string Base64.");
+        error_log("Erro Base64: " . $stringCompactada);
+        return $stringCompactada;
     }
 
-    // Descompacta a string usando gzip
-    $stringDescompactada = gzuncompress($dadosDecodificados);
-
-    // Verifica se a descompactação foi bem-sucedida
+    $stringDescompactada = @gzuncompress($dadosDecodificados);
     if ($stringDescompactada === false) {
-        die("Erro: Não foi possível descompactar a string.");
+        error_log("Erro gzuncompress: " . bin2hex($dadosDecodificados));
+        return $dadosDecodificados;
     }
 
     return $stringDescompactada;
