@@ -4,6 +4,9 @@
 
 $hashLocal = mt_rand();
 $msgRetorno = "";
+$num_cartao_novo = "";
+$cod_tipmoti = "";
+$mensagem_retorno = "";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$request = md5(serialize($_POST));
