@@ -5,7 +5,12 @@
 $buscaAjx1 = fnLimpacampo($_GET['ajx1']);
 $buscaAjx2 = fnLimpacampo($_GET['ajx2']);
 $buscaAjx3 = fnLimpacampo($_GET['ajx3']);
-$buscaAjx4 = fnLimpacampo($_GET['ajx4']);
+
+if (isset($_GET['ajx4'])) {
+	$buscaAjx4 = fnLimpacampo($_GET['ajx4']);
+} else {
+	$buscaAjx4 = "";
+}
 
 if (isset($_GET['CASAS_DEC'])) {
 	$casasDec = $_GET['CASAS_DEC'];
