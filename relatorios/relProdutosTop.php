@@ -27,13 +27,13 @@ $lojasSelecionadas = "";
 $countLinha = "";
 $totalUnit = "";
 $qrListaVendas = "";
-$totalProd = "";
-$totalProdFid = "";
-$totalVendas = "";
-$totalVendasFid = "";
-$totalQtdVendas = "";
+$totalProd = 0;
+$totalProdFid = 0;
+$totalVendas = 0;
+$totalVendasFid = 0;
+$totalQtdVendas = 0;
 $qtd_fidelizado_total = 0;
-$val_fideliza_total = "";
+$val_fideliza_total = 0;
 $content = "";
 
 
@@ -446,7 +446,7 @@ include "unidadesAutorizadas.php";
 										</tr>
 									<?php
 
-										$totalProd += fnValorSql($qrListaVendas['TOTAL_QTD_PROD']);
+										$totalProd += $qrListaVendas['TOTAL_QTD_PROD'];
 										$totalProdFid += $qrListaVendas['TOTAL_QTD_FIDE'];
 										$totalVendas += $qrListaVendas['TOT_VENDAS'];
 										$totalVendasFid += $qrListaVendas['TOT_VENDAS_FIDEL'];
