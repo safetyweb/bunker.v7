@@ -1,9 +1,9 @@
 <?php
 if ($_SESSION['SYS_COD_USUARIO'] == 127937) {
-    echo fnDebug('true');
-    ini_set('display_errors', 1);
-    ini_set('display_startup_errors', 1);
-    error_reporting(E_ALL);
+	echo fnDebug('true');
+	ini_set('display_errors', 1);
+	ini_set('display_startup_errors', 1);
+	error_reporting(E_ALL);
 }
 $opcao = "";
 $hotel = "";
@@ -103,7 +103,7 @@ $dias30 = fnFormatDate(date("Y-m-d"));
 
 $hashLocal = mt_rand();
 
-$conn = conntemp($cod_empresa,"");
+$conn = conntemp($cod_empresa, "");
 $adm = $connAdm->connAdm();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -115,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	} else {
 		$_SESSION['last_request']  = $request;
 
-		
+
 		$cod_empresa = fnLimpaCampo(@$_REQUEST['COD_EMPRESA']);
 		// $dat_ini = fnDataSql(@$_POST['DAT_INI']);
 		// $dat_fim = fnDataSql(@$_POST['DAT_FIM']);
@@ -130,7 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		}
 
 		//array dos hoteis
-		if (isset(@$_POST['COD_HOTEL'])) {
+		if (isset($_POST['COD_HOTEL'])) {
 			$Arr_COD_HOTEL = @$_POST['COD_HOTEL'];
 			$cod_hotel = "";
 			//print_r($Arr_COD_MULTEMP);			 
@@ -139,7 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 				$cod_hotel = $cod_hotel . $Arr_COD_HOTEL[$i] . ",";
 			}
 
-			$cod_hotel = rtrim(ltrim($cod_hotel,","),",");
+			$cod_hotel = rtrim(ltrim($cod_hotel, ","), ",");
 		} else {
 			$cod_hotel = 0;
 		}
@@ -147,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		// fnEscreve($cod_hotel);
 
 		$nom_usuario = $_SESSION["SYS_NOM_USUARIO"];
-		$actual_link = "$_SERVER['HTTP_HOST']$_SERVER['REQUEST_URI']";
+		$actual_link = "$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 		$MODULO = @$_GET['mod'];
 		$COD_MODULO = fndecode(@$_GET['mod']);
 
@@ -173,7 +173,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			// 	$cod_erro = Log_error_comand($adm,$conn, $cod_empresa, $actual_link, $MODULO, $COD_MODULO, $sql,$nom_usuario);
 			// }
 
-			if ($cod_hotel != 0 && $cod_hotel != ''){
+			if ($cod_hotel != 0 && $cod_hotel != '') {
 
 				$arrHotel = explode(",", $cod_hotel);
 				$reservaHotel = "";
@@ -189,13 +189,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 				// fnEscreve($dat_ini);
 				// fnEscreve($dat_fim);
 
-				if($num_criancas > 0){
+				if ($num_criancas > 0) {
 					// $hospedeCrianca = '<GuestCount AgeQualifyingCode="14" Count="'.$num_criancas.'"/>';
 				}
 
 				foreach ($arrHotel as $hotel) {
 					//fnEscreve($hotel);
-					$reservaHotel .= '<HotelRef HotelCode="'.$hotel.'"/>';
+					$reservaHotel .= '<HotelRef HotelCode="' . $hotel . '"/>';
 					//fnEscreve($reservaHotel);
 				}
 
@@ -204,38 +204,38 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 				$curl = curl_init();
 
 				curl_setopt_array($curl, array(
-				  CURLOPT_URL => 'https://services-hotels.focomultimidia.com/v1/avaiability/ota/OTA_HotelAvailRQ',
-				  CURLOPT_RETURNTRANSFER => true,
-				  CURLOPT_ENCODING => '',
-				  CURLOPT_MAXREDIRS => 10,
-				  CURLOPT_TIMEOUT => 360,
-				  CURLOPT_FOLLOWLOCATION => true,
-				  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-				  CURLOPT_CUSTOMREQUEST => 'POST',
-				  CURLOPT_POSTFIELDS =>'<OTA_HotelAvailRQ xmlns="http://www.opentravel.org/OTA/2003/05" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opentravel.org/OTA/2003/05 OTA_HotelAvailRQ.xsd" TimeStamp="2012-11-13T10:06:51-00:00" Target="Production" Version="1">
+					CURLOPT_URL => 'https://services-hotels.focomultimidia.com/v1/avaiability/ota/OTA_HotelAvailRQ',
+					CURLOPT_RETURNTRANSFER => true,
+					CURLOPT_ENCODING => '',
+					CURLOPT_MAXREDIRS => 10,
+					CURLOPT_TIMEOUT => 360,
+					CURLOPT_FOLLOWLOCATION => true,
+					CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+					CURLOPT_CUSTOMREQUEST => 'POST',
+					CURLOPT_POSTFIELDS => '<OTA_HotelAvailRQ xmlns="http://www.opentravel.org/OTA/2003/05" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opentravel.org/OTA/2003/05 OTA_HotelAvailRQ.xsd" TimeStamp="2012-11-13T10:06:51-00:00" Target="Production" Version="1">
 										    <AvailRequestSegments>
 										        <AvailRequestSegment>
 										            <HotelSearchCriteria AvailableOnlyIndicator="true">
 										                <Criterion>
-										                    '.$reservaHotel.'
+										                    ' . $reservaHotel . '
 										                </Criterion>
 										            </HotelSearchCriteria>
 										            <RoomStayCandidates>
-										                <RoomStayCandidate EffectiveDate="'.$dat_ini.'" ExpireDate="'.$dat_fim.'">
+										                <RoomStayCandidate EffectiveDate="' . $dat_ini . '" ExpireDate="' . $dat_fim . '">
 										                    <GuestCounts>
-										                        <GuestCount AgeQualifyingCode="10" Count="'.$num_adultos.'"/>
-										                        '.$hospedeCrianca.'
+										                        <GuestCount AgeQualifyingCode="10" Count="' . $num_adultos . '"/>
+										                        ' . $hospedeCrianca . '
 										                    </GuestCounts>
 										                </RoomStayCandidate>
 										            </RoomStayCandidates>
 										        </AvailRequestSegment>
 										    </AvailRequestSegments>
 										</OTA_HotelAvailRQ>',
-				  CURLOPT_HTTPHEADER => array(
-				    'Content-Type: text/xml',
-				    'Authorization: Basic YWRvcmFpOmtKbW5mMzQ1SG5maGQ=',
-				    'Cookie: foco_api_connectivity_session=eyJpdiI6Ikh6cTg4U3NuUUNMUjRKd3paeEY4VkE9PSIsInZhbHVlIjoiSUcwSUlEMklmSVNiUENBdVMrUXdOMWlGRWtXZ1hpWlpiYW9RMVNIQ3JrUk1JaVJ6WVRnM3lWQWxtT1wvSGhoa2dZV0czam5vVFwvV3YwQnFHUllLVmNKTVh1UUFrQTlPWUVLZmdrK0pFKzVGVUN0bXdWajVvRXFiM2RxZHk0NGNuTyIsIm1hYyI6IjNlMDA4MmYxMjQ3ZjVhN2Q3MWU2ZDE0MWY3NmE1ZDgwMjkwYzNiMWQwMDE3YTI2M2U4NjQzY2YyMjZjYWI4MTkifQ%3D%3D'
-				  ),
+					CURLOPT_HTTPHEADER => array(
+						'Content-Type: text/xml',
+						'Authorization: Basic YWRvcmFpOmtKbW5mMzQ1SG5maGQ=',
+						'Cookie: foco_api_connectivity_session=eyJpdiI6Ikh6cTg4U3NuUUNMUjRKd3paeEY4VkE9PSIsInZhbHVlIjoiSUcwSUlEMklmSVNiUENBdVMrUXdOMWlGRWtXZ1hpWlpiYW9RMVNIQ3JrUk1JaVJ6WVRnM3lWQWxtT1wvSGhoa2dZV0czam5vVFwvV3YwQnFHUllLVmNKTVh1UUFrQTlPWUVLZmdrK0pFKzVGVUN0bXdWajVvRXFiM2RxZHk0NGNuTyIsIm1hYyI6IjNlMDA4MmYxMjQ3ZjVhN2Q3MWU2ZDE0MWY3NmE1ZDgwMjkwYzNiMWQwMDE3YTI2M2U4NjQzY2YyMjZjYWI4MTkifQ%3D%3D'
+					),
 				));
 
 				$response = curl_exec($curl);
@@ -246,18 +246,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 				libxml_clear_errors();
 				$xml = $doc->saveXML($doc->documentElement);
 				$xml = simplexml_load_string($xml);
-				$hotel= json_decode(json_encode($xml), true);
+				$hotel = json_decode(json_encode($xml), true);
 				// echo "<pre>";
 				// print_r($hotel);
 				// echo "</pre>";
-				$hotel= $hotel['body']['ota_hotelavailrs'];
+				$hotel = $hotel['body']['ota_hotelavailrs'];
 
-				if(@$_GET['dev'] == 'true'){
+				if (@$_GET['dev'] == 'true') {
 
 					echo "<pre>";
 					print_r($hotel);
 					echo "</pre>";
-
 				}
 
 				curl_close($curl);
@@ -266,35 +265,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 				$nom_usuario = $_SESSION["SYS_NOM_USUARIO"];
 
-				if($nom_usuario == ""){
+				if ($nom_usuario == "") {
 					$nom_usuario == "BUNKER";
 				}
 
 				// $sqlDesc = "INSERT INTO ACESSOS_ADORAI(
-			    //                             COD_EMPRESA,
-			    //                             DES_ORIGEM,
-			    //                             NUM_CELULAR,
-			    //                             DAT_INI,
-			    //                             DAT_FIM,
-			    //                             COD_HOTEL,
-			    //                             COD_CHALE
-			    //                         ) VALUES(
-			    //                             274,
-			    //                             '$nom_usuario',
-			    //                             '',
-			    //                             '$dat_ini',
-			    //                             '$dat_fim',
-			    //                             '$cod_hotel',
-			    //                             '$cod_chale'
-			    //                         )";
+				//                             COD_EMPRESA,
+				//                             DES_ORIGEM,
+				//                             NUM_CELULAR,
+				//                             DAT_INI,
+				//                             DAT_FIM,
+				//                             COD_HOTEL,
+				//                             COD_CHALE
+				//                         ) VALUES(
+				//                             274,
+				//                             '$nom_usuario',
+				//                             '',
+				//                             '$dat_ini',
+				//                             '$dat_fim',
+				//                             '$cod_hotel',
+				//                             '$cod_chale'
+				//                         )";
 
-			    
 
-			    // mysqli_query(connTemp(274,''), $sqlDesc);
+
+				// mysqli_query(connTemp(274,''), $sqlDesc);
 
 			}
 
-			
+
 
 			//mensagem de retorno
 			switch ($opcao) {
@@ -318,7 +317,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 					} else {
 						$msgRetorno = "Não foi possível excluir o registro : $cod_erro";
 					}
-					break;					
+					break;
 			}
 			if ($cod_erro == 0 || $cod_erro == "") {
 				$msgTipo = 'alert-success';
@@ -361,7 +360,7 @@ if (strlen($dat_fim) == 0 || $dat_fim == "1969-12-31") {
 
 $checkDiaria = "";
 
-if($log_diaria == "S"){
+if ($log_diaria == "S") {
 	$checkDiaria = "checked";
 }
 
@@ -369,40 +368,40 @@ if($log_diaria == "S"){
 ?>
 
 <style>
-.hiddenRow {
-    padding: 0 !important;
-}
-tr{
-	border-bottom: none!important;
-}
-#blocker
-{
-    display:none; 
-	position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: .8;
-    background-color: #fff;
-    z-index: 1000;
-}
-    
-#blocker div
-{
-	position: absolute;
-	top: 30%;
-	left: 48%;
-	width: 200px;
-	height: 2em;
-	margin: -1em 0 0 -2.5em;
-	color: #000;
-	font-weight: bold;
-}
+	.hiddenRow {
+		padding: 0 !important;
+	}
+
+	tr {
+		border-bottom: none !important;
+	}
+
+	#blocker {
+		display: none;
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		opacity: .8;
+		background-color: #fff;
+		z-index: 1000;
+	}
+
+	#blocker div {
+		position: absolute;
+		top: 30%;
+		left: 48%;
+		width: 200px;
+		height: 2em;
+		margin: -1em 0 0 -2.5em;
+		color: #000;
+		font-weight: bold;
+	}
 </style>
 
 <div id="blocker">
-   <div style="text-align: center;"><img src="images/loading2.gif"><br/> Aguarde. Processando... ;-)</div>
+	<div style="text-align: center;"><img src="images/loading2.gif"><br /> Aguarde. Processando... ;-)</div>
 </div>
 
 <div class="push30"></div>
@@ -433,9 +432,9 @@ tr{
 					</div>
 				<?php } ?>
 
-				<?php 
-					$abaAdorai = 1820;
-					include "abasAdorai.php"; 
+				<?php
+				$abaAdorai = 1820;
+				include "abasAdorai.php";
 				?>
 
 				<div class="push30"></div>
@@ -448,28 +447,28 @@ tr{
 							<legend>Dados Gerais</legend>
 
 							<div class="row">
-								
+
 								<div class="col-xs-5">
 									<div class="form-group">
 										<label for="inputName" class="control-label required">Hotéis</label>
-											<select data-placeholder="Selecione os hotéis" name="COD_HOTEL[]" id="COD_HOTEL" multiple="multiple" class="chosen-select-deselect" required>
-												<!-- <option value="5952">Jabaquara</option> -->
-												<!-- <option value=""></option> -->
-												<?php
-													$sqlHotel = "SELECT COD_EXTERNO, NOM_FANTASI FROM UNIDADEVENDA WHERE COD_EMPRESA = $cod_empresa AND LOG_ESTATUS = 'S'";
-													$arrayHotel = mysqli_query(connTemp($cod_empresa,''), $sqlHotel);
+										<select data-placeholder="Selecione os hotéis" name="COD_HOTEL[]" id="COD_HOTEL" multiple="multiple" class="chosen-select-deselect" required>
+											<!-- <option value="5952">Jabaquara</option> -->
+											<!-- <option value=""></option> -->
+											<?php
+											$sqlHotel = "SELECT COD_EXTERNO, NOM_FANTASI FROM UNIDADEVENDA WHERE COD_EMPRESA = $cod_empresa AND LOG_ESTATUS = 'S'";
+											$arrayHotel = mysqli_query(connTemp($cod_empresa, ''), $sqlHotel);
 
-													while ($qrHotel = mysqli_fetch_assoc($arrayHotel)) {
-												?>
-														<option value="<?=$qrHotel['COD_EXTERNO']?>">"<?=$qrHotel['NOM_FANTASI']?>"</option>
-												<?php 
-													}
-												?>
-												<!-- <option value="2957">Adorai/SP</option>
+											while ($qrHotel = mysqli_fetch_assoc($arrayHotel)) {
+											?>
+												<option value="<?= $qrHotel['COD_EXTERNO'] ?>">"<?= $qrHotel['NOM_FANTASI'] ?>"</option>
+											<?php
+											}
+											?>
+											<!-- <option value="2957">Adorai/SP</option>
 												<option value="3010">Piedade 2/SP</option>
 												<option value="3008">Cunha/SP</option>
 												<option value="956">Paraty/RJ</option> -->
-											</select>
+										</select>
 										<div class="help-block with-errors"></div>
 										<a class="btn btn-default btn-sm" id="iAll" style="padding: 0 2px ; font-size: 10px;"><i class="fa fa-check-square" aria-hidden="true"></i> selecionar todos</a>&nbsp;
 										<a class="btn btn-default btn-sm" id="iNone" style="padding: 0 2px ; font-size: 10px;"><i class="fa fa-square-o" aria-hidden="true"></i>&nbsp; deselecionar todos</a>
@@ -489,8 +488,8 @@ tr{
 										</select>
 										<div class="help-block with-errors"></div>
 										<script type="text/javascript">
-											$(function(){
-												$("#formulario #NUM_ADULTOS").val("<?=$num_adultos?>").trigger("chosen:updated");
+											$(function() {
+												$("#formulario #NUM_ADULTOS").val("<?= $num_adultos ?>").trigger("chosen:updated");
 											});
 										</script>
 									</div>
@@ -510,8 +509,8 @@ tr{
 										</select>
 										<div class="help-block with-errors"></div>
 										<script type="text/javascript">
-											$(function(){
-												$("#formulario #NUM_CRIANCAS").val("<?=$num_criancas?>").trigger("chosen:updated");
+											$(function() {
+												$("#formulario #NUM_CRIANCAS").val("<?= $num_criancas ?>").trigger("chosen:updated");
 											});
 										</script>
 									</div>
@@ -550,7 +549,7 @@ tr{
 										<label for="inputName" class="control-label">Somente Diárias</label>
 										<div class="push5"></div>
 										<label class="switch">
-											<input type="checkbox" name="LOG_DIARIA" id="LOG_DIARIA" class="switch" value="S" <?=$checkDiaria?>>
+											<input type="checkbox" name="LOG_DIARIA" id="LOG_DIARIA" class="switch" value="S" <?= $checkDiaria ?>>
 											<span></span>
 										</label>
 									</div>
@@ -568,37 +567,36 @@ tr{
 
 								<div class="row">
 
-									<?php 
+									<?php
 
-										$sql = "SELECT * FROM CANAL_ADORAI WHERE COD_EMPRESA = 274 AND LOG_PREF = 'S'";
+									$sql = "SELECT * FROM CANAL_ADORAI WHERE COD_EMPRESA = 274 AND LOG_PREF = 'S'";
 
-										$arrCanal = mysqli_query(conntemp(274,""), $sql);
+									$arrCanal = mysqli_query(conntemp(274, ""), $sql);
 
-										$count = 0;
+									$count = 0;
 
-										while($qrCanal = mysqli_fetch_assoc($arrCanal)){
+									while ($qrCanal = mysqli_fetch_assoc($arrCanal)) {
 
-											// if($qrCanal['LOG_PREF'] == "S"){
-											// 	$checkCanal = "checked";
-											// }else{
-											// 	$checkCanal = "";
-											// }
+										// if($qrCanal['LOG_PREF'] == "S"){
+										// 	$checkCanal = "checked";
+										// }else{
+										// 	$checkCanal = "";
+										// }
 									?>
 
-											<div class="col-md-12">
-												<div class="radio radio-info radio-inline">
-													<input type="radio" id="canal_<?=$count?>" value="<?=$qrCanal['COD_CANAL']?>" name="canalEnvio" <?=$checkCanal?>>
-													<label for="canal_<?=$count?>"><?=$qrCanal['DES_CANAL']?>&nbsp;&nbsp;<small><small><?=$qrCanal['NUM_CANAL']?></small></small></label>
-												</div>
+										<div class="col-md-12">
+											<div class="radio radio-info radio-inline">
+												<input type="radio" id="canal_<?= $count ?>" value="<?= $qrCanal['COD_CANAL'] ?>" name="canalEnvio" <?= $checkCanal ?>>
+												<label for="canal_<?= $count ?>"><?= $qrCanal['DES_CANAL'] ?>&nbsp;&nbsp;<small><small><?= $qrCanal['NUM_CANAL'] ?></small></small></label>
 											</div>
+										</div>
 
-											<div class="push5"></div>
+										<div class="push5"></div>
 
 									<?php
 
-											$count++;
-
-										}
+										$count++;
+									}
 
 									?>
 
@@ -637,15 +635,15 @@ tr{
 
 					<div class="push50"></div>
 
-					
+
 
 					<div class="col-lg-12">
 
-						<?php 
+						<?php
 
-							// echo "<pre>";
-							// print_r($hotel['roomstays']);
-							// echo "</pre>";
+						// echo "<pre>";
+						// print_r($hotel['roomstays']);
+						// echo "</pre>";
 
 						// print_r($hotel['roomstays']);
 
@@ -654,7 +652,7 @@ tr{
 						$val_total = 0;
 						$arrayVagas = array();
 
-						if(count($hotel['roomstays']) > 0){
+						if (count($hotel['roomstays']) > 0) {
 
 						?>
 
@@ -662,7 +660,7 @@ tr{
 
 								<thead>
 
-									<tr data-toggle="collapse" class="accordion-toggle" data-target="#<?=$chave_linha?>" onclick='rotacionaSeta("<?=$chave_linha?>")'>
+									<tr data-toggle="collapse" class="accordion-toggle" data-target="#<?= $chave_linha ?>" onclick='rotacionaSeta("<?= $chave_linha ?>")'>
 										<th width="2%"></th>
 										<th>Chalé</th>
 										<th class="text-center">Ações</th>
@@ -674,22 +672,167 @@ tr{
 									</tr>
 
 								</thead>
-							  
-								<?php 
-								
-									if($hotel['roomstays']['roomstay']['roomrates']['roomrate']['rates']['rate']['total']['@attributes']['amountaftertax'] > 0){
-										// fnEscreve("if 1");
 
-										$chave_linha = $countQuarto;
-										$dat_min = $hotel['roomstays']['roomstay']['roomrates']['roomrate']['rates']['rate']['@attributes'];
-										$dat_max = $hotel['roomstays']['roomstay']['roomrates']['roomrate']['rates']['rate']['@attributes']['expiredate'];
-										$nom_quarto = $hotel['roomstays']['roomstay']['roomtypes']['roomtype']['tpa_extensions']['room']['@attributes']['name'];
-										$id_hotel = $hotel['roomstays']['roomstay']['@attributes']['rph'];
-										$cod_quarto = $hotel['roomstays']['roomstay']['roomtypes']['roomtype']['tpa_extensions']['room']['@attributes']['id'];
-										$val_diaria = $hotel['roomstays']['roomstay']['roomrates']['RoomRate']['rates']['rate']['total']['@attributes']['amountaftertax'];
-										$val_total = $hotel['roomstays']['roomstay']['roomrates']['roomrate']['rates']['rate']['total']['@attributes']['amountaftertax'];
+								<?php
+
+								if ($hotel['roomstays']['roomstay']['roomrates']['roomrate']['rates']['rate']['total']['@attributes']['amountaftertax'] > 0) {
+									// fnEscreve("if 1");
+
+									$chave_linha = $countQuarto;
+									$dat_min = $hotel['roomstays']['roomstay']['roomrates']['roomrate']['rates']['rate']['@attributes'];
+									$dat_max = $hotel['roomstays']['roomstay']['roomrates']['roomrate']['rates']['rate']['@attributes']['expiredate'];
+									$nom_quarto = $hotel['roomstays']['roomstay']['roomtypes']['roomtype']['tpa_extensions']['room']['@attributes']['name'];
+									$id_hotel = $hotel['roomstays']['roomstay']['@attributes']['rph'];
+									$cod_quarto = $hotel['roomstays']['roomstay']['roomtypes']['roomtype']['tpa_extensions']['room']['@attributes']['id'];
+									$val_diaria = $hotel['roomstays']['roomstay']['roomrates']['RoomRate']['rates']['rate']['total']['@attributes']['amountaftertax'];
+									$val_total = $hotel['roomstays']['roomstay']['roomrates']['roomrate']['rates']['rate']['total']['@attributes']['amountaftertax'];
+
+									$nom_quarto = explode("-", $nom_quarto);
+
+									$diasemana = array('Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sabado');
+
+									// $data = date('Y-m-d');
+
+									$diasemana_inicio = date('w', strtotime($dat_min));
+									$diasemana_fim = date('w', strtotime($dat_max));
+									$nroQuarto = explode(" ", $nom_quarto['0']);
+									$nroDiarias = fnDateDif($dat_min, $dat_max);
+
+									$sqlDesc = "SELECT DES_QUARTO, DES_IMAGEM, DES_VIDEO FROM ADORAI_CHALES 
+													WHERE COD_EXTERNO = $cod_quarto
+													AND COD_EXCLUSA = 0";
+									$arrayDesc = mysqli_query(connTemp($cod_empresa, ''), $sqlDesc);
+									$qrDesc = mysqli_fetch_assoc($arrayDesc);
+
+									// fnEscreve($sqlDesc);
+
+									$sqlVend = "SELECT VA.COD_EXT_VENDEDOR FROM VENDEDOR_ADORAI VA 
+														INNER JOIN UNIDADEVENDA UV ON UV.COD_UNIVEND = VA.COD_UNIVEND
+														WHERE VA.COD_USUARIO = $_SESSION[SYS_COD_USUARIO] 
+														AND UV.COD_EXTERNO = $id_hotel";
+
+									// if(@$_GET['dev'] == 'true'){
+									// 	echo $sqlVend;
+									// }
+
+									$arrayVend = mysqli_query(connTemp($cod_empresa, ''), $sqlVend);
+									$qrVend = mysqli_fetch_assoc($arrayVend);
+
+									$arrayVagas[$nroQuarto['1']] = array(
+										"idHotel" => $id_hotel,
+										"idQuarto" => $cod_quarto,
+										"codVendedor" => "$qrVend[COD_EXT_VENDEDOR]",
+										"chale" => $nom_quarto['0'],
+										"local" => $nom_quarto['1'],
+										"diaria" => $val_diaria,
+										"total" => $val_total,
+										"dataMin" => $dat_min,
+										"dataMax" => $dat_max,
+										"semanaIni" => $diasemana[$diasemana_inicio],
+										"semanaFim" => $diasemana[$diasemana_fim],
+										"nroDiarias" => $nroDiarias,
+										"nroPessoas" => $num_pessoas,
+										"descricao" => "$qrDesc[DES_QUARTO]",
+										"imagem" => "$qrDesc[DES_IMAGEM]",
+										"video" => "$qrDesc[DES_VIDEO]"
+									);
+
+									$arrayOrdenado = fnorderby_array($arrayVagas, $nroQuarto['1'], SORT_ASC);
+								}
+
+								$abrQuarto = $hotel['roomstays']['roomstay'];
+
+								if ($abrQuarto == "") {
+									// fnEscreve("sem roomstays");
+									$abrQuarto = $hotel['roomstay'];
+								}
+
+								// echo "<pre>";
+								// print_r($abrQuarto);
+								// echo "</pre>";
+
+								// [RoomTypes] => Array
+								//       (
+								//           [RoomType] => Array
+								//               (
+								//                   [TPA_Extensions] => Array
+								//                       (
+								//                           [Room] => Array
+								//                               (
+								//                                   [@attributes] => Array
+								//                                       (
+								//                                           [ID]
+
+								foreach ($abrQuarto as $quarto) {
+
+									// echo "<pre>";
+									// print_r($quarto);
+									// echo "</pre>";
+
+									$chave_linha = $countQuarto;
+
+									if (count($quarto['roomrates']['roomrate']['rates']['rate']) > 0) {
+										$quartosVaga = $quarto['roomrates']['roomrate']['rates']['rate'];
+									} else if (count($quarto['roomrate']['rates']['rate']) > 0) {
+										$quartosVaga = $quarto['roomrate']['rates']['rate'];
+									} else {
+										$quartosVaga = "";
+									}
+
+
+									foreach ($quartosVaga as $vaga) {
+
+										// echo "<pre>";
+										// print_r($quartosVaga);
+										// echo "</pre>";
+
+
+										if ($countVaga == 0) {
+											$dat_min = $vaga['@attributes']['effectivedate'];
+
+											if ($dat_min == "") {
+												$dat_min = $quartosVaga['@attributes']['effectivedate'];
+											}
+										}
+
+										$nom_quarto = $quarto['roomtypes']['roomtype']['tpa_extensions']['room']['@attributes']['name'];
+										$id_hotel = $quarto['@attributes']['rph'];
+										$cod_quarto = $quarto['roomtypes']['roomtype']['tpa_extensions']['room']['@attributes']['id'];
+
+										$dat_max = $vaga['@attributes']['expiredate'];
+
+										if ($dat_max == "") {
+											$dat_max = $quartosVaga['@attributes']['expiredate'];
+										}
+
+										// fnEscreve($dat_max);
+
+										if ($nom_quarto == "") {
+											$nom_quarto = $abrQuarto['roomtypes']['roomtype']['tpa_extensions']['room']['@attributes']['name'];
+											$id_hotel = $abrQuarto['@attributes']['rph'];
+											$cod_quarto = $abrQuarto['roomtypes']['roomtype']['tpa_extensions']['room']['@attributes']['id'];
+										}
+
+										$val_diaria = $vaga['total']['@attributes']['amountaftertax'];
+										$val_diarias[$dat_min . "_" . $dat_max] = $vaga['total']['@attributes']['amountaftertax'];
+
+										if ($val_diaria == "") {
+											$val_diaria = $vaga['@attributes']['amountaftertax'];
+											$val_diarias[$quartosVaga['@attributes']['effectivedate'] . "_" . $dat_max] = $vaga['@attributes']['amountaftertax'];
+										}
+
+										if ($val_diaria == "") {
+											$val_diaria = $vaga['0']['@attributes']['amountaftertax'];
+											$val_diarias[$quartosVaga['@attributes']['effectivedate'] . "_" . $dat_max] = $vaga['0']['@attributes']['amountaftertax'];
+										}
+										$val_total += $val_diaria;
 
 										$nom_quarto = explode("-", $nom_quarto);
+
+										$countVaga++;
+									}
+
+									if ($log_diaria == "N" && $val_total != 0) {
 
 										$diasemana = array('Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sabado');
 
@@ -698,345 +841,196 @@ tr{
 										$diasemana_inicio = date('w', strtotime($dat_min));
 										$diasemana_fim = date('w', strtotime($dat_max));
 										$nroQuarto = explode(" ", $nom_quarto['0']);
-										$nroDiarias = fnDateDif($dat_min,$dat_max);
+										$nroDiarias = fnDateDif($dat_min, $dat_max);
 
-										$sqlDesc = "SELECT DES_QUARTO, DES_IMAGEM, DES_VIDEO FROM ADORAI_CHALES 
-													WHERE COD_EXTERNO = $cod_quarto
-													AND COD_EXCLUSA = 0";
-										$arrayDesc = mysqli_query(connTemp($cod_empresa,''), $sqlDesc);
+										$sqlDesc = "SELECT DES_QUARTO, DES_IMAGEM, DES_VIDEO FROM ADORAI_CHALES WHERE COD_EXTERNO = $cod_quarto AND COD_EXCLUSA = 0";
+										$arrayDesc = mysqli_query(connTemp($cod_empresa, ''), $sqlDesc);
 										$qrDesc = mysqli_fetch_assoc($arrayDesc);
 
 										// fnEscreve($sqlDesc);
 
 										$sqlVend = "SELECT VA.COD_EXT_VENDEDOR FROM VENDEDOR_ADORAI VA 
 														INNER JOIN UNIDADEVENDA UV ON UV.COD_UNIVEND = VA.COD_UNIVEND
-														WHERE VA.COD_USUARIO = $_SESSION['SYS_COD_USUARIO'] 
+														WHERE VA.COD_USUARIO = $_SESSION[SYS_COD_USUARIO] 
 														AND UV.COD_EXTERNO = $id_hotel";
 
 										// if(@$_GET['dev'] == 'true'){
 										// 	echo $sqlVend;
 										// }
 
-										$arrayVend = mysqli_query(connTemp($cod_empresa,''), $sqlVend);
+										$arrayVend = mysqli_query(connTemp($cod_empresa, ''), $sqlVend);
 										$qrVend = mysqli_fetch_assoc($arrayVend);
 
+
 										$arrayVagas[$nroQuarto['1']] = array(
-															"idHotel" => $id_hotel,
-															"idQuarto" => $cod_quarto,
-															"codVendedor" => "$qrVend['COD_EXT_VENDEDOR']",
-															"chale" => $nom_quarto['0'],
-															"local" => $nom_quarto['1'],
-															"diaria" => $val_diaria,
-															"total" => $val_total,
-															"dataMin" => $dat_min,
-															"dataMax" => $dat_max,
-															"semanaIni" => $diasemana[$diasemana_inicio],
-															"semanaFim" => $diasemana[$diasemana_fim],
-															"nroDiarias" => $nroDiarias,
-															"nroPessoas" => $num_pessoas,
-															"descricao" => "$qrDesc['DES_QUARTO']",
-															"imagem" => "$qrDesc['DES_IMAGEM']",
-															"video" => "$qrDesc['DES_VIDEO']"
-														);
+											"idHotel" => $id_hotel,
+											"idQuarto" => $cod_quarto,
+											"codVendedor" => "$qrVend[COD_EXT_VENDEDOR]",
+											"chale" => $nom_quarto['0'],
+											"local" => $nom_quarto['1'],
+											"diaria" => $val_diaria,
+											"diarias" => $val_diarias,
+											"total" => $val_total,
+											"dataMin" => $dat_min,
+											"dataMax" => $dat_max,
+											"semanaIni" => $diasemana[$diasemana_inicio],
+											"semanaFim" => $diasemana[$diasemana_fim],
+											"nroDiarias" => $nroDiarias,
+											"nroPessoas" => $num_pessoas,
+											"descricao" => "$qrDesc[DES_QUARTO]",
+											"imagem" => "$qrDesc[DES_IMAGEM]",
+											"video" => "$qrDesc[DES_VIDEO]"
+										);
 
-										$arrayOrdenado = fnorderby_array($arrayVagas, $nroQuarto['1'], SORT_ASC );
-								
+										$arrayOrdenado = fnorderby_array($arrayVagas, $nroQuarto['1'], SORT_ASC);
 									}
 
-									$abrQuarto = $hotel['roomstays']['roomstay'];
+									$countQuarto++;
+									$countVaga = 0;
+									$val_total = 0;
+								}
 
-									if($abrQuarto == ""){
-										// fnEscreve("sem roomstays");
-										$abrQuarto = $hotel['roomstay'];
-									}
+								// echo "<pre>";
+								// print_r($arrayVagas);
+								// print_r($arrayOrdenado);
+								// echo "</pre>";
 
-									// echo "<pre>";
-									// print_r($abrQuarto);
-									// echo "</pre>";
+								foreach ($arrayOrdenado as $qrQuarto) {
 
-									// [RoomTypes] => Array
-							  //       (
-							  //           [RoomType] => Array
-							  //               (
-							  //                   [TPA_Extensions] => Array
-							  //                       (
-							  //                           [Room] => Array
-							  //                               (
-							  //                                   [@attributes] => Array
-							  //                                       (
-							  //                                           [ID]
+									$chave_linha = $countQuarto;
 
-									foreach ($abrQuarto as $quarto) {
+									$linkEnvio = "https://roteirosadorai.com.br/detalhes.php?datI=" . fnDataShort($qrQuarto['dataMin']) . "&datF=" . fnDataShort($qrQuarto['dataMax']) . "&idh=" . $qrQuarto['idHotel'] . "&idc=" . $qrQuarto['idQuarto'] . "&infQ=" . base64_encode(json_encode($qrQuarto)) . "&iv=" . base64_encode($qrQuarto['total']) . "&cv=" . $qrQuarto['codVendedor'];
 
-										// echo "<pre>";
-										// print_r($quarto);
-										// echo "</pre>";
-
-										$chave_linha = $countQuarto;
-
-										if(count($quarto['roomrates']['roomrate']['rates']['rate']) > 0){
-											$quartosVaga = $quarto['roomrates']['roomrate']['rates']['rate'];
-										}else if(count($quarto['roomrate']['rates']['rate']) > 0){
-											$quartosVaga = $quarto['roomrate']['rates']['rate'];
-										}else{
-											$quartosVaga = "";
-										}
-
-
-										foreach ($quartosVaga as $vaga) {
-
-                                            // echo "<pre>";
-                                            // print_r($quartosVaga);
-                                            // echo "</pre>";
-
-
-											if($countVaga == 0){
-												$dat_min = $vaga['@attributes']['effectivedate'];
-									
-												if($dat_min == ""){
-													$dat_min = $quartosVaga['@attributes']['effectivedate'];
-												}
-											}
-
-											$nom_quarto = $quarto['roomtypes']['roomtype']['tpa_extensions']['room']['@attributes']['name'];
-											$id_hotel = $quarto['@attributes']['rph'];
-											$cod_quarto = $quarto['roomtypes']['roomtype']['tpa_extensions']['room']['@attributes']['id'];
-
-											$dat_max = $vaga['@attributes']['expiredate'];
-
-											if($dat_max == ""){
-												$dat_max = $quartosVaga['@attributes']['expiredate'];
-											}
-
-											// fnEscreve($dat_max);
-
-											if($nom_quarto == ""){
-												$nom_quarto = $abrQuarto['roomtypes']['roomtype']['tpa_extensions']['room']['@attributes']['name'];
-												$id_hotel = $abrQuarto['@attributes']['rph'];
-												$cod_quarto = $abrQuarto['roomtypes']['roomtype']['tpa_extensions']['room']['@attributes']['id'];
-											}
-
-											$val_diaria = $vaga['total']['@attributes']['amountaftertax'];
-											$val_diarias[$dat_min . "_" . $dat_max] = $vaga['total']['@attributes']['amountaftertax'];
-
-											if ($val_diaria == "") {
-												$val_diaria = $vaga['@attributes']['amountaftertax'];
-												$val_diarias[$quartosVaga['@attributes']['effectivedate'] . "_" . $dat_max] = $vaga['@attributes']['amountaftertax'];
-											}
-
-											if ($val_diaria == "") {
-												$val_diaria = $vaga['0']['@attributes']['amountaftertax'];
-												$val_diarias[$quartosVaga['@attributes']['effectivedate'] . "_" . $dat_max] = $vaga['0']['@attributes']['amountaftertax'];
-											}
-											$val_total += $val_diaria;
-
-											$nom_quarto = explode("-", $nom_quarto);
-
-											$countVaga++;
-
-										}
-
-										if($log_diaria == "N" && $val_total != 0){
-
-											$diasemana = array('Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sabado');
-
-											// $data = date('Y-m-d');
-
-											$diasemana_inicio = date('w', strtotime($dat_min));
-											$diasemana_fim = date('w', strtotime($dat_max));
-											$nroQuarto = explode(" ", $nom_quarto['0']);
-											$nroDiarias = fnDateDif($dat_min,$dat_max);
-
-											$sqlDesc = "SELECT DES_QUARTO, DES_IMAGEM, DES_VIDEO FROM ADORAI_CHALES WHERE COD_EXTERNO = $cod_quarto AND COD_EXCLUSA = 0";
-											$arrayDesc = mysqli_query(connTemp($cod_empresa,''), $sqlDesc);
-											$qrDesc = mysqli_fetch_assoc($arrayDesc);
-
-											// fnEscreve($sqlDesc);
-
-											$sqlVend = "SELECT VA.COD_EXT_VENDEDOR FROM VENDEDOR_ADORAI VA 
-														INNER JOIN UNIDADEVENDA UV ON UV.COD_UNIVEND = VA.COD_UNIVEND
-														WHERE VA.COD_USUARIO = $_SESSION['SYS_COD_USUARIO'] 
-														AND UV.COD_EXTERNO = $id_hotel";
-
-											// if(@$_GET['dev'] == 'true'){
-											// 	echo $sqlVend;
-											// }
-
-											$arrayVend = mysqli_query(connTemp($cod_empresa,''), $sqlVend);
-											$qrVend = mysqli_fetch_assoc($arrayVend);
-
-
-											$arrayVagas[$nroQuarto['1']] = array(
-																"idHotel" => $id_hotel,
-																"idQuarto" => $cod_quarto,
-																"codVendedor" => "$qrVend['COD_EXT_VENDEDOR']",
-																"chale" => $nom_quarto['0'],
-																"local" => $nom_quarto['1'],
-																"diaria" => $val_diaria,
-																"diarias" => $val_diarias,
-																"total" => $val_total,
-																"dataMin" => $dat_min,
-																"dataMax" => $dat_max,
-																"semanaIni" => $diasemana[$diasemana_inicio],
-																"semanaFim" => $diasemana[$diasemana_fim],
-																"nroDiarias" => $nroDiarias,
-																"nroPessoas" => $num_pessoas,
-																"descricao" => "$qrDesc['DES_QUARTO']",
-																"imagem" => "$qrDesc['DES_IMAGEM']",
-																"video" => "$qrDesc['DES_VIDEO']"
-															);
-
-											$arrayOrdenado = fnorderby_array($arrayVagas, $nroQuarto['1'], SORT_ASC );
-
-
-										}
-
-										$countQuarto++;
-										$countVaga = 0;
-										$val_total = 0;
-
-									} 
-
-									// echo "<pre>";
-									// print_r($arrayVagas);
-									// print_r($arrayOrdenado);
-									// echo "</pre>";
-
-									foreach ($arrayOrdenado as $qrQuarto) {
-								
-										$chave_linha = $countQuarto;
-
-										$linkEnvio = "https://roteirosadorai.com.br/detalhes.php?datI=".fnDataShort($qrQuarto['dataMin'])."&datF=".fnDataShort($qrQuarto['dataMax'])."&idh=".$qrQuarto['idHotel']."&idc=".$qrQuarto['idQuarto']."&infQ=".base64_encode(json_encode($qrQuarto))."&iv=".base64_encode($qrQuarto['total'])."&cv=".$qrQuarto['codVendedor'];
-
-										$linkEnvio = file_get_contents("http://tinyurl.com/api-create.php?url=".$linkEnvio);
+									$linkEnvio = file_get_contents("http://tinyurl.com/api-create.php?url=" . $linkEnvio);
 								?>
 
-											<tbody>
+									<tbody>
 
-												<tr>
-													<td><input type='checkbox' name='radio_<?=$chave_linha?>'></td>
-													<td data-toggle="collapse" class="accordion-toggle" data-target="#<?=$chave_linha?>" onclick='rotacionaSeta("<?=$chave_linha?>")'><span class="fal fa-angle-right <?=$chave_linha?>" data-expande='0'></span>&nbsp; <a href="javascript:void(0)"><?=$qrQuarto['chale']?></a></td>
-													<td class="text-center transparency"><a href="javascript:void(0)" class="btn btn-xs btn-info" onclick="copyToClipboard('<?=$chave_linha?>')"><span class="fal fa-copy"></span></a>
-																						 <a href="javascript:void(0)" class="btn btn-xs btn-success" onclick="enviarWhatsapp($('.copy-<?=$chave_linha?>').attr('data-msg-array'))"><span class="fab fa-whatsapp"></span></a></td>
-													<td><?=$qrQuarto['local']?></td>
-													<td class="text-right"><?=fnValor($qrQuarto['diaria'],2)?></td>
-													<td class="text-right"><?=fnValor($qrQuarto['total'],2)?></td>
-													<td class="text-center"><?=fnDataShort($qrQuarto['dataMin'])?></td>
-													<td class="text-center"><?=fnDataShort($qrQuarto['dataMax'])?></td>
-												</tr>
+										<tr>
+											<td><input type='checkbox' name='radio_<?= $chave_linha ?>'></td>
+											<td data-toggle="collapse" class="accordion-toggle" data-target="#<?= $chave_linha ?>" onclick='rotacionaSeta("<?= $chave_linha ?>")'><span class="fal fa-angle-right <?= $chave_linha ?>" data-expande='0'></span>&nbsp; <a href="javascript:void(0)"><?= $qrQuarto['chale'] ?></a></td>
+											<td class="text-center transparency"><a href="javascript:void(0)" class="btn btn-xs btn-info" onclick="copyToClipboard('<?= $chave_linha ?>')"><span class="fal fa-copy"></span></a>
+												<a href="javascript:void(0)" class="btn btn-xs btn-success" onclick="enviarWhatsapp($('.copy-<?= $chave_linha ?>').attr('data-msg-array'))"><span class="fab fa-whatsapp"></span></a>
+											</td>
+											<td><?= $qrQuarto['local'] ?></td>
+											<td class="text-right"><?= fnValor($qrQuarto['diaria'], 2) ?></td>
+											<td class="text-right"><?= fnValor($qrQuarto['total'], 2) ?></td>
+											<td class="text-center"><?= fnDataShort($qrQuarto['dataMin']) ?></td>
+											<td class="text-center"><?= fnDataShort($qrQuarto['dataMax']) ?></td>
+										</tr>
 
-											</tbody>
+									</tbody>
 
-											<tbody>
+									<tbody>
 
-												<tr>
+										<tr>
 
-													<td colspan="15" class="hiddenRow">
-														<div class="accordian-body collapse" id="<?=$chave_linha?>"> 
-															<table class="table">
+											<td colspan="15" class="hiddenRow">
+												<div class="accordian-body collapse" id="<?= $chave_linha ?>">
+													<table class="table">
 
-																<thead>
+														<thead>
 
-																	<th></th>
-																	<th></th>
-																	<th></th>
-																	<th></th>
-																	<th></th>
+															<th></th>
+															<th></th>
+															<th></th>
+															<th></th>
+															<th></th>
 
-																</thead>
+														</thead>
 
-																		
-																															
 
-																<tbody>
 
-																	<tr colspan="5">
-																		<div class="row">
 
-																			<div class="push20"></div>
+														<tbody>
 
-																			<div class="col-md-3 copy-<?=$chave_linha?>"
+															<tr colspan="5">
+																<div class="row">
 
-																				data-copy="*Período:* <?=fnDataShort($qrQuarto['dataMin'])?> <?=$qrQuarto['semanaIni']?> a <?=fnDataShort($qrQuarto['dataMax'])?> <?=$qrQuarto['semanaFim']?>&#013;*Local:*<?=$qrQuarto['local']?>&#013;*Diárias:* <?=$qrQuarto['nroDiarias']?> *Pessoas:* <?=$qrQuarto['nroPessoas']?>&#013;&#013;*Acomodação:* <?=$qrQuarto['chale']?>&#013;<?=$qrQuarto['descricao']?>&#013;&#013;*Valores e opções de pgto:*&#013;*Total:* R$<?=fnValor($qrQuarto['total'],2)?>&#013;*1) PIX* 50% na reserva e 50% até 72hrs antes do check-in, 2x de R$<?=fnValor(($qrQuarto['total']/2),2)?>&#013;*2) Cartão* sem juros até *10x* de *R$<?=fnValor(($qrQuarto['total']/10),2)?>*&#013;&#013;&#013;*Ver detalhes e reservar:* Clique no link...&#013;<?=$linkEnvio?>&#013;&#013;----------------------------------------------&#013;&#013;"
-																				
-																				data-msg-array='<?=json_encode($qrQuarto)?>'>
+																	<div class="push20"></div>
 
-																				<a href="javascript:void(0)" class="btn btn-xs btn-default" onclick='visualizarImagem("<?=$chave_linha?>")'><span class="fal fa-image"></span> Visualizar Imagem</a>
-																				<div class="push5"></div>
-																				<img src="<?=$qrQuarto['imagem']?>" class="img-responsive troca-img-<?=$chave_linha?> off" style="border-radius: 10px; display: none;">
-																				<br/>
-																				<b>Período:</b> <?=fnDataShort($qrQuarto['dataMin'])?> <?=$qrQuarto['semanaIni']?> a <?=fnDataShort($qrQuarto['dataMax'])?> <?=$qrQuarto['semanaFim']?>
-																				<br/>
-																				<b>Local:</b><?=$qrQuarto['local']?>
-																				<br/>
-																				<b>Diárias:</b> <?=$qrQuarto['nroDiarias']?> <b>Pessoas:</b> <?=$qrQuarto['nroPessoas']?>
-																				<br/>
-																				<br/>
-																				<b>Acomodação:</b><?=$qrQuarto['chale']?>
-																				<br/>
-																				<?=$qrQuarto['descricao']?>
-																				<br/>
-																				<br/>
-																				<b>Valores e opções de pgto:</b>
-																				<br/>
-																				<b>Total:</b> R$<?=fnValor($qrQuarto['total'],2)?>
-																				<br/>
-																				<b>1) PIX</b> 50% na reserva e 50% até 72hrs antes do check-in, <b>2x</b> de <b>R$<?=fnValor(($qrQuarto['total']/2),2)?></b>
-																				<br/>
-																				<b>2) Cartão</b> sem juros até <b>10x</b> de <b>R$<?=fnValor(($qrQuarto['total']/10),2)?></b>
-																				<br/>
-																				<br/>
-																				<br/>
-																				<b>Ver detalhes e reservar:</b> Clique no link...
-																				<br/>
-																				<?=$linkEnvio?>
+																	<div class="col-md-3 copy-<?= $chave_linha ?>"
 
-																			</div>
+																		data-copy="*Período:* <?= fnDataShort($qrQuarto['dataMin']) ?> <?= $qrQuarto['semanaIni'] ?> a <?= fnDataShort($qrQuarto['dataMax']) ?> <?= $qrQuarto['semanaFim'] ?>&#013;*Local:*<?= $qrQuarto['local'] ?>&#013;*Diárias:* <?= $qrQuarto['nroDiarias'] ?> *Pessoas:* <?= $qrQuarto['nroPessoas'] ?>&#013;&#013;*Acomodação:* <?= $qrQuarto['chale'] ?>&#013;<?= $qrQuarto['descricao'] ?>&#013;&#013;*Valores e opções de pgto:*&#013;*Total:* R$<?= fnValor($qrQuarto['total'], 2) ?>&#013;*1) PIX* 50% na reserva e 50% até 72hrs antes do check-in, 2x de R$<?= fnValor(($qrQuarto['total'] / 2), 2) ?>&#013;*2) Cartão* sem juros até *10x* de *R$<?= fnValor(($qrQuarto['total'] / 10), 2) ?>*&#013;&#013;&#013;*Ver detalhes e reservar:* Clique no link...&#013;<?= $linkEnvio ?>&#013;&#013;----------------------------------------------&#013;&#013;"
 
-																			<div class="col-md-9">
-																				<!-- <div class="push100"></div>
+																		data-msg-array='<?= json_encode($qrQuarto) ?>'>
+
+																		<a href="javascript:void(0)" class="btn btn-xs btn-default" onclick='visualizarImagem("<?= $chave_linha ?>")'><span class="fal fa-image"></span> Visualizar Imagem</a>
+																		<div class="push5"></div>
+																		<img src="<?= $qrQuarto['imagem'] ?>" class="img-responsive troca-img-<?= $chave_linha ?> off" style="border-radius: 10px; display: none;">
+																		<br />
+																		<b>Período:</b> <?= fnDataShort($qrQuarto['dataMin']) ?> <?= $qrQuarto['semanaIni'] ?> a <?= fnDataShort($qrQuarto['dataMax']) ?> <?= $qrQuarto['semanaFim'] ?>
+																		<br />
+																		<b>Local:</b><?= $qrQuarto['local'] ?>
+																		<br />
+																		<b>Diárias:</b> <?= $qrQuarto['nroDiarias'] ?> <b>Pessoas:</b> <?= $qrQuarto['nroPessoas'] ?>
+																		<br />
+																		<br />
+																		<b>Acomodação:</b><?= $qrQuarto['chale'] ?>
+																		<br />
+																		<?= $qrQuarto['descricao'] ?>
+																		<br />
+																		<br />
+																		<b>Valores e opções de pgto:</b>
+																		<br />
+																		<b>Total:</b> R$<?= fnValor($qrQuarto['total'], 2) ?>
+																		<br />
+																		<b>1) PIX</b> 50% na reserva e 50% até 72hrs antes do check-in, <b>2x</b> de <b>R$<?= fnValor(($qrQuarto['total'] / 2), 2) ?></b>
+																		<br />
+																		<b>2) Cartão</b> sem juros até <b>10x</b> de <b>R$<?= fnValor(($qrQuarto['total'] / 10), 2) ?></b>
+																		<br />
+																		<br />
+																		<br />
+																		<b>Ver detalhes e reservar:</b> Clique no link...
+																		<br />
+																		<?= $linkEnvio ?>
+
+																	</div>
+
+																	<div class="col-md-9">
+																		<!-- <div class="push100"></div>
 																				<div class="push30"></div> -->
-																				<a href="javascript:void(0)" class="btn btn-xs btn-info transparency" onclick="copyToClipboard('<?=$chave_linha?>')"><span class="fal fa-copy"></span>&nbsp;Copiar Texto</a>
-																				<div class="push5"></div>
-																				<a href="javascript:void(0)" class="btn btn-xs btn-success transparency" onclick="enviarWhatsapp($('.copy-<?=$chave_linha?>').attr('data-msg-array'))"><span class="fab fa-whatsapp"></span>&nbsp;Enviar Whatsapp</a>
-																			</div>
-																			
-																		</div>
-																	</tr>
-																	
-																</tbody>
-																		
+																		<a href="javascript:void(0)" class="btn btn-xs btn-info transparency" onclick="copyToClipboard('<?= $chave_linha ?>')"><span class="fal fa-copy"></span>&nbsp;Copiar Texto</a>
+																		<div class="push5"></div>
+																		<a href="javascript:void(0)" class="btn btn-xs btn-success transparency" onclick="enviarWhatsapp($('.copy-<?= $chave_linha ?>').attr('data-msg-array'))"><span class="fab fa-whatsapp"></span>&nbsp;Enviar Whatsapp</a>
+																	</div>
 
-															</table>
+																</div>
+															</tr>
 
-														</div> 
+														</tbody>
 
-													</td>
-												</tr>
 
-											</tbody>
+													</table>
+
+												</div>
+
+											</td>
+										</tr>
+
+									</tbody>
 
 
 								<?php
 
-										$countQuarto++;
-									}
+									$countQuarto++;
+								}
 
-	                            ?>
+								?>
 
-									
 
-									
+
+
 
 
 							</table>
 
-						<?php 
+							<?php
 
-						}else{
+						} else {
 
-							if($_SERVER['REQUEST_METHOD'] == 'POST'){
-						?>
+							if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+							?>
 
 								<div class="row">
 									<div class="col-md-12 text-center">
@@ -1046,7 +1040,7 @@ tr{
 
 								<div class="push50"></div>
 
-						<?php 
+						<?php
 							}
 						}
 						?>
@@ -1084,15 +1078,17 @@ tr{
 <link rel="stylesheet" href="js/daterangepicker-master/daterangepicker.css" />
 
 <script type="text/javascript">
-
-	$(function(){
+	$(function() {
 
 		$('input[name="DAT_RESERVA"]').daterangepicker({
-		    opens: 'bottom',
-		    autoApply: true,
-		    locale: { cancelLabel: 'Cancelar', applyLabel: 'Aplicar' }  
+			opens: 'bottom',
+			autoApply: true,
+			locale: {
+				cancelLabel: 'Cancelar',
+				applyLabel: 'Aplicar'
+			}
 		}, function(start, end, label) {
-		    //console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+			//console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
 		});
 
 
@@ -1106,7 +1102,7 @@ tr{
 			$("#COD_HOTEL option:selected").removeAttr("selected").trigger('chosen:updated');
 		});
 
-		var cod_hotel = "<?=$cod_hotel?>";
+		var cod_hotel = "<?= $cod_hotel ?>";
 		if (cod_hotel != 0 && cod_hotel != "") {
 			//retorno combo multiplo - USUARIOS_ATE
 			$("#formulario #COD_HOTEL").val('').trigger("chosen:updated");
@@ -1135,124 +1131,129 @@ tr{
 
 	function copyToClipboard(chave) {
 		$("#AREACODE_OFF").show();
-		$("#AREACODE").text($(".copy-"+chave).attr("data-copy")).select();
+		$("#AREACODE").text($(".copy-" + chave).attr("data-copy")).select();
 		document.execCommand('copy');
 		$("#AREACODE_OFF").hide();
 		alert("Copiado!");
 	}
 
-	function rotacionaSeta(obj){
+	function rotacionaSeta(obj) {
 
-		let expande = $("."+obj).attr('data-expande');
+		let expande = $("." + obj).attr('data-expande');
 
-		if(expande == 0){
-			$("."+obj).attr('data-expande','1').removeClass('fa-angle-right').addClass('fa-angle-down');
-		}else{
-			$("."+obj).attr('data-expande','0').removeClass('fa-angle-down').addClass('fa-angle-right');
+		if (expande == 0) {
+			$("." + obj).attr('data-expande', '1').removeClass('fa-angle-right').addClass('fa-angle-down');
+		} else {
+			$("." + obj).attr('data-expande', '0').removeClass('fa-angle-down').addClass('fa-angle-right');
 		}
 
 	}
 
-	function acaoSelecionados(acao){
+	function acaoSelecionados(acao) {
 		listaCopia = [];
 		param = "data-msg-array";
-		if(acao == "copiar"){param = "data-copy";}
+		if (acao == "copiar") {
+			param = "data-copy";
+		}
 		$("table tr").each(function(index) {
-			if($(this).find("input[type='checkbox']:not('#selectAll')").is(':checked')){
+			if ($(this).find("input[type='checkbox']:not('#selectAll')").is(':checked')) {
 				var codigo = $(this).find("input[type='checkbox']").attr('name').replace('radio_', '');
-				listaCopia.push($(".copy-"+codigo).attr(param));
+				listaCopia.push($(".copy-" + codigo).attr(param));
 				//alert(codigo);
 			}
 		});
-		if(listaCopia != ''){
+		if (listaCopia != '') {
 			let textoCopia = "";
-			if(acao == "copiar"){
-				$.each(listaCopia, function (index, value) {
+			if (acao == "copiar") {
+				$.each(listaCopia, function(index, value) {
 					textoCopia += value;
-			    });
-			    $("#AREACODE_OFF").show();
+				});
+				$("#AREACODE_OFF").show();
 				$("#AREACODE").text(textoCopia).select();
 				document.execCommand('copy');
 				$("#AREACODE_OFF").hide();
-			}else{
-		    	enviarWhatsapp(listaCopia);
-		    }
-		}else{
+			} else {
+				enviarWhatsapp(listaCopia);
+			}
+		} else {
 			$.alert({
-                title: "Aviso",
-                content: "Não há quartos selecionados.",
-                type: 'red'
-            });
+				title: "Aviso",
+				content: "Não há quartos selecionados.",
+				type: 'red'
+			});
 		}
 	}
 
-	function enviarWhatsapp(mensagem){
+	function enviarWhatsapp(mensagem) {
 		let celular = $("#NUM_CELULAR").val(),
 			canal = $('input[name=canalEnvio]:checked', '#formulario').val(),
 			msg = "";
-			console.log(canal);
-		if(celular.trim() != "" && typeof(canal) !== "undefined"){
+		console.log(canal);
+		if (celular.trim() != "" && typeof(canal) !== "undefined") {
 			$.alert({
-	          title: "Confirmação",
-	          content: "Deseja mesmo enviar mensagem para <br /><b>"+celular+"</b>?",
-	          type: 'orange',
-	          buttons: {
-	            "Enviar Mensagem": {
-	               btnClass: 'btn-success',
-	               action: function(){
-	               	    $.ajax({
-							type: "POST",
-							url: "ajxEnvioReserva.do",
-							data: {NUM_CELULAR: celular, ARR_MENSAGEM: mensagem, CANAL: canal},
-							beforeSend: function() {
-								$('#blocker').show();
-							},
-							success: function(data) {
-								$('#blocker').hide();
-								$.alert({
-					                title: "Aviso",
-					                content: "Mensagem enviada.",
-					                type: 'green'
-					            });
+				title: "Confirmação",
+				content: "Deseja mesmo enviar mensagem para <br /><b>" + celular + "</b>?",
+				type: 'orange',
+				buttons: {
+					"Enviar Mensagem": {
+						btnClass: 'btn-success',
+						action: function() {
+							$.ajax({
+								type: "POST",
+								url: "ajxEnvioReserva.do",
+								data: {
+									NUM_CELULAR: celular,
+									ARR_MENSAGEM: mensagem,
+									CANAL: canal
+								},
+								beforeSend: function() {
+									$('#blocker').show();
+								},
+								success: function(data) {
+									$('#blocker').hide();
+									$.alert({
+										title: "Aviso",
+										content: "Mensagem enviada.",
+										type: 'green'
+									});
 
-								console.log(data);
-							},
-							error: function() {
-								$('#relatorioConteudo').html('<p class="error" style="margin-top: 10px;"><strong>Oops!</strong> itens_por_pagina não encontrados...</p>');
-							}
-						});
-	               }
-	            },
-	            "Cancelar": {
-	               action: function(){
-	                
-	               }
-	            }
-	          }
-	        });
-		}else{
-			if(celular.trim() == ""){
+									console.log(data);
+								},
+								error: function() {
+									$('#relatorioConteudo').html('<p class="error" style="margin-top: 10px;"><strong>Oops!</strong> itens_por_pagina não encontrados...</p>');
+								}
+							});
+						}
+					},
+					"Cancelar": {
+						action: function() {
+
+						}
+					}
+				}
+			});
+		} else {
+			if (celular.trim() == "") {
 				msg = "Celular";
-			}else{
+			} else {
 				msg = "Canal";
 			}
 			$.alert({
-                title: "Aviso",
-                content: msg+" não informado.",
-                type: 'red'
-            });
+				title: "Aviso",
+				content: msg + " não informado.",
+				type: 'red'
+			});
 		}
-		
+
 	}
 
-	function visualizarImagem(index){
-		img = $(".troca-img-"+index);
+	function visualizarImagem(index) {
+		img = $(".troca-img-" + index);
 
-		if(img.hasClass("off")){
+		if (img.hasClass("off")) {
 			img.fadeIn('fast').removeClass("off").addClass("on");
-		}else{
+		} else {
 			img.fadeOut('fast').removeClass("on").addClass("off");
 		}
 	}
-
 </script>
