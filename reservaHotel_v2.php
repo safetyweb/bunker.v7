@@ -320,100 +320,102 @@ foreach ($arrHotel as $codHotel) {
 
 		// fnEscreve($sqlHotel);
 
-		$HotelCode = $DadosHotel['@attributes']['HotelCode'];
+		$HotelCode = isset($DadosHotel['@attributes']['HotelCode']) ? $DadosHotel['@attributes']['HotelCode'] : null;
 
-		foreach ($DadosHotel['AvailStatusMessage'] as $dados) {
-
-
-			if ($dados['@attributes']['BookingLimit'] >= '1') {
+		if (isset($DadosHotel['AvailStatusMessage']) && is_array($DadosHotel['AvailStatusMessage'])) {
+			foreach ($DadosHotel['AvailStatusMessage'] as $dados) {
 
 
-				if (
-					$dados['StatusApplicationControl']['RestrictionStatus'][2]['@attributes']['Status'] == "Open"
-					// && $dados['StatusApplicationControl']['RestrictionStatus'][0]['@attributes']['Status']=="Open" 
-					// && $dados['StatusApplicationControl']['RestrictionStatus'][1]['@attributes']['Status']=="Open"
-				) {
+				if ($dados['@attributes']['BookingLimit'] >= '1') {
 
-					if (isset($HotelCode)) {
 
-						// fnEscreve($dados['StatusApplicationControl']['LengthsOfStay']['LengthOfStay'][0]['@attributes']['Time']);
+					if (
+						$dados['StatusApplicationControl']['RestrictionStatus'][2]['@attributes']['Status'] == "Open"
+						// && $dados['StatusApplicationControl']['RestrictionStatus'][0]['@attributes']['Status']=="Open" 
+						// && $dados['StatusApplicationControl']['RestrictionStatus'][1]['@attributes']['Status']=="Open"
+					) {
 
-						$cod_chale = $dados['StatusApplicationControl']['@attributes']['RatePlanCode'];
+						if (isset($HotelCode)) {
 
-						$sqlChale = "SELECT DISTINCT * FROM ADORAI_CHALES 
+							// fnEscreve($dados['StatusApplicationControl']['LengthsOfStay']['LengthOfStay'][0]['@attributes']['Time']);
+
+							$cod_chale = $dados['StatusApplicationControl']['@attributes']['RatePlanCode'];
+
+							$sqlChale = "SELECT DISTINCT * FROM ADORAI_CHALES 
 						WHERE COD_EMPRESA = $cod_empresa
 						AND COD_HOTEL = $codHotel
 						AND COD_EXTERNO = $cod_chale
 						AND COD_EXCLUSA = 0";
+
+							// fnEscreve($sqlChale);
+
+							$arrayQuery = mysqli_query(connTemp($cod_empresa, ''), $sqlChale);
+							$qrChale = mysqli_fetch_assoc($arrayQuery);
+
+							$arrData = fnArrayPeriodoData($dados['StatusApplicationControl']['@attributes']['Start'], $dados['StatusApplicationControl']['@attributes']['End']);
+
+							// echo "<pre>";
+							// print_r($arrData);
+							// echo "</pre>";
+
+							foreach ($arrData as $dataIniReserva) {
+
+								$diaIniReserva = date("d", strtotime($dataIniReserva));
+								$dataFimReserva = date('Y-m-d', strtotime($dataIniReserva . ' +1 day'));
+
+								$arrayOpen[$qrHotel['NOM_FANTASI']][$qrChale['NOM_QUARTO']][] = array(
+									'Status' => 'OPEN',
+									'Nome' => "$qrChale[NOM_QUARTO]",
+									'ID' => "$qrChale[COD_EXTERNO]",
+									'diaInicio' => $diaIniReserva,
+									'DataInicio' => $dataIniReserva,
+									'DataFim' => $dataFimReserva,
+									'diff' => 1,
+									'status' => $dados['StatusApplicationControl']['RestrictionStatus'][2]['@attributes']['Status']
+								);
+							}
+						}
+					}
+				} else {
+
+					if (isset($HotelCode)) {
+
+						$cod_chale = $dados['StatusApplicationControl']['@attributes']['RatePlanCode'];
+
+						$sqlChale = "SELECT DISTINCT * FROM ADORAI_CHALES 
+					WHERE COD_EMPRESA = $cod_empresa
+					AND COD_HOTEL = $codHotel
+					AND COD_EXTERNO = $cod_chale
+					AND COD_EXCLUSA = 0";
 
 						// fnEscreve($sqlChale);
 
 						$arrayQuery = mysqli_query(connTemp($cod_empresa, ''), $sqlChale);
 						$qrChale = mysqli_fetch_assoc($arrayQuery);
 
-						$arrData = fnArrayPeriodoData($dados['StatusApplicationControl']['@attributes']['Start'], $dados['StatusApplicationControl']['@attributes']['End']);
+						$diaIniReserva = date("d", strtotime($dados['StatusApplicationControl']['@attributes']['Start']));
 
-						// echo "<pre>";
-						// print_r($arrData);
-						// echo "</pre>";
-
-						foreach ($arrData as $dataIniReserva) {
-
-							$diaIniReserva = date("d", strtotime($dataIniReserva));
-							$dataFimReserva = date('Y-m-d', strtotime($dataIniReserva . ' +1 day'));
-
-							$arrayOpen[$qrHotel['NOM_FANTASI']][$qrChale['NOM_QUARTO']][] = array(
-								'Status' => 'OPEN',
-								'Nome' => "$qrChale[NOM_QUARTO]",
-								'ID' => "$qrChale[COD_EXTERNO]",
-								'diaInicio' => $diaIniReserva,
-								'DataInicio' => $dataIniReserva,
-								'DataFim' => $dataFimReserva,
-								'diff' => 1,
-								'status' => $dados['StatusApplicationControl']['RestrictionStatus'][2]['@attributes']['Status']
-							);
-						}
+						$arrayOpen[$qrHotel['NOM_FANTASI']][$qrChale['NOM_QUARTO']][] = array(
+							'Status' => 'CLOSE',
+							'Nome' => "$qrChale[NOM_QUARTO]",
+							'ID' => "$qrChale[COD_EXTERNO]",
+							'diaInicio' => $diaIniReserva,
+							'DataInicio' => $dados['StatusApplicationControl']['@attributes']['Start'],
+							'DataFim' => $dados['StatusApplicationControl']['@attributes']['End'],
+							'diff' => (fnDateDif(
+								$dados['StatusApplicationControl']['@attributes']['Start'],
+								$dados['StatusApplicationControl']['@attributes']['End']
+							) - 1),
+							'status' => $dados['StatusApplicationControl']['RestrictionStatus'][2]['@attributes']['Status']
+						);
 					}
 				}
-			} else {
-
-				if (isset($HotelCode)) {
-
-					$cod_chale = $dados['StatusApplicationControl']['@attributes']['RatePlanCode'];
-
-					$sqlChale = "SELECT DISTINCT * FROM ADORAI_CHALES 
-					WHERE COD_EMPRESA = $cod_empresa
-					AND COD_HOTEL = $codHotel
-					AND COD_EXTERNO = $cod_chale
-					AND COD_EXCLUSA = 0";
-
-					// fnEscreve($sqlChale);
-
-					$arrayQuery = mysqli_query(connTemp($cod_empresa, ''), $sqlChale);
-					$qrChale = mysqli_fetch_assoc($arrayQuery);
-
-					$diaIniReserva = date("d", strtotime($dados['StatusApplicationControl']['@attributes']['Start']));
-
-					$arrayOpen[$qrHotel['NOM_FANTASI']][$qrChale['NOM_QUARTO']][] = array(
-						'Status' => 'CLOSE',
-						'Nome' => "$qrChale[NOM_QUARTO]",
-						'ID' => "$qrChale[COD_EXTERNO]",
-						'diaInicio' => $diaIniReserva,
-						'DataInicio' => $dados['StatusApplicationControl']['@attributes']['Start'],
-						'DataFim' => $dados['StatusApplicationControl']['@attributes']['End'],
-						'diff' => (fnDateDif(
-							$dados['StatusApplicationControl']['@attributes']['Start'],
-							$dados['StatusApplicationControl']['@attributes']['End']
-						) - 1),
-						'status' => $dados['StatusApplicationControl']['RestrictionStatus'][2]['@attributes']['Status']
-					);
-				}
+				ksort($arrayOpen[$qrHotel['NOM_FANTASI']]);
 			}
-
-			ksort($arrayOpen[$qrHotel['NOM_FANTASI']]);
 		}
 	}
 }
+
 
 asort($arrayOpen);
 
