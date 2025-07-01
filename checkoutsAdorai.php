@@ -1,4 +1,64 @@
 <?php
+if ($_SESSION['SYS_COD_USUARIO'] == 127937) {
+	echo fnDebug('true');
+	ini_set('display_errors', 1);
+	ini_set('display_startup_errors', 1);
+	error_reporting(E_ALL);
+}
+$opcao = "";
+$hotel = "";
+$log_diaria = "";
+$num_adultos = "";
+$num_criancas = "";
+$cod_hotel = "";
+$num_pessoas = "";
+$filtro_data = "";
+$ontem = "";
+$dat_ini = "";
+$dat_fim = "";
+$hoje = "";
+$hashLocal = "";
+$msgRetorno = "";
+$msgTipo = "";
+$cod_statuspag = "";
+$cod_formapag = "";
+$cod_propriedade = "";
+$cod_chale = "";
+$nom_usuario = "";
+$actual_link = "";
+$MODULO = "";
+$COD_MODULO = "";
+$hHabilitado = "";
+$hashForm = "";
+$cod_erro = "";
+$arrayQuery = [];
+$qrBuscaEmpresa = "";
+$nom_empresa = "";
+$checkDiaria = "";
+$formBack = "";
+$abaAdorai = "";
+$abaManutencaoAdorai = "";
+$abaUsuario = "";
+$sqlHotel = "";
+$arrayHotel = [];
+$qrHotel = "";
+$dat_comp = "";
+$dat_alterac = "";
+$qrStatuspag = "";
+$qrformapag = "";
+$and_propriedade = "";
+$and_chale = "";
+$andDat = "";
+$sql2 = "";
+$retorno = "";
+$totalitens_por_pagina = 0;
+$inicio = "";
+$andStatusPag = "";
+$andFormaPag = "";
+$qrBusca = "";
+$chkCupom = "";
+$content = "";
+
 
 //echo "<h5>_".$opcao."</h5>";
 
@@ -24,7 +84,7 @@ $hashLocal = mt_rand();
 $adm = $connAdm->connAdm();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	$request = md5(implode($_POST));
+	$request = md5(serialize($_POST));
 
 	if (isset($_SESSION['last_request']) && $_SESSION['last_request'] == $request) {
 		$msgRetorno = 'Essa página já foi utilizada';
@@ -32,27 +92,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	} else {
 		$_SESSION['last_request']  = $request;
 
-		$cod_statuspag = fnLimpaCampo($_POST['COD_STATUSPAG']);
-		$cod_formapag = fnLimpaCampo($_POST['COD_FORMAPAG']);
-		$cod_empresa = fnLimpaCampo($_POST['COD_EMPRESA']);
-		$cod_propriedade = fnLimpaCampo($_POST['COD_PROPRIEDADE']);
-		$cod_chale = fnLimpaCampo($_POST['COD_CHALE']);
-		$dat_ini = fnDataSql($_POST['DAT_INI']);
-		$dat_fim = fnDataSql($_POST['DAT_FIM']);
-		$filtro_data = fnLimpaCampo($_POST['FILTRO_DATA']);
+		$cod_statuspag = fnLimpaCampo(@$_POST['COD_STATUSPAG']);
+		$cod_formapag = fnLimpaCampo(@$_POST['COD_FORMAPAG']);
+		$cod_empresa = fnLimpaCampo(@$_POST['COD_EMPRESA']);
+		$cod_propriedade = fnLimpaCampo(@$_POST['COD_PROPRIEDADE']);
+		$cod_chale = fnLimpaCampo(@$_POST['COD_CHALE']);
+		$dat_ini = fnDataSql(@$_POST['DAT_INI']);
+		$dat_fim = fnDataSql(@$_POST['DAT_FIM']);
+		$filtro_data = fnLimpaCampo(@$_POST['FILTRO_DATA']);
 
 		// fnEscreve($cod_hotel);
 
 		$nom_usuario = $_SESSION["SYS_NOM_USUARIO"];
 		$actual_link = "$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-		$MODULO = $_GET['mod'];
-		$COD_MODULO = fndecode($_GET['mod']);
+		$MODULO = @$_GET['mod'];
+		$COD_MODULO = fndecode(@$_GET['mod']);
 
-		$opcao = $_REQUEST['opcao'];
-		$hHabilitado = $_REQUEST['hHabilitado'];
-		$hashForm = $_REQUEST['hashForm'];
+		$opcao = @$_REQUEST['opcao'];
+		$hHabilitado = @$_REQUEST['hHabilitado'];
+		$hashForm = @$_REQUEST['hashForm'];
 
-		if ($opcao != '') {
+		if ($opcao != '' && $opcao != 0) {
 
 			//mensagem de retorno
 			switch ($opcao) {
@@ -89,9 +149,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
 //busca dados da url	
-if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
+if (is_numeric(fnLimpacampo(fnDecode(@$_GET['id'])))) {
 	//busca dados da empresa
-	$cod_empresa = fnDecode($_GET['id']);
+	$cod_empresa = fnDecode(@$_GET['id']);
 	$cod_empresa = 274;
 	$sql = "SELECT COD_EMPRESA, NOM_FANTASI FROM empresas where COD_EMPRESA = '" . $cod_empresa . "' ";
 	//fnEscreve($sql);
@@ -228,7 +288,7 @@ $conn = conntemp($cod_empresa, "");
 				$abaAdorai = 2006;
 				include "abasAdorai.php";
 
-				$abaManutencaoAdorai = fnDecode($_GET['mod']);
+				$abaManutencaoAdorai = fnDecode(@$_GET['mod']);
 				//echo $abaUsuario;
 
 				//se não for sistema de campanhas
@@ -502,7 +562,7 @@ $conn = conntemp($cod_empresa, "");
 									} else {
 										$and_propriedade = "AND ACI.COD_PROPRIEDADE = $cod_propriedade";
 									}
-									if ($cod_chale != "") {
+									if ($cod_chale != '' && $cod_chale != 0) {
 										$and_chale = "AND ACI.COD_CHALE = $cod_chale";
 									} else {
 										$and_chale = " ";
