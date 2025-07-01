@@ -1,4 +1,86 @@
 <?php
+$opcao = "";
+$hotel = "";
+$log_diaria = "";
+$num_adultos = "";
+$num_criancas = "";
+$cod_hotel = "";
+$num_pessoas = "";
+$hoje = "";
+$ontem = "";
+$hashLocal = "";
+$des_owner = "";
+$msgRetorno = "";
+$msgTipo = "";
+$valorpag = "";
+$cod_propriedade = "";
+$cod_chale = "";
+$cod_statuspag = "";
+$cod_formapag = "";
+$dat_ini = "";
+$dat_fim = "";
+$filtro_data = "";
+$log_statusreserva = "";
+$id_reserva = "";
+$des_chavecupom = "";
+$nom_usuario = "";
+$actual_link = "";
+$MODULO = "";
+$COD_MODULO = "";
+$hHabilitado = "";
+$hashForm = "";
+$arrayQuery = [];
+$qrBuscaEmpresa = "";
+$nom_empresa = "";
+$checkDiaria = "";
+$formBack = "";
+$abaAdorai = "";
+$abaManutencaoAdorai = "";
+$abaUsuario = "";
+$sqlHotel = "";
+$arrayHotel = [];
+$qrHotel = "";
+$dat_comp = "";
+$dat_alterac = "";
+$qrStatuspag = "";
+$andreserva = "";
+$andchavecupom = "";
+$and_propriedade = "";
+$and_chale = "";
+$andStatusReserva = "";
+$andDat = "";
+$andStatusPag = "";
+$andFormaPag = "";
+$andowner = "";
+$retorno = "";
+$totalitens_por_pagina = 0;
+$qrResult = "";
+$inicio = "";
+$countChale = "";
+$countOpcionais = "";
+$countReserva = "";
+$total_registros = 0;
+$qrBusca = "";
+$abv_formapag = "";
+$infoReserva = "";
+$confirmacao = "";
+$chkConfirma = "";
+$hospedes = "";
+$chkHospedes = "";
+$chkVoucher = "";
+$chkCupom = "";
+$concluido = "";
+$sqlCancela = "";
+$arrayQueryCancela = [];
+$tdDropMenu = "";
+$cancelada = "";
+$tot_reserva = "";
+$cod_cupom = "";
+$descCupom = "";
+$val_descPix = "";
+$reserva = "";
+$content = "";
+
 
 //echo "<h5>_".$opcao."</h5>";
 $itens_por_pagina = 50;
@@ -21,7 +103,7 @@ $adm = $connAdm->connAdm();
 $des_owner = "9999";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	$request = md5(implode($_POST));
+	$request = md5(serialize($_POST));
 
 	if (isset($_SESSION['last_request']) && $_SESSION['last_request'] == $request) {
 		$msgRetorno = 'Essa página já foi utilizada';
@@ -29,37 +111,37 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	} else {
 		$_SESSION['last_request']  = $request;
 
-		$valorpag = fnLimpaCampo($_REQUEST['VALOR']);
-		$cod_empresa = fnLimpaCampo($_REQUEST['COD_EMPRESA']);
-		$cod_propriedade = fnLimpaCampo($_REQUEST['COD_PROPRIEDADE']);
-		$cod_chale = fnLimpaCampo($_REQUEST['COD_CHALE']);
-		$cod_statuspag = fnLimpaCampo($_REQUEST['COD_STATUSPAG']);
-		$cod_formapag = fnLimpaCampo($_REQUEST['COD_FORMAPAG']);
-		$dat_ini = fnDataSql($_REQUEST['DAT_INI']);
-		$dat_fim = fnDataSql($_REQUEST['DAT_FIM']);
-		$filtro_data = fnLimpaCampo($_REQUEST['FILTRO_DATA']);
-		$des_owner = fnLimpaCampo($_REQUEST['DES_OWNER']);
-		$log_statusreserva = fnLimpaCampo($_REQUEST['LOG_STATUSRESERVA']);
-		$id_reserva = fnLimpacampoZero($_REQUEST['ID_RESERVA']);
-		$des_chavecupom = fnLimpaCampo($_REQUEST['DES_CHAVECUPOM']);
+		$valorpag = fnLimpaCampo(@$_REQUEST['VALOR']);
+		$cod_empresa = fnLimpaCampo(@$_REQUEST['COD_EMPRESA']);
+		$cod_propriedade = fnLimpaCampo(@$_REQUEST['COD_PROPRIEDADE']);
+		$cod_chale = fnLimpaCampo(@$_REQUEST['COD_CHALE']);
+		$cod_statuspag = fnLimpaCampo(@$_REQUEST['COD_STATUSPAG']);
+		$cod_formapag = fnLimpaCampo(@$_REQUEST['COD_FORMAPAG']);
+		$dat_ini = fnDataSql(@$_REQUEST['DAT_INI']);
+		$dat_fim = fnDataSql(@$_REQUEST['DAT_FIM']);
+		$filtro_data = fnLimpaCampo(@$_REQUEST['FILTRO_DATA']);
+		$des_owner = fnLimpaCampo(@$_REQUEST['DES_OWNER']);
+		$log_statusreserva = fnLimpaCampo(@$_REQUEST['LOG_STATUSRESERVA']);
+		$id_reserva = fnLimpacampoZero(@$_REQUEST['ID_RESERVA']);
+		$des_chavecupom = fnLimpaCampo(@$_REQUEST['DES_CHAVECUPOM']);
 
 
 		$nom_usuario = $_SESSION["SYS_NOM_USUARIO"];
 		$actual_link = "$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-		$MODULO = $_GET['mod'];
-		$COD_MODULO = fndecode($_GET['mod']);
+		$MODULO = @$_GET['mod'];
+		$COD_MODULO = fndecode(@$_GET['mod']);
 
-		$opcao = $_REQUEST['opcao'];
-		$hHabilitado = $_REQUEST['hHabilitado'];
-		$hashForm = $_REQUEST['hashForm'];
+		$opcao = @$_REQUEST['opcao'];
+		$hHabilitado = @$_REQUEST['hHabilitado'];
+		$hashForm = @$_REQUEST['hashForm'];
 	}
 }
 
 
 //busca dados da url	
-if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
+if (is_numeric(fnLimpacampo(fnDecode(@$_GET['id'])))) {
 	//busca dados da empresa
-	$cod_empresa = fnDecode($_GET['id']);
+	$cod_empresa = fnDecode(@$_GET['id']);
 	$sql = "SELECT COD_EMPRESA, NOM_FANTASI FROM empresas where COD_EMPRESA = '" . $cod_empresa . "' ";
 	//fnEscreve($sql);
 	$arrayQuery = mysqli_query($adm, $sql);
@@ -197,7 +279,7 @@ if ($filtro_data == "") {
 				$abaAdorai = 2006;
 				include "abasAdorai.php";
 
-				$abaManutencaoAdorai = fnDecode($_GET['mod']);
+				$abaManutencaoAdorai = fnDecode(@$_GET['mod']);
 				//echo $abaUsuario;
 
 				//se não for sistema de campanhas
@@ -489,7 +571,7 @@ if ($filtro_data == "") {
 									}
 
 									$andchavecupom = "";
-									if ($des_chavecupom != "") {
+									if ($des_chavecupom != '' && $des_chavecupom != 0) {
 										$andchavecupom = "AND AP.COD_CUPOM = '$des_chavecupom'";
 									}
 
@@ -500,12 +582,12 @@ if ($filtro_data == "") {
 									}
 
 									$and_chale = " ";
-									if ($cod_chale != "") {
+									if ($cod_chale != '' && $cod_chale != 0) {
 										$and_chale = "AND AI.COD_CHALE = $cod_chale";
 									}
 
 									$andStatusReserva = "";
-									if ($log_statusreserva != "") {
+									if ($log_statusreserva != '' && $log_statusreserva != 0) {
 										$andStatusReserva = "AND AP.LOG_STATUSRESERVA = '$log_statusreserva'";
 									}
 
@@ -522,13 +604,13 @@ if ($filtro_data == "") {
 										AND AI.DAT_CADASTR <= '$dat_fim 23:59:59'";
 									}
 
-									if ($cod_statuspag != "") {
+									if ($cod_statuspag != '' && $cod_statuspag != 0) {
 										$andStatusPag = "AND AP.COD_STATUSPAG = $cod_statuspag";
 									} else {
 										$andStatusPag = "";
 									}
 
-									if ($cod_formapag != "") {
+									if ($cod_formapag != '' && $cod_formapag != 0) {
 										$andFormaPag = "AND AP.COD_FORMAPAG = $cod_formapag";
 									} else {
 										$andFormaPag = "";
@@ -736,7 +818,7 @@ if ($filtro_data == "") {
 										$cod_cupom = $qrBusca['COD_CUPOM'];
 
 										$descCupom = 0;
-										if ($cod_cupom != "") {
+										if ($cod_cupom != '' && $cod_cupom != 0) {
 											$descCupom = $qrBusca['VAL_CUPOM'];
 										}
 
