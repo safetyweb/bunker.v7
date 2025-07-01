@@ -1094,11 +1094,11 @@ $result = "";
 						$msg = $qrBuscaComunicacao['DES_TEXTO_SMS'];
 
 						$TEXTOENVIO = str_replace('<#NOME>', $nome, $msg);
-						$TEXTOENVIO = str_replace('<#SALDO>', fnValor($result['CREDITO_DISPONIVEL'], 2), $TEXTOENVIO);
-						$TEXTOENVIO = str_replace('<#NOMELOJA>',  $result['NOM_FANTASI'], $TEXTOENVIO);
-						$TEXTOENVIO = str_replace('<#ANIVERSARIO>', $result['DAT_NASCIME'], $TEXTOENVIO);
-						$TEXTOENVIO = str_replace('<#DATAEXPIRA>', fnDataShort($result['DAT_EXPIRA']), $TEXTOENVIO);
-						$TEXTOENVIO = str_replace('<#EMAIL>', $result['DES_EMAILUS'], $TEXTOENVIO);
+						$TEXTOENVIO = str_replace('<#SALDO>', fnValor(@$result['CREDITO_DISPONIVEL'], 2), $TEXTOENVIO);
+						$TEXTOENVIO = str_replace('<#NOMELOJA>',  @$result['NOM_FANTASI'], $TEXTOENVIO);
+						$TEXTOENVIO = str_replace('<#ANIVERSARIO>', @$result['DAT_NASCIME'], $TEXTOENVIO);
+						$TEXTOENVIO = str_replace('<#DATAEXPIRA>', fnDataShort(@$result['DAT_EXPIRA']), $TEXTOENVIO);
+						$TEXTOENVIO = str_replace('<#EMAIL>', @$result['DES_EMAILUS'], $TEXTOENVIO);
 						$msgsbtr = nl2br($TEXTOENVIO, true);
 						$msgsbtr = str_replace('<br />', ' \n ', $msgsbtr);
 						$msgsbtr = str_replace(array("\r", "\n"), '', $msgsbtr);
