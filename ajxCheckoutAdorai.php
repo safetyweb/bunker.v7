@@ -4,17 +4,17 @@ echo fnDebug('true');
 
 $cod_usucada = $_SESSION['SYS_COD_USUARIO'];
 
-$cod_empresa = fnLimpacampoZero($_REQUEST['COD_EMPRESA']);
-$cod_propriedade = fnLimpacampo($_REQUEST['COD_PROPRIEDADE']);
-$cod_chale = fnLimpacampo($_REQUEST['COD_CHALE']);
-$cod_item = fnLimpacampo($_REQUEST['COD_ITEM']);
-$cod_carrinho = fnLimpacampo($_REQUEST['COD_CARRINHO']);
-$dat_ini = fnDataSql($_REQUEST['DAT_INI']);
-$dat_fim = fnDataSql($_REQUEST['DAT_FIM']);
-$opcao = fnLimpacampo($_GET['opcao']);
-$filtro_data = $_POST['FILTRO_DATA'];
-$cod_statuspag = $_POST['COD_STATUSPAG'];
-$cod_formapag = $_POST['COD_FORMAPAG'];
+$cod_empresa = isset($_REQUEST['COD_EMPRESA']) ? fnLimpacampoZero($_REQUEST['COD_EMPRESA']) : '';
+$cod_propriedade = isset($_REQUEST['COD_PROPRIEDADE']) ? fnLimpacampo($_REQUEST['COD_PROPRIEDADE']) : '';
+$cod_chale = isset($_REQUEST['COD_CHALE']) ? fnLimpacampo($_REQUEST['COD_CHALE']) : '';
+$cod_item = isset($_REQUEST['COD_ITEM']) ? fnLimpacampo($_REQUEST['COD_ITEM']) : '';
+$cod_carrinho = isset($_REQUEST['COD_CARRINHO']) ? fnLimpacampo($_REQUEST['COD_CARRINHO']) : '';
+$dat_ini = isset($_REQUEST['DAT_INI']) ? fnDataSql($_REQUEST['DAT_INI']) : '';
+$dat_fim = isset($_REQUEST['DAT_FIM']) ? fnDataSql($_REQUEST['DAT_FIM']) : '';
+$opcao = isset($_GET['opcao']) ? fnLimpacampo($_GET['opcao']) : '';
+$filtro_data = isset($_POST['FILTRO_DATA']) ? $_POST['FILTRO_DATA'] : '';
+$cod_statuspag = isset($_POST['COD_STATUSPAG']) ? $_POST['COD_STATUSPAG'] : '';
+$cod_formapag = isset($_POST['COD_FORMAPAG']) ? $_POST['COD_FORMAPAG'] : '';
 
 // fnEscreve($cod_empresa);
 
