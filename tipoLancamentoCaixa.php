@@ -1,14 +1,60 @@
 <?php
+if ($_SESSION['SYS_COD_USUARIO'] == 127937) {
+	echo fnDebug('true');
+	ini_set('display_errors', 1);
+	ini_set('display_startup_errors', 1);
+	error_reporting(E_ALL);
+}
+$opcao = "";
+$hashLocal = "";
+$modulo = "";
+$cod_modulo = "";
+$msgRetorno = "";
+$msgTipo = "";
+$cod_tipo = "";
+$cod_conta = "";
+$des_tipo = "";
+$abv_tipo = "";
+$tip_operacao = "";
+$log_lancame = "";
+$log_avulso = "";
+$log_contabiliza = "";
+$log_automatico = "";
+$hHabilitado = "";
+$hashForm = "";
+$andConta = "";
+$conta = "";
+$updateConta = "";
+$usuExc = "";
+$dataExc = "";
+$usuAlt = "";
+$dataAlt = "";
+$arrayQuery = [];
+$qrBuscaEmpresa = "";
+$nom_empresa = "";
+$formBack = "";
+$abaEmpresa = "";
+$abaAdorai = "";
+$abaManutencaoAdorai = "";
+$tip_lancame = "";
+$sql_lancame = "";
+$qrStatuspag = "";
+$qrBuscaModulos = "";
+$tipoLanca = "";
+$mostraContabil = "";
+$mostraAuto = "";
+$mostraAvulso = "";
+
 
 //echo "<h5>_".$opcao."</h5>";                  
 
 $hashLocal = mt_rand();
 
-$modulo = fnDecode($_GET['mod']);
-$cod_modulo = fnDecode($_GET['mod']);
+$modulo = fnDecode(@$_GET['mod']);
+$cod_modulo = fnDecode(@$_GET['mod']);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	$request = md5(implode($_POST));
+	$request = md5(serialize($_POST));
 
 	if (isset($_SESSION['last_request']) && $_SESSION['last_request'] == $request) {
 		$msgRetorno = 'Essa página já foi utilizada';
@@ -16,32 +62,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	} else {
 		$_SESSION['last_request']  = $request;
 
-		$cod_empresa = fnLimpaCampoZero($_REQUEST['COD_EMPRESA']);
-		$cod_tipo = fnLimpaCampoZero($_REQUEST['COD_TIPO']);
-		$cod_conta = fnLimpaCampoZero($_REQUEST['COD_CONTA']);
-		$des_tipo = fnLimpaCampo($_REQUEST['DES_TIPO']);
-		$abv_tipo = fnLimpaCampo($_REQUEST['ABV_TIPO']);
-		$tip_operacao = fnLimpaCampo($_REQUEST['TIP_OPERACAO']);
-		$log_lancame = fnLimpaCampo($_REQUEST['LOG_LANCAME']);
-		if (empty($_REQUEST['LOG_AVULSO'])) {
+		$cod_empresa = fnLimpaCampoZero(@$_REQUEST['COD_EMPRESA']);
+		$cod_tipo = fnLimpaCampoZero(@$_REQUEST['COD_TIPO']);
+		$cod_conta = fnLimpaCampoZero(@$_REQUEST['COD_CONTA']);
+		$des_tipo = fnLimpaCampo(@$_REQUEST['DES_TIPO']);
+		$abv_tipo = fnLimpaCampo(@$_REQUEST['ABV_TIPO']);
+		$tip_operacao = fnLimpaCampo(@$_REQUEST['TIP_OPERACAO']);
+		$log_lancame = fnLimpaCampo(@$_REQUEST['LOG_LANCAME']);
+		if (empty(@$_REQUEST['LOG_AVULSO'])) {
 			$log_avulso = 'N';
 		} else {
-			$log_avulso = $_REQUEST['LOG_AVULSO'];
+			$log_avulso = @$_REQUEST['LOG_AVULSO'];
 		}
-		if (empty($_REQUEST['LOG_CONTABILIZA'])) {
+		if (empty(@$_REQUEST['LOG_CONTABILIZA'])) {
 			$log_contabiliza = 'N';
 		} else {
-			$log_contabiliza = $_REQUEST['LOG_CONTABILIZA'];
+			$log_contabiliza = @$_REQUEST['LOG_CONTABILIZA'];
 		}
-		if (empty($_REQUEST['LOG_AUTOMATICO'])) {
+		if (empty(@$_REQUEST['LOG_AUTOMATICO'])) {
 			$log_automatico = 'N';
 		} else {
-			$log_automatico = $_REQUEST['LOG_AUTOMATICO'];
+			$log_automatico = @$_REQUEST['LOG_AUTOMATICO'];
 		}
 
-		$opcao = $_REQUEST['opcao'];
-		$hHabilitado = $_REQUEST['hHabilitado'];
-		$hashForm = $_REQUEST['hashForm'];
+		$opcao = @$_REQUEST['opcao'];
+		$hHabilitado = @$_REQUEST['hHabilitado'];
+		$hashForm = @$_REQUEST['hashForm'];
 
 		if ($cod_empresa == 274) {
 			$andConta = "COD_CONTA,";
@@ -49,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			$updateConta = "COD_CONTA = $cod_conta,";
 		}
 
-		if ($opcao != '') {
+		if ($opcao != '' && $opcao != 0) {
 
 			if ($opcao == 'CAD') {
 
@@ -140,9 +186,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
 //busca dados da url	
-if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
+if (is_numeric(fnLimpacampo(fnDecode(@$_GET['id'])))) {
 	//busca dados da empresa
-	$cod_empresa = fnDecode($_GET['id']);
+	$cod_empresa = fnDecode(@$_GET['id']);
 	$sql = "SELECT COD_EMPRESA, NOM_EMPRESA FROM empresas where COD_EMPRESA = '" . $cod_empresa . "' ";
 	//fnEscreve($sql);
 	$arrayQuery = mysqli_query($connAdm->connAdm(), $sql);
