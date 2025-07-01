@@ -1,4 +1,34 @@
 <?php
+if ($_SESSION['SYS_COD_USUARIO'] == 127937) {
+    echo fnDebug('true');
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+}
+$hashLocal = "";
+$hoje = "";
+$dias30 = "";
+$msgRetorno = "";
+$msgTipo = "";
+$dat_ini = "";
+$dat_fim = "";
+$cod_propriedade = "";
+$cod_chale = "";
+$opcao = "";
+$hHabilitado = "";
+$hashForm = "";
+$arrayQuery = [];
+$qrBuscaEmpresa = "";
+$nom_empresa = "";
+$lojasSelecionadas = "";
+$sqlHotel = "";
+$arrayHotel = [];
+$qrHotel = "";
+$and_propriedade = "";
+$and_chale = "";
+$qrListaVendas = "";
+$content = "";
+
 
 //echo fnDebug('true');
 
@@ -15,7 +45,7 @@ $hoje = fnFormatDate(date("Y-m-d"));
 $dias30 = fnFormatDate(date('Y-m-01'));
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $request = md5(implode($_POST));
+    $request = md5(serialize($_POST));
 
     if (isset($_SESSION['last_request']) && $_SESSION['last_request'] == $request) {
         $msgRetorno = 'Essa página já foi utilizada';
@@ -23,28 +53,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         $_SESSION['last_request']  = $request;
 
-        $cod_empresa = fnLimpaCampoZero($_POST['COD_EMPRESA']);
-        $dat_ini = fnDataSql($_POST['DAT_INI']);
-        $dat_fim = fnDataSql($_POST['DAT_FIM']);
-        $cod_propriedade = fnLimpaCampo($_POST['COD_PROPRIEDADE']);
-        $cod_chale = fnLimpaCampo($_POST['COD_CHALE']);
+        $cod_empresa = fnLimpaCampoZero(@$_POST['COD_EMPRESA']);
+        $dat_ini = fnDataSql(@$_POST['DAT_INI']);
+        $dat_fim = fnDataSql(@$_POST['DAT_FIM']);
+        $cod_propriedade = fnLimpaCampo(@$_POST['COD_PROPRIEDADE']);
+        $cod_chale = fnLimpaCampo(@$_POST['COD_CHALE']);
 
-        $opcao = $_REQUEST['opcao'];
-        $hHabilitado = $_REQUEST['hHabilitado'];
-        $hashForm = $_REQUEST['hashForm'];
+        $opcao = @$_REQUEST['opcao'];
+        $hHabilitado = @$_REQUEST['hHabilitado'];
+        $hashForm = @$_REQUEST['hashForm'];
 
-        if ($opcao != '') {
+        if ($opcao != '' && $opcao != 0) {
         }
     }
 }
 
 //busca dados url
-if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
+if (is_numeric(fnLimpacampo(fnDecode(@$_GET['id'])))) {
     //busca dados da empresa
-    $cod_empresa = fnDecode($_GET['id']);
+    $cod_empresa = fnDecode(@$_GET['id']);
     $sql = "SELECT COD_EMPRESA, NOM_FANTASI, COD_CLIENTE_AV, TIP_RETORNO FROM empresas where COD_EMPRESA = '" . $cod_empresa . "' ";
     //fnEscreve($sql);
-    $arrayQuery = mysqli_query($connAdm->connAdm(), $sql) or die(mysqli_error());
+    $arrayQuery = mysqli_query($connAdm->connAdm(), $sql);
     $qrBuscaEmpresa = mysqli_fetch_assoc($arrayQuery);
 
     if (isset($arrayQuery)) {
@@ -118,7 +148,7 @@ if (strlen($dat_fim) == 0 || $dat_fim == "1969-12-31") {
 
                                             while ($qrHotel = mysqli_fetch_assoc($arrayHotel)) {
                                             ?>
-                                                <option value="<?= $qrHotel[COD_EXTERNO] ?>"><?= $qrHotel[NOM_FANTASI] ?></option>
+                                                <option value="<?= $qrHotel['COD_EXTERNO'] ?>"><?= $qrHotel['NOM_FANTASI'] ?></option>
                                             <?php
                                             }
                                             ?>
@@ -230,7 +260,7 @@ if (strlen($dat_fim) == 0 || $dat_fim == "1969-12-31") {
                                     } else {
                                         $and_propriedade = "AND UNV.COD_EXTERNO = $cod_propriedade";
                                     }
-                                    if ($cod_chale != "") {
+                                    if ($cod_chale != '' && $cod_chale != 0) {
                                         $and_chale = "AND AC.COD_EXTERNO = $cod_chale";
                                     } else {
                                         $and_chale = " ";
