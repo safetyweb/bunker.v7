@@ -5,11 +5,12 @@
 $hashLocal = mt_rand();
 
 $tem_prodaux = "";
+$data = "";
 
 $itens_carregar_mais = 0;
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	$request = md5(implode($_POST));
+	$request = md5(serialize($_POST));
 
 	if (isset($_SESSION['last_request']) && $_SESSION['last_request'] == $request) {
 		$msgRetorno = 'Essa página já foi utilizada';
