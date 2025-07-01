@@ -6,9 +6,12 @@ $hashLocal = mt_rand();
 $cod_externo = 0;
 $des_produto = "";
 $cod_orcamento = fnDecode($_GET['idO']);
-
+$cod_categor = "";
+$cod_subcate = "";
+$atributo1 = "";
+$atributo2 = "";
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	$request = md5(implode($_POST));
+	$request = md5(serialize($_POST));
 
 	if (isset($_SESSION['last_request']) && $_SESSION['last_request'] == $request) {
 		$msgRetorno = 'Essa página já foi utilizada';
