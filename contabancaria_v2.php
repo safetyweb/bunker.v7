@@ -489,6 +489,8 @@ if (is_numeric(fnLimpacampo(fnDecode(@$_GET['id'])))) {
                                                     $default = "";
                                                 }
 
+                                                fnEscreveArray($qrBuscaModulos);
+
                                                 echo "
 											<tr>
 											  <td><input type='radio' name='radio1' onclick='retornaForm(" . $count . ")'></th>
