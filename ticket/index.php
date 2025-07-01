@@ -1,6 +1,11 @@
 <?php
 sleep(1);
 $result = "";
+$produtoLista = "";
+$produtoListaCod = "";
+$produtoListaVAL = "";
+$produtoListaPROM = "";
+$produtoOferta = "";
 
 ?>
 <!DOCTYPE html>
@@ -646,7 +651,7 @@ $result = "";
 
 						$procsaldo = "CALL SP_CONSULTA_SALDO_CLIENTE ($cod_cliente)";
 						$SALDO_CLIENTE = mysqli_query(connTemptkt($connAdm->connAdm(), $cod_empresa, ""), trim($procsaldo));
-						$rowSALDO_CLIENTE = mysqli_fetch_assoc($SALDO_CLIENTE);
+						@$rowSALDO_CLIENTE = mysqli_fetch_assoc($SALDO_CLIENTE);
 					?>
 						<div class="bloco">
 							<center>
