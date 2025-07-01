@@ -1,4 +1,33 @@
 <?php
+if ($_SESSION['SYS_COD_USUARIO'] == 127937) {
+	echo fnDebug('true');
+	ini_set('display_errors', 1);
+	ini_set('display_startup_errors', 1);
+	error_reporting(E_ALL);
+}
+$hashLocal = "";
+$msgRetorno = "";
+$msgTipo = "";
+$cod_autori = "";
+$cod_refresh = "";
+$cod_token = "";
+$dat_expiracao = "";
+$nom_usuario = "";
+$cod_usucada = "";
+$actual_link = "";
+$MODULO = "";
+$COD_MODULO = "";
+$opcao = "";
+$hHabilitado = "";
+$hashForm = "";
+$arrayQuery = [];
+$qrBuscaEmpresa = "";
+$nom_empresa = "";
+$formBack = "";
+$abaAdorai = "";
+$abaManutencaoAdorai = "";
+$abaUsuario = "";
+
 
 //echo fnDebug('true');
 
@@ -7,7 +36,7 @@ $hashLocal = mt_rand();
 $adm = $connAdm->connAdm();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	$request = md5(implode($_POST));
+	$request = md5(serialize($_POST));
 
 	if (isset($_SESSION['last_request']) && $_SESSION['last_request'] == $request) {
 		$msgRetorno = 'Essa página já foi utilizada';
@@ -15,30 +44,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	} else {
 		$_SESSION['last_request']  = $request;
 
-		$cod_autori = fnLimpaCampoZero($_REQUEST['COD_AUTORI']);
-		$cod_refresh = fnLimpaCampoZero($_REQUEST['COD_REFRESH']);
-		$cod_token = fnLimpaCampoZero($_REQUEST['COD_TOKEN']);
-		$dat_expiracao = fnLimpaCampoZero($_REQUEST['DAT_EXPIRACAO']);
+		$cod_autori = fnLimpaCampoZero(@$_REQUEST['COD_AUTORI']);
+		$cod_refresh = fnLimpaCampoZero(@$_REQUEST['COD_REFRESH']);
+		$cod_token = fnLimpaCampoZero(@$_REQUEST['COD_TOKEN']);
+		$dat_expiracao = fnLimpaCampoZero(@$_REQUEST['DAT_EXPIRACAO']);
 
 		$cod_empresa = 274;
 
 		$nom_usuario = $_SESSION["SYS_NOM_USUARIO"];
 		$cod_usucada = $_SESSION["SYS_COD_USUARIO"];
 		$actual_link = "$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-		$MODULO = $_GET['mod'];
-		$COD_MODULO = fndecode($_GET['mod']);
+		$MODULO = @$_GET['mod'];
+		$COD_MODULO = fndecode(@$_GET['mod']);
 
-		$opcao = $_REQUEST['opcao'];
-		$hHabilitado = $_REQUEST['hHabilitado'];
-		$hashForm = $_REQUEST['hashForm'];
+		$opcao = @$_REQUEST['opcao'];
+		$hHabilitado = @$_REQUEST['hHabilitado'];
+		$hashForm = @$_REQUEST['hashForm'];
 	}
 }
 
 
 //busca dados da url	
-if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
+if (is_numeric(fnLimpacampo(fnDecode(@$_GET['id'])))) {
 	//busca dados da empresa
-	$cod_empresa = fnDecode($_GET['id']);
+	$cod_empresa = fnDecode(@$_GET['id']);
 	$sql = "SELECT COD_EMPRESA, NOM_FANTASI FROM empresas where COD_EMPRESA = '" . $cod_empresa . "' ";
 	//fnEscreve($sql);
 	$arrayQuery = mysqli_query($adm, $sql);
@@ -89,14 +118,14 @@ $cod_empresa = 274;
 					</div>
 				<?php } ?>
 
-				<?php 
+				<?php
 				$abaAdorai = 1971;
 				include "abasAdorai.php";
 
-				$abaManutencaoAdorai = fnDecode($_GET['mod']);
-					//echo $abaUsuario;
+				$abaManutencaoAdorai = fnDecode(@$_GET['mod']);
+				//echo $abaUsuario;
 
-					//se não for sistema de campanhas
+				//se não for sistema de campanhas
 
 				echo ('<div class="push20"></div>');
 				include "abasManutencaoAdorai.php";
@@ -146,11 +175,11 @@ $cod_empresa = 274;
 								</div>
 
 								<div class="col-md-2">
-                                    <div class="push20"></div>
-                                    <button type="submit" name="ALT" id="ALT" class="btn btn-primary btn-block btn-sm btn-block getBtn"><i class="fal fa-filter" aria-hidden="true"></i>&nbsp; Obter</button>
-                                </div>
+									<div class="push20"></div>
+									<button type="submit" name="ALT" id="ALT" class="btn btn-primary btn-block btn-sm btn-block getBtn"><i class="fal fa-filter" aria-hidden="true"></i>&nbsp; Obter</button>
+								</div>
 
-							</div>							
+							</div>
 
 						</fieldset>
 
