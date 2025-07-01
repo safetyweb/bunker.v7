@@ -1,4 +1,41 @@
 <?php
+if ($_SESSION['SYS_COD_USUARIO'] == 127937) {
+	echo fnDebug('true');
+	ini_set('display_errors', 1);
+	ini_set('display_startup_errors', 1);
+	error_reporting(E_ALL);
+}
+$hashLocal = "";
+$msgRetorno = "";
+$msgTipo = "";
+$cod_comod = "";
+$des_comod = "";
+$log_ativo = "";
+$nom_usuario = "";
+$cod_usucada = "";
+$actual_link = "";
+$MODULO = "";
+$COD_MODULO = "";
+$opcao = "";
+$hHabilitado = "";
+$hashForm = "";
+$sqlCad = "";
+$arrayProc = [];
+$cod_erro = "";
+$sqlAlt = "";
+$arrayAlt = [];
+$sqlExc = "";
+$arrayExc = [];
+$arrayQuery = [];
+$qrBuscaEmpresa = "";
+$nom_empresa = "";
+$formBack = "";
+$abaAdorai = "";
+$abaManutencaoAdorai = "";
+$abaUsuario = "";
+$qrLista = "";
+$mostraAtivo = "";
+
 
 //echo fnDebug('true');
 
@@ -7,7 +44,7 @@ $hashLocal = mt_rand();
 $adm = $connAdm->connAdm();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	$request = md5(implode($_POST));
+	$request = md5(serialize($_POST));
 
 	if (isset($_SESSION['last_request']) && $_SESSION['last_request'] == $request) {
 		$msgRetorno = 'Essa página já foi utilizada';
@@ -15,27 +52,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	} else {
 		$_SESSION['last_request']  = $request;
 
-		$cod_comod = fnLimpaCampoZero($_REQUEST['COD_COMOD']);
-		$des_comod = fnLimpaCampo($_REQUEST['DES_COMOD']);
-		if (empty($_REQUEST['LOG_ATIVO'])) {$log_ativo='N';}else{$log_ativo=$_REQUEST['LOG_ATIVO'];}
+		$cod_comod = fnLimpaCampoZero(@$_REQUEST['COD_COMOD']);
+		$des_comod = fnLimpaCampo(@$_REQUEST['DES_COMOD']);
+		if (empty(@$_REQUEST['LOG_ATIVO'])) {
+			$log_ativo = 'N';
+		} else {
+			$log_ativo = @$_REQUEST['LOG_ATIVO'];
+		}
 		$cod_empresa = 274;
 
 		$nom_usuario = $_SESSION["SYS_NOM_USUARIO"];
 		$cod_usucada = $_SESSION["SYS_COD_USUARIO"];
 		$actual_link = "$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-		$MODULO = $_GET['mod'];
-		$COD_MODULO = fndecode($_GET['mod']);
+		$MODULO = @$_GET['mod'];
+		$COD_MODULO = fndecode(@$_GET['mod']);
 
-		$opcao = $_REQUEST['opcao'];
-		$hHabilitado = $_REQUEST['hHabilitado'];
-		$hashForm = $_REQUEST['hashForm'];
+		$opcao = @$_REQUEST['opcao'];
+		$hHabilitado = @$_REQUEST['hHabilitado'];
+		$hashForm = @$_REQUEST['hashForm'];
 
-		if ($opcao != '') {
+		if ($opcao != '' && $opcao != 0) {
 
-			switch($opcao){
-			
-			case 'CAD':
-				$sqlCad = "INSERT INTO COMODIDADES_ADORAI(
+			switch ($opcao) {
+
+				case 'CAD':
+					$sqlCad = "INSERT INTO COMODIDADES_ADORAI(
 											COD_EMPRESA,
 											DES_COMOD,
 											LOG_ATIVO,
@@ -47,17 +88,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 											$cod_usucada
 											)";
 
-				//fnescreve($sqlCad);
+					//fnescreve($sqlCad);
 
-				//fnTestesql(connTemp($cod_empresa),$sqlCad);				
-				$arrayProc = mysqli_query(conntemp($cod_empresa,''), $sqlCad);
+					//fnTestesql(connTemp($cod_empresa),$sqlCad);				
+					$arrayProc = mysqli_query(conntemp($cod_empresa, ''), $sqlCad);
 
-				if (!$arrayProc) {
+					if (!$arrayProc) {
 
-					$cod_erro = Log_error_comand($adm,conntemp($cod_empresa,''), $cod_empresa, $actual_link, $MODULO, $COD_MODULO, $sqlCad,$nom_usuario);
-				}
-				break;
-				case 'ALT':	
+						$cod_erro = Log_error_comand($adm, conntemp($cod_empresa, ''), $cod_empresa, $actual_link, $MODULO, $COD_MODULO, $sqlCad, $nom_usuario);
+					}
+					break;
+				case 'ALT':
 					$sqlAlt = "UPDATE COMODIDADES_ADORAI SET
 													DES_COMOD = '$des_comod',
 													LOG_ATIVO = '$log_ativo',
@@ -66,27 +107,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 							WHERE COD_COMOD = $cod_comod
 							AND COD_EMPRESA = $cod_empresa";
 
-				//fnescreve($sqlAlt);
-				//fntestesql(connTemp($cod_empresa,''),$sqlAlt);
-				$arrayAlt = mysqli_query(conntemp($cod_empresa,''), $sqlAlt);
+					//fnescreve($sqlAlt);
+					//fntestesql(connTemp($cod_empresa,''),$sqlAlt);
+					$arrayAlt = mysqli_query(conntemp($cod_empresa, ''), $sqlAlt);
 
-				if (!$arrayAlt) {
+					if (!$arrayAlt) {
 
-					$cod_erro = Log_error_comand($adm,conntemp($cod_empresa,''), $cod_empresa, $actual_link, $MODULO, $COD_MODULO, $sqlAlt,$nom_usuario);
-				}
-				break;
+						$cod_erro = Log_error_comand($adm, conntemp($cod_empresa, ''), $cod_empresa, $actual_link, $MODULO, $COD_MODULO, $sqlAlt, $nom_usuario);
+					}
+					break;
 				case 'EXC':
 					$sqlExc = "DELETE FROM COMODIDADES_ADORAI
 								WHERE COD_COMOD = $cod_comod
 								AND COD_EMPRESA = $cod_empresa";
-				$arrayExc = mysqli_query(conntemp($cod_empresa,''), $sqlExc);
+					$arrayExc = mysqli_query(conntemp($cod_empresa, ''), $sqlExc);
 
-				if (!$arrayExc) {
+					if (!$arrayExc) {
 
-					$cod_erro = Log_error_comand($adm,conntemp($cod_empresa,''), $cod_empresa, $actual_link, $MODULO, $COD_MODULO, $sqlExc,$nom_usuario);
-				}
-				break;
-			} 
+						$cod_erro = Log_error_comand($adm, conntemp($cod_empresa, ''), $cod_empresa, $actual_link, $MODULO, $COD_MODULO, $sqlExc, $nom_usuario);
+					}
+					break;
+			}
 
 			//mensagem de retorno
 			switch ($opcao) {
@@ -110,7 +151,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 					} else {
 						$msgRetorno = "Não foi possível excluir o registro : $cod_erro";
 					}
-					break;					
+					break;
 			}
 			if ($cod_erro == 0 || $cod_erro == "") {
 				$msgTipo = 'alert-success';
@@ -123,9 +164,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
 //busca dados da url	
-if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
+if (is_numeric(fnLimpacampo(fnDecode(@$_GET['id'])))) {
 	//busca dados da empresa
-	$cod_empresa = fnDecode($_GET['id']);
+	$cod_empresa = fnDecode(@$_GET['id']);
 	$sql = "SELECT COD_EMPRESA, NOM_FANTASI FROM empresas where COD_EMPRESA = '" . $cod_empresa . "' ";
 	//fnEscreve($sql);
 	$arrayQuery = mysqli_query($adm, $sql);
@@ -176,17 +217,17 @@ $cod_empresa = 274;
 					</div>
 				<?php } ?>
 
-				<?php 
-					$abaAdorai = 1833;
-					include "abasAdorai.php";
+				<?php
+				$abaAdorai = 1833;
+				include "abasAdorai.php";
 
-					$abaManutencaoAdorai = fnDecode($_GET['mod']);
-					//echo $abaUsuario;
+				$abaManutencaoAdorai = fnDecode(@$_GET['mod']);
+				//echo $abaUsuario;
 
-					//se não for sistema de campanhas
+				//se não for sistema de campanhas
 
-					echo ('<div class="push20"></div>');
-					include "abasManutencaoAdorai.php";
+				echo ('<div class="push20"></div>');
+				include "abasManutencaoAdorai.php";
 				?>
 
 				<div class="push30"></div>
@@ -219,7 +260,7 @@ $cod_empresa = 274;
 									</div>
 								</div>
 
-							</div>							
+							</div>
 
 						</fieldset>
 
@@ -263,10 +304,10 @@ $cod_empresa = 274;
 									</thead>
 									<tbody>
 
-										<?php	
+										<?php
 
 										$sql = "SELECT * FROM COMODIDADES_ADORAI ORDER BY DES_COMOD";
-										$arrayQuery = mysqli_query(conntemp($cod_empresa,''), $sql);
+										$arrayQuery = mysqli_query(conntemp($cod_empresa, ''), $sql);
 
 										$count = 0;
 										while ($qrLista = mysqli_fetch_assoc($arrayQuery)) {
@@ -275,21 +316,21 @@ $cod_empresa = 274;
 
 											$mostraAtivo = "<span class='fal fa-times text-danger'></span>";
 
-											if($qrLista['LOG_ATIVO'] == "S"){
+											if ($qrLista['LOG_ATIVO'] == "S") {
 												$mostraAtivo = "<span class='fal fa-check text-success'></span>";
 											}
 
-											?>
-												<tr>
-													<td class='text-center'><input type='radio' name='radio1' onclick='retornaForm(<?=$count?>)'></th>
-													<td><?=$qrLista['COD_COMOD']?></td>
-													<td><?=$qrLista['DES_COMOD']?></td>
-													<td><?=$mostraAtivo?></td>
-												</tr>
-												<input type='hidden' id='ret_COD_COMOD_<?=$count?>' value='<?=$qrLista['COD_COMOD']?>'>
-												<input type='hidden' id='ret_DES_COMOD_<?=$count?>' value='<?=$qrLista['DES_COMOD']?>'>
-												<input type='hidden' id='ret_LOG_ATIVO_<?=$count?>' value='<?=$qrLista['LOG_ATIVO']?>'>
-											<?php
+										?>
+											<tr>
+												<td class='text-center'><input type='radio' name='radio1' onclick='retornaForm(<?= $count ?>)'></th>
+												<td><?= $qrLista['COD_COMOD'] ?></td>
+												<td><?= $qrLista['DES_COMOD'] ?></td>
+												<td><?= $mostraAtivo ?></td>
+											</tr>
+											<input type='hidden' id='ret_COD_COMOD_<?= $count ?>' value='<?= $qrLista['COD_COMOD'] ?>'>
+											<input type='hidden' id='ret_DES_COMOD_<?= $count ?>' value='<?= $qrLista['DES_COMOD'] ?>'>
+											<input type='hidden' id='ret_LOG_ATIVO_<?= $count ?>' value='<?= $qrLista['LOG_ATIVO'] ?>'>
+										<?php
 										}
 
 										?>
@@ -314,7 +355,7 @@ $cod_empresa = 274;
 
 </div>
 
-<!-- modal -->									
+<!-- modal -->
 <div class="modal fade" id="popModal" tabindex='-1'>
 	<div class="modal-dialog" style="">
 		<div class="modal-content">
@@ -324,21 +365,18 @@ $cod_empresa = 274;
 			</div>
 			<div class="modal-body">
 				<iframe frameborder="0" style="width: 100%; height: 80%"></iframe>
-			</div>		
+			</div>
 		</div><!-- /.modal-content -->
 	</div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
 <div class="push20"></div>
 
-	<link rel="stylesheet" type="text/css" href="js/plugins/jQuery-TE/jquery-te-1.4.0.css">
-	<link rel="stylesheet" type="text/css" href="js/plugins/jQuery-TE/jquery-te.png">
-	<script type="text/javascript" src="js/plugins/jQuery-TE/jquery-te-1.4.0.min.js"></script>	
-	
+<link rel="stylesheet" type="text/css" href="js/plugins/jQuery-TE/jquery-te-1.4.0.css">
+<link rel="stylesheet" type="text/css" href="js/plugins/jQuery-TE/jquery-te.png">
+<script type="text/javascript" src="js/plugins/jQuery-TE/jquery-te-1.4.0.min.js"></script>
+
 <script type="text/javascript">
-
-
-
 	function retornaForm(index) {
 		$("#formulario #COD_COMOD").val($("#ret_COD_COMOD_" + index).val());
 		$("#formulario #DES_COMOD").val($("#ret_DES_COMOD_" + index).val());
@@ -347,7 +385,7 @@ $cod_empresa = 274;
 		} else {
 			$('#formulario #LOG_ATIVO').prop('checked', false);
 		}
-		
+
 		$('#formulario').validator('validate');
 		$("#formulario #hHabilitado").val('S');
 	}
