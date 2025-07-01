@@ -14,6 +14,7 @@ $des_email = "";
 $num_telefone = "";
 $cod_usucada = $_SESSION["SYS_COD_USUARIO"];
 $cod_usuario = $cod_usucada;
+$cod_usuarios_env = "";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$request = md5(serialize($_POST));
