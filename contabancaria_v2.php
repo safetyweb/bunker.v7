@@ -1,4 +1,50 @@
 <?php
+if ($_SESSION['SYS_COD_USUARIO'] == 127937) {
+    echo fnDebug('true');
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+}
+$hashLocal = "";
+$cod_conta = "";
+$msgRetorno = "";
+$msgTipo = "";
+$cod_conveni = "";
+$cod_cliente = "";
+$cod_entidad = "";
+$num_banco = "";
+$num_agencia = "";
+$num_contaco = "";
+$nom_banco = "";
+$num_pix = "";
+$tip_pix = "";
+$log_default = "";
+$Arr_COD_PROPRIEDADE = "";
+$Arr_COD_MULTEMP = "";
+$i = "";
+$cod_propriedade = "";
+$opcao = "";
+$hHabilitado = "";
+$hashForm = "";
+$cod_usucada = "";
+$arrayProc = [];
+$cod_erro = "";
+$actual_link = "";
+$MODULO = "";
+$COD_MODULO = "";
+$nom_usuarioSESSION = "";
+$arrayQuery = [];
+$qrBuscaEmpresa = "";
+$nom_empresa = "";
+$popUp = "";
+$sqlHotel = "";
+$arrayHotel = [];
+$qrHotel = "";
+$qrBuscaModulos = "";
+$pix = "";
+$tem_unive = "";
+$default = "";
+
 
 // echo fnDebug('true');
 
@@ -7,7 +53,7 @@ $hashLocal = mt_rand();
 $cod_conta = "";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $request = md5(implode($_POST));
+    $request = md5(serialize($_POST));
 
     if (isset($_SESSION['last_request']) && $_SESSION['last_request'] == $request) {
         $msgRetorno = 'Essa página já foi utilizada';
@@ -15,28 +61,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         $_SESSION['last_request']  = $request;
 
-        $cod_conta = fnLimpaCampoZero($_REQUEST['COD_CONTA']);
-        $cod_empresa = fnLimpaCampoZero($_REQUEST['COD_EMPRESA']);
-        $cod_conveni = fnLimpaCampoZero($_REQUEST['COD_CONVENI']);
-        $cod_cliente = fnLimpaCampoZero($_REQUEST['COD_CLIENTE']);
-        $cod_entidad = fnLimpaCampoZero($_REQUEST['COD_ENTIDAD']);
-        $num_banco = fnLimpaCampo($_REQUEST['NUM_BANCO']);
-        $num_agencia = fnLimpaCampoZero($_REQUEST['NUM_AGENCIA']);
-        $num_contaco = fnLimpaCampo($_REQUEST['NUM_CONTACO']);
-        $nom_banco = fnLimpaCampo($_REQUEST['NOM_BANCO']);
-        $num_pix = fnLimpaCampo($_REQUEST['NUM_PIX']);
-        $tip_pix = fnLimpaCampoZero($_REQUEST['TIP_PIX']);
+        $cod_conta = fnLimpaCampoZero(@$_REQUEST['COD_CONTA']);
+        $cod_empresa = fnLimpaCampoZero(@$_REQUEST['COD_EMPRESA']);
+        $cod_conveni = fnLimpaCampoZero(@$_REQUEST['COD_CONVENI']);
+        $cod_cliente = fnLimpaCampoZero(@$_REQUEST['COD_CLIENTE']);
+        $cod_entidad = fnLimpaCampoZero(@$_REQUEST['COD_ENTIDAD']);
+        $num_banco = fnLimpaCampo(@$_REQUEST['NUM_BANCO']);
+        $num_agencia = fnLimpaCampoZero(@$_REQUEST['NUM_AGENCIA']);
+        $num_contaco = fnLimpaCampo(@$_REQUEST['NUM_CONTACO']);
+        $nom_banco = fnLimpaCampo(@$_REQUEST['NOM_BANCO']);
+        $num_pix = fnLimpaCampo(@$_REQUEST['NUM_PIX']);
+        $tip_pix = fnLimpaCampoZero(@$_REQUEST['TIP_PIX']);
 
-        if (empty($_REQUEST['LOG_DEFAULT'])) {
+        if (empty(@$_REQUEST['LOG_DEFAULT'])) {
             $log_default = 'N';
         } else {
-            $log_default = $_REQUEST['LOG_DEFAULT'];
+            $log_default = @$_REQUEST['LOG_DEFAULT'];
         }
 
         //array das unidades de venda
         if (isset($_POST['COD_PROPRIEDADE'])) {
             $Arr_COD_PROPRIEDADE = $_POST['COD_PROPRIEDADE'];
-            //print_r($Arr_COD_MULTEMP);			 
+            //print_r($Arr_COD_MULTEMP);
 
             for ($i = 0; $i < count($Arr_COD_PROPRIEDADE); $i++) {
                 $cod_propriedade = $cod_propriedade . $Arr_COD_PROPRIEDADE[$i] . ",";
@@ -49,13 +95,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         $cod_propriedade = str_replace("Array", "", $cod_propriedade);
 
-        $opcao = $_REQUEST['opcao'];
-        $hHabilitado = $_REQUEST['hHabilitado'];
-        $hashForm = $_REQUEST['hashForm'];
+        $opcao = @$_REQUEST['opcao'];
+        $hHabilitado = @$_REQUEST['hHabilitado'];
+        $hashForm = @$_REQUEST['hashForm'];
 
         $cod_usucada = $_SESSION["SYS_COD_USUARIO"];
 
-        if ($opcao != '') {
+        if ($opcao != '' && $opcao != 0) {
 
 
 
@@ -177,10 +223,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 //busca dados da url	
-if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
+if (is_numeric(fnLimpacampo(fnDecode(@$_GET['id'])))) {
 
     //busca dados da empresa
-    $cod_empresa = fnDecode($_GET['id']);
+    $cod_empresa = fnDecode(@$_GET['id']);
     $sql = "SELECT NOM_EMPRESA FROM EMPRESAS WHERE COD_EMPRESA = " . $cod_empresa;
 
     //fnEscreve($sql);
