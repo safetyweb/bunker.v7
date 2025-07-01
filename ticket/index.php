@@ -7,7 +7,7 @@ sleep(1);
 <head>
 
 	<meta name="viewport" content="width=device-width" />
-	<title>Ofertas</title>
+	<title>Ticket de Ofertas</title>
 	<link rel="ícone de atalho" href="images/favicontkt.ico" type="image/x-icon">
 	<link rel="icon" href="images/favicontkt.ico" type="image/x-icon">
 </head>
