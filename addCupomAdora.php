@@ -33,7 +33,7 @@ $COD_MODULO = "";
 $cod_usucada = "";
 $Arr_COD_PROPRIEDADE = "";
 $Arr_COD_SISTEMAS = "";
-$i = "";
+$i = 0;
 $cod_propriedade = "";
 $andDatIni = "";
 $andIni = "";
@@ -295,7 +295,7 @@ if (is_numeric(fnLimpacampo(fnDecode(@$_GET['id'])))) {
 	$cod_empresa = fnDecode(@$_GET['id']);
 	$sql = "SELECT COD_EMPRESA, NOM_FANTASI FROM empresas where COD_EMPRESA = '" . $cod_empresa . "' ";
 	//fnEscreve($sql);
-	$arrayQuery = mysqli_query($adm, $sql);
+	$arrayQuery = mysqli_query($connAdm->connAdm(), $sql);
 	$qrBuscaEmpresa = mysqli_fetch_assoc($arrayQuery);
 
 	if (isset($arrayQuery)) {
