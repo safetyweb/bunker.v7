@@ -1,4 +1,51 @@
 <?php
+if ($_SESSION['SYS_COD_USUARIO'] == 127937) {
+	echo fnDebug('true');
+	ini_set('display_errors', 1);
+	ini_set('display_startup_errors', 1);
+	error_reporting(E_ALL);
+}
+$hashLocal = "";
+$msgRetorno = "";
+$msgTipo = "";
+$cod_propriedade = "";
+$cod_hotel = "";
+$nom_propriedade = "";
+$tip_propriedade = "";
+$des_imagem = "";
+$des_propriedade = "";
+$des_contrato = "";
+$meta_title = "";
+$meta_description = "";
+$h1_propriedade = "";
+$nom_usuario = "";
+$cod_usucada = "";
+$actual_link = "";
+$MODULO = "";
+$COD_MODULO = "";
+$opcao = "";
+$hHabilitado = "";
+$hashForm = "";
+$sqlCad = "";
+$arrayProc = [];
+$cod_erro = "";
+$sqlAlt = "";
+$arrayAlt = [];
+$sqlExc = "";
+$arrayExc = [];
+$arrayQuery = [];
+$qrBuscaEmpresa = "";
+$nom_empresa = "";
+$formBack = "";
+$abaAdorai = "";
+$abaManutencaoAdorai = "";
+$abaUsuario = "";
+$arrayHotel = [];
+$qrHoteis = "";
+$des_regras = "";
+$qrLista = "";
+$imagem = "";
+
 
 //echo fnDebug('true');
 
@@ -7,7 +54,7 @@ $hashLocal = mt_rand();
 $adm = $connAdm->connAdm();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	$request = md5(implode($_POST));
+	$request = md5(serialize($_POST));
 
 	if (isset($_SESSION['last_request']) && $_SESSION['last_request'] == $request) {
 		$msgRetorno = 'Essa página já foi utilizada';
@@ -15,29 +62,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	} else {
 		$_SESSION['last_request']  = $request;
 
-		$cod_propriedade = fnLimpaCampoZero($_REQUEST['COD_PROPRIEDADE']);
-		$cod_hotel = fnLimpaCampoZero($_REQUEST['COD_HOTEL']);
-		$nom_propriedade = fnLimpaCampo($_REQUEST['NOM_PROPRIEDADE']);
-		$tip_propriedade = fnLimpaCampo($_REQUEST['TIP_PROPRIEDADE']);
-		$des_imagem = fnLimpaCampo($_REQUEST['DES_IMAGEM']);
-		$des_propriedade = str_replace('"', "´´", str_replace("'", "´",$_REQUEST['DES_PROPRIEDADE']));
-		$cod_empresa = 274;
-		$des_contrato = str_replace('"', "´´", str_replace("'", "´", $_REQUEST['DES_CONTRATO']));
-		$meta_title = fnLimpaCampo($_REQUEST['META_TITLE']);
-		$meta_description = fnLimpaCampo($_REQUEST['META_DESCRIPTION']);
-		$h1_propriedade = fnLimpaCampo($_REQUEST['H1_PROPRIEDADE']);
+		$cod_propriedade = fnLimpaCampoZero(@$_REQUEST['COD_PROPRIEDADE']);
+		$cod_hotel = fnLimpaCampoZero(@$_REQUEST['COD_HOTEL']);
+		$nom_propriedade = fnLimpaCampo(@$_REQUEST['NOM_PROPRIEDADE']);
+		$tip_propriedade = fnLimpaCampo(@$_REQUEST['TIP_PROPRIEDADE']);
+		$des_imagem = fnLimpaCampo(@$_REQUEST['DES_IMAGEM']);
+		$des_propriedade = str_replace('"', "´´", str_replace("'", "´", @$_REQUEST['DES_PROPRIEDADE']));
+		$cod_empresa = fnLimpaCampoZero(@$_REQUEST['COD_EMPRESA']);
+		$des_contrato = str_replace('"', "´´", str_replace("'", "´", @$_REQUEST['DES_CONTRATO']));
+		$meta_title = fnLimpaCampo(@$_REQUEST['META_TITLE']);
+		$meta_description = fnLimpaCampo(@$_REQUEST['META_DESCRIPTION']);
+		$h1_propriedade = fnLimpaCampo(@$_REQUEST['H1_PROPRIEDADE']);
 
 		$nom_usuario = $_SESSION["SYS_NOM_USUARIO"];
 		$cod_usucada = $_SESSION["SYS_COD_USUARIO"];
 		$actual_link = "$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-		$MODULO = $_GET['mod'];
-		$COD_MODULO = fndecode($_GET['mod']);
+		$MODULO = @$_GET['mod'];
+		$COD_MODULO = fndecode(@$_GET['mod']);
 
-		$opcao = $_REQUEST['opcao'];
-		$hHabilitado = $_REQUEST['hHabilitado'];
-		$hashForm = $_REQUEST['hashForm'];
+		$opcao = @$_REQUEST['opcao'];
+		$hHabilitado = @$_REQUEST['hHabilitado'];
+		$hashForm = @$_REQUEST['hashForm'];
 
-		if ($opcao != '') {
+		if ($opcao != '' && $opcao != 0) {
 
 			switch ($opcao) {
 
@@ -153,9 +200,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
 //busca dados da url	
-if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
+if (is_numeric(fnLimpacampo(fnDecode(@$_GET['id'])))) {
 	//busca dados da empresa
-	$cod_empresa = fnDecode($_GET['id']);
+	$cod_empresa = fnDecode(@$_GET['id']);
 	$sql = "SELECT COD_EMPRESA, NOM_FANTASI FROM empresas where COD_EMPRESA = '" . $cod_empresa . "' ";
 	//fnEscreve($sql);
 	$arrayQuery = mysqli_query($adm, $sql);
@@ -251,7 +298,7 @@ $cod_empresa = 274;
 				$abaAdorai = 1833;
 				include "abasAdorai.php";
 
-				$abaManutencaoAdorai = fnDecode($_GET['mod']);
+				$abaManutencaoAdorai = fnDecode(@$_GET['mod']);
 				//echo $abaUsuario;
 
 				//se não for sistema de campanhas
