@@ -1,4 +1,55 @@
 <?php
+if ($_SESSION['SYS_COD_USUARIO'] == 127937) {
+	echo fnDebug('true');
+	ini_set('display_errors', 1);
+	ini_set('display_startup_errors', 1);
+	error_reporting(E_ALL);
+}
+$opcao = "";
+$hotel = "";
+$log_diaria = "";
+$num_adultos = "";
+$num_criancas = "";
+$cod_hotel = "";
+$num_pessoas = "";
+$filtro_data = "";
+$hoje = "";
+$ontem = "";
+$hashLocal = "";
+$msgRetorno = "";
+$msgTipo = "";
+$cod_statuspag = "";
+$cod_formapag = "";
+$cod_propriedade = "";
+$cod_chale = "";
+$dat_ini = "";
+$dat_fim = "";
+$nom_usuario = "";
+$actual_link = "";
+$MODULO = "";
+$COD_MODULO = "";
+$hHabilitado = "";
+$hashForm = "";
+$cod_erro = "";
+$arrayQuery = [];
+$qrBuscaEmpresa = "";
+$nom_empresa = "";
+$checkDiaria = "";
+$formBack = "";
+$abaAdorai = "";
+$abaManutencaoAdorai = "";
+$abaUsuario = "";
+$sql2 = "";
+$retorno = "";
+$totalitens_por_pagina = 0;
+$inicio = "";
+$qrBusca = "";
+$qtd_uso = 0;
+$validade = "";
+$tip_desc = "";
+$val_desconto = "";
+$content = "";
+
 
 //echo "<h5>_".$opcao."</h5>";
 
@@ -14,14 +65,14 @@ $pagina = 1;
 
 //inicialização de variáveis
 $hoje = fnFormatDate(date("Y-m-d"));
-$ontem = fnFormatDate(date('Y-m-d', strtotime($ontem. '-1 days')));
+$ontem = fnFormatDate(date('Y-m-d', strtotime($ontem . '-1 days')));
 
 
 $hashLocal = mt_rand();
 $adm = $connAdm->connAdm();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	$request = md5(implode($_POST));
+	$request = md5(serialize($_POST));
 
 	if (isset($_SESSION['last_request']) && $_SESSION['last_request'] == $request) {
 		$msgRetorno = 'Essa página já foi utilizada';
@@ -29,51 +80,51 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	} else {
 		$_SESSION['last_request']  = $request;
 
-		$cod_statuspag = fnLimpaCampo($_POST['COD_STATUSPAG']);
-		$cod_formapag = fnLimpaCampo($_POST['COD_FORMAPAG']);
-		$cod_empresa = fnLimpaCampo($_POST['COD_EMPRESA']);
-		$cod_propriedade = fnLimpaCampo($_POST['COD_PROPRIEDADE']);
-		$cod_chale = fnLimpaCampo($_POST['COD_CHALE']);
-		$dat_ini = fnDataSql($_POST['DAT_INI']);
-		$dat_fim = fnDataSql($_POST['DAT_FIM']);
-		$filtro_data = fnLimpaCampo($_POST['FILTRO_DATA']);
+		$cod_statuspag = fnLimpaCampo(@$_POST['COD_STATUSPAG']);
+		$cod_formapag = fnLimpaCampo(@$_POST['COD_FORMAPAG']);
+		$cod_empresa = fnLimpaCampo(@$_POST['COD_EMPRESA']);
+		$cod_propriedade = fnLimpaCampo(@$_POST['COD_PROPRIEDADE']);
+		$cod_chale = fnLimpaCampo(@$_POST['COD_CHALE']);
+		$dat_ini = fnDataSql(@$_POST['DAT_INI']);
+		$dat_fim = fnDataSql(@$_POST['DAT_FIM']);
+		$filtro_data = fnLimpaCampo(@$_POST['FILTRO_DATA']);
 
 		// fnEscreve($cod_hotel);
 
 		$nom_usuario = $_SESSION["SYS_NOM_USUARIO"];
 		$actual_link = "$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-		$MODULO = $_GET['mod'];
-		$COD_MODULO = fndecode($_GET['mod']);
+		$MODULO = @$_GET['mod'];
+		$COD_MODULO = fndecode(@$_GET['mod']);
 
-		$opcao = $_REQUEST['opcao'];
-		$hHabilitado = $_REQUEST['hHabilitado'];
-		$hashForm = $_REQUEST['hashForm'];
+		$opcao = @$_REQUEST['opcao'];
+		$hHabilitado = @$_REQUEST['hHabilitado'];
+		$hashForm = @$_REQUEST['hashForm'];
 
-		if ($opcao != '') {			
+		if ($opcao != '' && $opcao != 0) {
 
 			//mensagem de retorno
 			switch ($opcao) {
 				case 'CAD':
-				if ($cod_erro == 0 || $cod_erro ==  "") {
-					$msgRetorno = "Registro gravado com <strong>sucesso!</strong>";
-				} else {
-					$msgRetorno = "Não foi possível cadastrar o registro : $cod_erro";
-				}
-				break;
+					if ($cod_erro == 0 || $cod_erro ==  "") {
+						$msgRetorno = "Registro gravado com <strong>sucesso!</strong>";
+					} else {
+						$msgRetorno = "Não foi possível cadastrar o registro : $cod_erro";
+					}
+					break;
 				case 'ALT':
-				if ($cod_erro == 0 || $cod_erro ==  "") {
-					$msgRetorno = "Registro gravado com <strong>sucesso!</strong>";
-				} else {
-					$msgRetorno = "Não foi possível alterar o registro : $cod_erro";
-				}
-				break;
+					if ($cod_erro == 0 || $cod_erro ==  "") {
+						$msgRetorno = "Registro gravado com <strong>sucesso!</strong>";
+					} else {
+						$msgRetorno = "Não foi possível alterar o registro : $cod_erro";
+					}
+					break;
 				case 'EXC':
-				if ($cod_erro == 0 || $cod_erro ==  "") {
-					$msgRetorno = "Registro gravado com <strong>sucesso!</strong>";
-				} else {
-					$msgRetorno = "Não foi possível excluir o registro : $cod_erro";
-				}
-				break;					
+					if ($cod_erro == 0 || $cod_erro ==  "") {
+						$msgRetorno = "Registro gravado com <strong>sucesso!</strong>";
+					} else {
+						$msgRetorno = "Não foi possível excluir o registro : $cod_erro";
+					}
+					break;
 			}
 			if ($cod_erro == 0 || $cod_erro == "") {
 				$msgTipo = 'alert-success';
@@ -86,9 +137,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
 //busca dados da url	
-if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
+if (is_numeric(fnLimpacampo(fnDecode(@$_GET['id'])))) {
 	//busca dados da empresa
-	$cod_empresa = fnDecode($_GET['id']);
+	$cod_empresa = fnDecode(@$_GET['id']);
 	$sql = "SELECT COD_EMPRESA, NOM_FANTASI FROM empresas where COD_EMPRESA = '" . $cod_empresa . "' ";
 	//fnEscreve($sql);
 	$arrayQuery = mysqli_query($adm, $sql);
@@ -109,17 +160,17 @@ if (strlen($dat_ini) == 0 || $dat_ini == "1969-12-31") {
 }
 if (strlen($dat_fim) == 0 || $dat_fim == "1969-12-31") {
 
-	$dat_fim = fnDataSql($hoje );
+	$dat_fim = fnDataSql($hoje);
 }
 
 //fnMostraForm();
 
 $checkDiaria = "";
 
-if($log_diaria == "S"){
+if ($log_diaria == "S") {
 	$checkDiaria = "checked";
 }
-$conn = conntemp($cod_empresa,"");
+$conn = conntemp($cod_empresa, "");
 
 ?>
 
@@ -127,12 +178,13 @@ $conn = conntemp($cod_empresa,"");
 	.hiddenRow {
 		padding: 0 !important;
 	}
-	tr{
-		border-bottom: none!important;
+
+	tr {
+		border-bottom: none !important;
 	}
-	#blocker
-	{
-		display:none; 
+
+	#blocker {
+		display: none;
 		position: fixed;
 		top: 0;
 		left: 0;
@@ -143,8 +195,7 @@ $conn = conntemp($cod_empresa,"");
 		z-index: 1000;
 	}
 
-	#blocker div
-	{
+	#blocker div {
 		position: absolute;
 		top: 30%;
 		left: 48%;
@@ -156,7 +207,7 @@ $conn = conntemp($cod_empresa,"");
 	}
 
 	/*Menu DropDown*/
-	.menu{
+	.menu {
 		top: 0 !important;
 		left: -100px !important;
 		width: 100px !important;
@@ -166,23 +217,25 @@ $conn = conntemp($cod_empresa,"");
 
 
 
-	.menu li a{
-		color: #3c3c3c!important;
+	.menu li a {
+		color: #3c3c3c !important;
 	}
 
 
 
-	.menu-down-right,.menu-down-left,.menu.menu--right{
-		transform-origin: top left !important;	
+	.menu-down-right,
+	.menu-down-left,
+	.menu.menu--right {
+		transform-origin: top left !important;
 	}
 
-	@media screen and (max-width:778px){
-		.dropleft ul{
+	@media screen and (max-width:778px) {
+		.dropleft ul {
 			right: inherit !important;
 		}
 	}
 
-		.panelBox {
+	.panelBox {
 		width: 40px;
 		height: 40px;
 		display: flex;
@@ -192,7 +245,7 @@ $conn = conntemp($cod_empresa,"");
 </style>
 
 <div id="blocker">
-	<div style="text-align: center;"><img src="images/loading2.gif"><br/> Aguarde. Processando... ;-)</div>
+	<div style="text-align: center;"><img src="images/loading2.gif"><br /> Aguarde. Processando... ;-)</div>
 </div>
 
 <div class="push30"></div>
@@ -223,14 +276,14 @@ $conn = conntemp($cod_empresa,"");
 					</div>
 				<?php } ?>
 
-				<?php 
+				<?php
 				$abaAdorai = 2006;
-				include "abasAdorai.php"; 
+				include "abasAdorai.php";
 
-				$abaManutencaoAdorai = fnDecode($_GET['mod']);
-					//echo $abaUsuario;
+				$abaManutencaoAdorai = fnDecode(@$_GET['mod']);
+				//echo $abaUsuario;
 
-					//se não for sistema de campanhas
+				//se não for sistema de campanhas
 
 				echo ('<div class="push20"></div>');
 				include "abasSistemaAdorai.php";
@@ -243,7 +296,7 @@ $conn = conntemp($cod_empresa,"");
 					<form data-toggle="validator" role="form2" method="post" id="formulario" action="<?php echo $cmdPage; ?>">
 
 						<fieldset>
-							<legend>Filtros</legend> 
+							<legend>Filtros</legend>
 
 							<div class="row">
 
@@ -276,7 +329,7 @@ $conn = conntemp($cod_empresa,"");
 										<label for="inputName" class="control-label">Data Inicial</label>
 
 										<div class="input-group date datePicker" id="DAT_INI_GRP">
-											<input type='text' class="form-control input-sm data" name="DAT_INI" id="DAT_INI" value="<?=$dat_ini?>"/>
+											<input type='text' class="form-control input-sm data" name="DAT_INI" id="DAT_INI" value="<?= $dat_ini ?>" />
 											<span class="input-group-addon">
 												<span class="glyphicon glyphicon-calendar"></span>
 											</span>
@@ -290,7 +343,7 @@ $conn = conntemp($cod_empresa,"");
 										<label for="inputName" class="control-label">Data Final</label>
 
 										<div class="input-group date datePicker" id="DAT_FIM_GRP">
-											<input type='text' class="form-control input-sm data" name="DAT_FIM" id="DAT_FIM" value="<?=$dat_fim?>"/>
+											<input type='text' class="form-control input-sm data" name="DAT_FIM" id="DAT_FIM" value="<?= $dat_fim ?>" />
 											<span class="input-group-addon">
 												<span class="glyphicon glyphicon-calendar"></span>
 											</span>
@@ -305,11 +358,11 @@ $conn = conntemp($cod_empresa,"");
 								</div>
 							</div>
 
-						</fieldset>	
+						</fieldset>
 
 						<div class="push10"></div>
 						<hr>
-						
+
 
 						<div class="push10"></div>
 
@@ -327,15 +380,15 @@ $conn = conntemp($cod_empresa,"");
 
 							<div class="panelBox borda">
 
-								<div class="addBox" data-url="action.php?mod=<?php echo fnEncode(2064)?>&id=<?php echo fnEncode($cod_empresa)?>&pop=true" data-title="Novo Cupom">
+								<div class="addBox" data-url="action.php?mod=<?php echo fnEncode(2064) ?>&id=<?php echo fnEncode($cod_empresa) ?>&pop=true" data-title="Novo Cupom">
 									<i class="fal fa-plus fa-2x" aria-hidden="true" style="align-self: center;"></i>
-								</div>											
-							</div> 
+								</div>
+							</div>
 
-						</div> 								
+						</div>
 
 						<div class="push20"></div>
-					</div>					
+					</div>
 
 					<div class="no-more-tables">
 
@@ -362,13 +415,13 @@ $conn = conntemp($cod_empresa,"");
 									$sql2 = "
 									SELECT * FROM CUPOM_ADORAI
 									";
-									
+
 									$retorno = mysqli_query(connTemp($cod_empresa, ''), $sql2);
 									$totalitens_por_pagina = mysqli_num_rows($retorno);
-                                    $numPaginas = ceil($totalitens_por_pagina/$itens_por_pagina);
+									$numPaginas = ceil($totalitens_por_pagina / $itens_por_pagina);
 
-                                    //variavel para calcular o início da visualização com base na página atual
-                                    $inicio = ($itens_por_pagina * $pagina) - $itens_por_pagina;
+									//variavel para calcular o início da visualização com base na página atual
+									$inicio = ($itens_por_pagina * $pagina) - $itens_por_pagina;
 
 									$sql = "
 									SELECT * FROM CUPOM_ADORAI
@@ -383,7 +436,7 @@ $conn = conntemp($cod_empresa,"");
 											case 'I':
 												$qtd_uso = "Ilimitada";
 												break;
-											
+
 											default:
 												$qtd_uso = $qrBusca['QTD_USO'];
 												break;
@@ -393,7 +446,7 @@ $conn = conntemp($cod_empresa,"");
 											case 'I':
 												$validade = "Indefinida";
 												break;
-											
+
 											default:
 												$validade = "Por Data";
 												break;
@@ -402,33 +455,33 @@ $conn = conntemp($cod_empresa,"");
 										switch ($qrBusca['TIP_DESCONTO']) {
 											case '1':
 												$tip_desc = "Valor fixo sobre DIÁRIAS";
-												$val_desconto = "R$ ".fnValor($qrBusca['VAL_DESCONTO'],2);
+												$val_desconto = "R$ " . fnValor($qrBusca['VAL_DESCONTO'], 2);
 												break;
 											case '2':
 												$tip_desc = "Valor percentual sobre DIÁRIAS";
-												$val_desconto = "% ".fnValor($qrBusca['VAL_DESCONTO'],2);
+												$val_desconto = "% " . fnValor($qrBusca['VAL_DESCONTO'], 2);
 												break;
 											case '3':
 												$tip_desc = "Percentual sobre TOTAL";
-												$val_desconto = "% ".fnValor($qrBusca['VAL_DESCONTO'],2);
+												$val_desconto = "% " . fnValor($qrBusca['VAL_DESCONTO'], 2);
 												break;
-											
+
 											default:
 												$tip_desc = "Valor fixo sobre TOTAL";
-												$val_desconto = "R$ ".fnValor($qrBusca['VAL_DESCONTO'],2);
+												$val_desconto = "R$ " . fnValor($qrBusca['VAL_DESCONTO'], 2);
 												break;
 										}
 
-									echo "
+										echo "
 									<tr>
-									    <td class='text-center'>".$qrBusca['NOM_CUPOM']."</td>
-									    <td>".$qrBusca['DES_CHAVECUPOM']."</td>                                                    
-									    <td>".$qtd_uso."</td>                                                        
-									    <td>".$validade."</td>                                                        
-									    <td>".fnDataShort($qrBusca['DAT_INI'])."</td>                    
-									    <td>".fnDataShort($qrBusca['DAT_FIN'])."</td>                    
-									    <td class='text-right'>".$tip_desc."</td>                                                        
-									    <td class='text-right'>".$val_desconto."</td>                                                                            
+									    <td class='text-center'>" . $qrBusca['NOM_CUPOM'] . "</td>
+									    <td>" . $qrBusca['DES_CHAVECUPOM'] . "</td>                                                    
+									    <td>" . $qtd_uso . "</td>                                                        
+									    <td>" . $validade . "</td>                                                        
+									    <td>" . fnDataShort($qrBusca['DAT_INI']) . "</td>                    
+									    <td>" . fnDataShort($qrBusca['DAT_FIN']) . "</td>                    
+									    <td class='text-right'>" . $tip_desc . "</td>                                                        
+									    <td class='text-right'>" . $val_desconto . "</td>                                                                            
 									    <td width='40' class='text-center'>
 									        <small>
 									            <div class='btn-group dropdown dropleft'>
@@ -436,20 +489,19 @@ $conn = conntemp($cod_empresa,"");
 									                    <span style='opacity: 0.4;' class='fal fa-ellipsis-v fa-2x'></span>
 									                </a>
 									                <ul class='dropdown-menu' role='menu' aria-labelledby='dropdownMenu'>
-									                    <li><a href='javascript:void(0)' class='addBox' data-url='action.php?mod=".fnEncode(2064)."&id=".fnEncode($cod_empresa)."&idc=".fnEncode($qrBusca['COD_CUPOMADORAI'])."&pop=true' data-title='Alterar Cupom'>Alterar </a></li>
+									                    <li><a href='javascript:void(0)' class='addBox' data-url='action.php?mod=" . fnEncode(2064) . "&id=" . fnEncode($cod_empresa) . "&idc=" . fnEncode($qrBusca['COD_CUPOMADORAI']) . "&pop=true' data-title='Alterar Cupom'>Alterar </a></li>
 									                </ul>
 									            </div>
 									        </small>
 									    </td>
 									</tr>";
-
 									}
-									?>	
+									?>
 
 								</tbody>
 
 								<div class="push20"></div>
-								
+
 								<tfoot>
 
 									<tr>
@@ -482,19 +534,19 @@ $conn = conntemp($cod_empresa,"");
 	</div>
 
 	<!-- modal -->
-<div class="modal fade" id="popModal" tabindex='-1'>
-	<div class="modal-dialog" style="">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title"></h4>
-			</div>
-			<div class="modal-body">
-				<iframe frameborder="0" style="width: 100%; height: 80%"></iframe>
-			</div>
-		</div><!-- /.modal-content -->
-	</div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+	<div class="modal fade" id="popModal" tabindex='-1'>
+		<div class="modal-dialog" style="">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title"></h4>
+				</div>
+				<div class="modal-body">
+					<iframe frameborder="0" style="width: 100%; height: 80%"></iframe>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
 
 </div>
 
@@ -506,7 +558,6 @@ $conn = conntemp($cod_empresa,"");
 <link rel="stylesheet" href="css/bootstrap-datetimepicker.css" />
 
 <script type="text/javascript">
-
 	// $(".exportarCSV").click(function() {
 	// 	$.confirm({
 	// 		title: 'Exportação',
@@ -562,16 +613,16 @@ $conn = conntemp($cod_empresa,"");
 	// 	});				
 	// });
 
-	$(document).ready(function(){
+	$(document).ready(function() {
 		var numPaginas = <?php echo $numPaginas; ?>;
-		if(numPaginas != 0){
+		if (numPaginas != 0) {
 			carregarPaginacao(numPaginas);
 		}
 
-		$('#popModal').on('hidden.bs.modal', function () {
+		$('#popModal').on('hidden.bs.modal', function() {
 			var atualiza = $('#LOG_ATUALIZA').val();
 
-			if(atualiza == 'S'){
+			if (atualiza == 'S') {
 				location.reload();
 			}
 		});
@@ -582,9 +633,9 @@ $conn = conntemp($cod_empresa,"");
 		$("#formulario #COD_STATUSPAG").val($("#ret_COD_STATUSPAG_" + index).val());
 		$("#formulario #DES_STATUSPAG").val($("#ret_DES_STATUSPAG_" + index).val());
 		$("#formulario #ABV_STATUSPAG").val($("#ret_ABV_STATUSPAG_" + index).val());
-		$("#formulario #DES_COR").val($("#ret_DES_COR_"+index).val());
-		$('#btnIcon').iconpicker('setIcon', $("#ret_DES_ICONE_"+index).val());
-		$("#formulario #DES_ICONE").val($("#ret_DES_ICONE_"+index).val());
+		$("#formulario #DES_COR").val($("#ret_DES_COR_" + index).val());
+		$('#btnIcon').iconpicker('setIcon', $("#ret_DES_ICONE_" + index).val());
+		$("#formulario #DES_ICONE").val($("#ret_DES_ICONE_" + index).val());
 		$('#formulario').validator('validate');
 		$("#formulario #hHabilitado").val('S');
 	}
@@ -605,7 +656,4 @@ $conn = conntemp($cod_empresa,"");
 
 	$("#DAT_INI").val("<?= fnDataShort($dat_ini) ?>");
 	$("#DAT_FIM").val("<?= fnDataShort($dat_fim) ?>");
-	
-
-
 </script>
