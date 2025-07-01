@@ -489,7 +489,7 @@ if (is_numeric(fnLimpacampo(fnDecode(@$_GET['id'])))) {
                                                     $default = "";
                                                 }
 
-                                                fnEscreveArray($qrBuscaModulos);
+                                                // fnEscreveArray($qrBuscaModulos);
 
                                                 echo "
 											<tr>
@@ -504,7 +504,7 @@ if (is_numeric(fnLimpacampo(fnDecode(@$_GET['id'])))) {
 											</tr>
 											
 											<input type='hidden' id='ret_COD_CONTA_" . $count . "' value='" . $qrBuscaModulos['COD_CONTA'] . "'>
-											<input type='hidden' id='ret_COD_ENTIDAD_" . $count . "' value='" . $qrBuscaModulos['COD_ENTIDAD'] . "'>
+											<input type='hidden' id='ret_COD_ENTIDAD_" . $count . "' value='" . @$qrBuscaModulos['COD_ENTIDAD'] . "'>
 											<input type='hidden' id='ret_NUM_BANCO_" . $count . "' value='" . $qrBuscaModulos['NUM_BANCO'] . "'>
 											<input type='hidden' id='ret_NUM_AGENCIA_" . $count . "' value='" . $qrBuscaModulos['NUM_AGENCIA'] . "'>
 											<input type='hidden' id='ret_NUM_CONTACO_" . $count . "' value='" . $qrBuscaModulos['NUM_CONTACO'] . "'>
