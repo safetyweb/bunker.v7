@@ -652,7 +652,7 @@ if ($log_diaria == "S") {
 						$val_total = 0;
 						$arrayVagas = array();
 
-						if (count($hotel['roomstays']) > 0) {
+						if (is_array($hotel) && count($hotel['roomstays']) > 0) {
 
 						?>
 
