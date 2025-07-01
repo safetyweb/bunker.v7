@@ -86,13 +86,12 @@ switch ($opcao) {
 			$sqlitems = "SELECT '',A.COD_PRODUTO,B.COD_EXTERNO,B.DES_PRODUTO,a.QTD_PRODUTO,a.VAL_UNITARIO,a.VAL_TOTITEM,a.VAL_TOTLIQUI   
 							FROM itemvenda a
 							LEFT JOIN produtocliente b ON b.COD_PRODUTO = a.COD_PRODUTO 
-							WHERE a.COD_VENDA = $row[COD_VENDA]
+							WHERE a.COD_VENDA = " . $row['COD_VENDA'] . "
 							UNION				
 							SELECT '',A.COD_PRODUTO,B.COD_EXTERNO,B.DES_PRODUTO,a.QTD_PRODUTO,a.VAL_UNITARIO,a.VAL_TOTITEM,a.VAL_TOTLIQUI    
 							FROM itemvenda_bkp a
 							LEFT JOIN produtocliente b ON b.COD_PRODUTO = a.COD_PRODUTO 
-							WHERE a.COD_VENDA = $row[COD_VENDA]
-				";
+							WHERE a.COD_VENDA = " . $row['COD_VENDA'];
 
 			$CABECHALHOITEM = ["", "", "", "", "", "", "", ""];
 			fputcsv($arquivo, $CABECHALHOITEM, ';', '"');
@@ -238,20 +237,19 @@ switch ($opcao) {
 				  
 					";
 		}
-
+?>
+		<script>
+			$("#VL_TOTAL").val(<?= $valorTTotal ?>);
+			$("#VL_TOTAL_TFOOT").text("<?= fnValor($valorTTotal, 2) ?>");
+			$("#VL_REGASTE").val(<?= $valorTRegaste ?>);
+			$("#VL_REGASTE_TFOOT").text("<?= fnValor($valorTRegaste, 2) ?>");
+			$("#VL_DESCONTO").val(<?= $valorTDesconto ?>);
+			$("#VL_DESCONTO_TFOOT").text("<?= fnValor($valorTDesconto, 2) ?>");
+			$("#VL_VENDA").val(<?= $valorTvenda ?>);
+			$("#VL_VENDA_TFOOT").text("<?= fnValor($valorTvenda, 2) ?>");
+		</script>
+<?php
 
 		break;
 }
 ?>
-
-<script>
-	// alert('<?= $valorTTotal ?>');
-	$("#VL_TOTAL").val(<?= $valorTTotal ?>);
-	$("#VL_TOTAL_TFOOT").text("<?= fnValor($valorTTotal, 2) ?>");
-	$("#VL_REGASTE").val(<?= $valorTRegaste ?>);
-	$("#VL_REGASTE_TFOOT").text("<?= fnValor($valorTRegaste, 2) ?>");
-	$("#VL_DESCONTO").val(<?= $valorTDesconto ?>);
-	$("#VL_DESCONTO_TFOOT").text("<?= fnValor($valorTDesconto, 2) ?>");
-	$("#VL_VENDA").val(<?= $valorTvenda ?>);
-	$("#VL_VENDA_TFOOT").text("<?= fnValor($valorTvenda, 2) ?>");
-</script>
