@@ -1,4 +1,78 @@
 <?php
+if ($_SESSION['SYS_COD_USUARIO'] == 127937) {
+	echo fnDebug('true');
+	ini_set('display_errors', 1);
+	ini_set('display_startup_errors', 1);
+	error_reporting(E_ALL);
+}
+$hashLocal = "";
+$msgRetorno = "";
+$msgTipo = "";
+$cod_id = "";
+$cod_quarto = "";
+$nom_quarto = "";
+$des_imagem = "";
+$des_banner = "";
+$des_video = "";
+$des_quarto = "";
+$log_home = "";
+$log_banner = "";
+$cod_externo = "";
+$cod_hotel = "";
+$tam_propriedade = "";
+$val_efetivo = "";
+$qtd_hospedes = 0;
+$qtd_quartos = 0;
+$qtd_banheiros = 0;
+$log_badge = "";
+$txt_badge = "";
+$cor_badge = "";
+$cor_txtbadge = "";
+$meta_title = "";
+$meta_description = "";
+$dat_ini_dest = "";
+$dat_fim_dest = "";
+$nom_usuario = "";
+$cod_usucada = "";
+$actual_link = "";
+$MODULO = "";
+$COD_MODULO = "";
+$opcao = "";
+$hHabilitado = "";
+$hashForm = "";
+$insertData = "";
+$updateData = "";
+$sqlCad = "";
+$arrayProc = [];
+$cod_erro = "";
+$sqlAlt = "";
+$arrayAlt = [];
+$sqlExc = "";
+$arrayExc = [];
+$arrayQuery = [];
+$qrBuscaEmpresa = "";
+$nom_empresa = "";
+$formBack = "";
+$abaAdorai = "";
+$abaManutencaoAdorai = "";
+$abaUsuario = "";
+$arrayHotel = [];
+$qrHoteis = "";
+$check_status = "";
+$check_statusIni = "";
+$check_Banner = "";
+$check_badge = "";
+$des_sac = "";
+$qrLista = "";
+$destaque = "";
+$banner = "";
+$sqlDetalhes = "";
+$arrayDetalhes = [];
+$detalhe = "";
+$sqlFotos = "";
+$arrayFotos = [];
+$fotos = "";
+
 
 //echo fnDebug('true');
 
@@ -7,7 +81,7 @@ $hashLocal = mt_rand();
 $adm = $connAdm->connAdm();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	$request = md5(implode($_POST));
+	$request = md5(serialize($_POST));
 
 	if (isset($_SESSION['last_request']) && $_SESSION['last_request'] == $request) {
 		$msgRetorno = 'Essa página já foi utilizada';
@@ -15,51 +89,63 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	} else {
 		$_SESSION['last_request']  = $request;
 
-		$cod_id = fnLimpaCampoZero($_REQUEST['ID']);
-		$cod_quarto = fnLimpaCampoZero($_REQUEST['COD_QUARTO']);
-		$nom_quarto = fnLimpaCampo($_REQUEST['NOM_QUARTO']);
-		$des_imagem = fnLimpaCampo($_REQUEST['DES_IMAGEM']);
-		$des_banner = fnLimpaCampo($_REQUEST['DES_BANNER']);
-		$des_video = fnLimpaCampo($_REQUEST['DES_VIDEO']);
-		$des_quarto = fnLimpaCampo($_REQUEST['DES_QUARTO']);
-		if (empty($_REQUEST['LOG_HOME'])) {$log_home='N';}else{$log_home=$_REQUEST['LOG_HOME'];}
-		if (empty($_REQUEST['LOG_BANNER'])) {$log_banner='N';}else{$log_banner=$_REQUEST['LOG_BANNER'];}
-		$cod_externo = fnLimpaCampoZero($_REQUEST['COD_EXTERNO']);
-		$cod_hotel = fnLimpaCampoZero($_REQUEST['COD_EXTERNO']);
-		$tam_propriedade = fnLimpaCampoZero($_REQUEST['TAM_PROPRIEDADE']);
-		$val_efetivo = fnLimpaCampoZero(fnValorSql($_REQUEST['VAL_EFETIVO']));
-		$qtd_hospedes = fnLimpaCampoZero($_REQUEST['QTD_HOSPEDES']);
-		$qtd_quartos = fnLimpaCampoZero($_REQUEST['QTD_QUARTOS']);
-		$qtd_banheiros = fnLimpaCampoZero($_REQUEST['QTD_BANHEIROS']);
-		if (empty($_REQUEST['LOG_BADGE'])) {$log_badge='N';}else{$log_badge=$_REQUEST['LOG_BADGE'];}
-		$txt_badge = fnLimpaCampo($_REQUEST['TXT_BADGE']);
-		$cor_badge = fnLimpaCampo($_REQUEST['COR_BADGE']);
-		$cor_txtbadge = fnLimpaCampo($_REQUEST['COR_TXTBADGE']);
-		$meta_title = fnLimpaCampo($_REQUEST['META_TITLE']);
-		$meta_description = fnLimpaCampo($_REQUEST['META_DESCRIPTION']);
+		$cod_id = fnLimpaCampoZero(@$_REQUEST['ID']);
+		$cod_quarto = fnLimpaCampoZero(@$_REQUEST['COD_QUARTO']);
+		$nom_quarto = fnLimpaCampo(@$_REQUEST['NOM_QUARTO']);
+		$des_imagem = fnLimpaCampo(@$_REQUEST['DES_IMAGEM']);
+		$des_banner = fnLimpaCampo(@$_REQUEST['DES_BANNER']);
+		$des_video = fnLimpaCampo(@$_REQUEST['DES_VIDEO']);
+		$des_quarto = fnLimpaCampo(@$_REQUEST['DES_QUARTO']);
+		if (empty(@$_REQUEST['LOG_HOME'])) {
+			$log_home = 'N';
+		} else {
+			$log_home = @$_REQUEST['LOG_HOME'];
+		}
+		if (empty(@$_REQUEST['LOG_BANNER'])) {
+			$log_banner = 'N';
+		} else {
+			$log_banner = @$_REQUEST['LOG_BANNER'];
+		}
+		$cod_externo = fnLimpaCampoZero(@$_REQUEST['COD_EXTERNO']);
+		$cod_hotel = fnLimpaCampoZero(@$_REQUEST['COD_EXTERNO']);
+		$tam_propriedade = fnLimpaCampoZero(@$_REQUEST['TAM_PROPRIEDADE']);
+		$val_efetivo = fnLimpaCampoZero(fnValorSql(@$_REQUEST['VAL_EFETIVO']));
+		$qtd_hospedes = fnLimpaCampoZero(@$_REQUEST['QTD_HOSPEDES']);
+		$qtd_quartos = fnLimpaCampoZero(@$_REQUEST['QTD_QUARTOS']);
+		$qtd_banheiros = fnLimpaCampoZero(@$_REQUEST['QTD_BANHEIROS']);
+		if (empty(@$_REQUEST['LOG_BADGE'])) {
+			$log_badge = 'N';
+		} else {
+			$log_badge = @$_REQUEST['LOG_BADGE'];
+		}
+		$txt_badge = fnLimpaCampo(@$_REQUEST['TXT_BADGE']);
+		$cor_badge = fnLimpaCampo(@$_REQUEST['COR_BADGE']);
+		$cor_txtbadge = fnLimpaCampo(@$_REQUEST['COR_TXTBADGE']);
+		$meta_title = fnLimpaCampo(@$_REQUEST['META_TITLE']);
+		$meta_description = fnLimpaCampo(@$_REQUEST['META_DESCRIPTION']);
 
-		$dat_ini_dest = fnDataSql($_POST['DAT_INI_DEST']);			
-		$dat_fim_dest = fnDataSql($_POST['DAT_FIM_DEST']);
+		$dat_ini_dest = fnDataSql(@$_POST['DAT_INI_DEST']);
+		$dat_fim_dest = fnDataSql(@$_POST['DAT_FIM_DEST']);
 
 		$cod_empresa = 274;
 
 		$nom_usuario = $_SESSION["SYS_NOM_USUARIO"];
 		$cod_usucada = $_SESSION["SYS_COD_USUARIO"];
 		$actual_link = "$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-		$MODULO = $_GET['mod'];
-		$COD_MODULO = fndecode($_GET['mod']);
+		$MODULO = @$_GET['mod'];
+		$COD_MODULO = fndecode(@$_GET['mod']);
 
-		$opcao = $_REQUEST['opcao'];
-		$hHabilitado = $_REQUEST['hHabilitado'];
-		$hashForm = $_REQUEST['hashForm'];
+		$opcao = @$_REQUEST['opcao'];
+		$hHabilitado = @$_REQUEST['hHabilitado'];
+		$hashForm = @$_REQUEST['hashForm'];
 
 		$insertData = "'$dat_ini_dest',
 					   '$dat_fim_dest',";
-					   
+
 		$updateData = "DAT_INI_DEST = '$dat_ini_dest',
 					   DAT_FIM_DEST = '$dat_fim_dest',";
 
-		if($dat_ini_dest == ""){
+		if ($dat_ini_dest == "") {
 			$insertData = "null,
 						   null,";
 
@@ -67,12 +153,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 						   DAT_FIM_DEST = null,";
 		}
 
-		if ($opcao != '') {
+		if ($opcao != '' && $opcao != 0) {
 
-			switch($opcao){
-			
-			case 'CAD':
-				$sqlCad = "INSERT INTO ADORAI_CHALES (
+			switch ($opcao) {
+
+				case 'CAD':
+					$sqlCad = "INSERT INTO ADORAI_CHALES (
 											COD_EMPRESA,
 											COD_HOTEL,
 											COD_EXTERNO,
@@ -127,17 +213,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 											NOW()
 											)";
 
-				//fnescreve($sqlCad);
+					//fnescreve($sqlCad);
 
-				// fnTestesql(connTemp($cod_empresa),$sqlCad);				
-				$arrayProc = mysqli_query(conntemp($cod_empresa,''), $sqlCad);
+					// fnTestesql(connTemp($cod_empresa),$sqlCad);				
+					$arrayProc = mysqli_query(conntemp($cod_empresa, ''), $sqlCad);
 
-				if (!$arrayProc) {
+					if (!$arrayProc) {
 
-					$cod_erro = Log_error_comand($adm,conntemp($cod_empresa,''), $cod_empresa, $actual_link, $MODULO, $COD_MODULO, $sqlCad,$nom_usuario);
-				}
-				break;
-				case 'ALT':	
+						$cod_erro = Log_error_comand($adm, conntemp($cod_empresa, ''), $cod_empresa, $actual_link, $MODULO, $COD_MODULO, $sqlCad, $nom_usuario);
+					}
+					break;
+				case 'ALT':
 					$sqlAlt = "UPDATE ADORAI_CHALES SET
 													COD_EXTERNO = $cod_quarto,
 													COD_HOTEL = $cod_hotel,
@@ -167,29 +253,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 							WHERE ID = $cod_id
 							AND COD_EMPRESA = $cod_empresa";
 
-				// fnescreve($sqlAlt);
-				// fntestesql(connTemp($cod_empresa,''),$sqlAlt);
-				$arrayAlt = mysqli_query(conntemp($cod_empresa,''), $sqlAlt);
+					// fnescreve($sqlAlt);
+					// fntestesql(connTemp($cod_empresa,''),$sqlAlt);
+					$arrayAlt = mysqli_query(conntemp($cod_empresa, ''), $sqlAlt);
 
-				if (!$arrayAlt) {
+					if (!$arrayAlt) {
 
-					$cod_erro = Log_error_comand($adm,conntemp($cod_empresa,''), $cod_empresa, $actual_link, $MODULO, $COD_MODULO, $sqlAlt,$nom_usuario);
-				}
-				break;
+						$cod_erro = Log_error_comand($adm, conntemp($cod_empresa, ''), $cod_empresa, $actual_link, $MODULO, $COD_MODULO, $sqlAlt, $nom_usuario);
+					}
+					break;
 				case 'EXC':
 					$sqlExc = "UPDATE ADORAI_CHALES SET
 													COD_EXCLUSA = $cod_usucada,
 													DAT_EXCLUSA = NOW()
 							WHERE ID = $cod_id
 							AND COD_EMPRESA = $cod_empresa";
-				$arrayExc = mysqli_query(conntemp($cod_empresa,''), $sqlExc);
+					$arrayExc = mysqli_query(conntemp($cod_empresa, ''), $sqlExc);
 
-				if (!$arrayExc) {
+					if (!$arrayExc) {
 
-					$cod_erro = Log_error_comand($adm,conntemp($cod_empresa,''), $cod_empresa, $actual_link, $MODULO, $COD_MODULO, $sqlExc,$nom_usuario);
-				}
-				break;
-			} 
+						$cod_erro = Log_error_comand($adm, conntemp($cod_empresa, ''), $cod_empresa, $actual_link, $MODULO, $COD_MODULO, $sqlExc, $nom_usuario);
+					}
+					break;
+			}
 
 			//mensagem de retorno
 			switch ($opcao) {
@@ -213,7 +299,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 					} else {
 						$msgRetorno = "Não foi possível excluir o registro : $cod_erro";
 					}
-					break;					
+					break;
 			}
 			if ($cod_erro == 0 || $cod_erro == "") {
 				$msgTipo = 'alert-success';
@@ -226,9 +312,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
 //busca dados da url	
-if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
+if (is_numeric(fnLimpacampo(fnDecode(@$_GET['id'])))) {
 	//busca dados da empresa
-	$cod_empresa = fnDecode($_GET['id']);
+	$cod_empresa = fnDecode(@$_GET['id']);
 	$sql = "SELECT COD_EMPRESA, NOM_FANTASI FROM empresas where COD_EMPRESA = '" . $cod_empresa . "' ";
 	//fnEscreve($sql);
 	$arrayQuery = mysqli_query($adm, $sql);
@@ -279,17 +365,17 @@ $cod_empresa = 274;
 					</div>
 				<?php } ?>
 
-				<?php 
-					$abaAdorai = 1833;
-					include "abasAdorai.php";
+				<?php
+				$abaAdorai = 1833;
+				include "abasAdorai.php";
 
-					$abaManutencaoAdorai = fnDecode($_GET['mod']);
-					//echo $abaUsuario;
+				$abaManutencaoAdorai = fnDecode(@$_GET['mod']);
+				//echo $abaUsuario;
 
-					//se não for sistema de campanhas
+				//se não for sistema de campanhas
 
-					echo ('<div class="push20"></div>');
-					include "abasManutencaoAdorai.php";
+				echo ('<div class="push20"></div>');
+				include "abasManutencaoAdorai.php";
 				?>
 
 				<div class="push30"></div>
@@ -306,17 +392,17 @@ $cod_empresa = 274;
 								<div class="col-md-2">
 									<div class="form-group">
 										<label for="inputName" class="control-label required">Hotel</label>
-										<select data-placeholder="Selecione um Hotel" name="COD_EXTERNO" id="COD_EXTERNO" class="chosen-select-deselect" style="width:100%;" required>									
-										<option value=""></option>
-										<?php $sql = "SELECT NOM_UNIVEND,COD_EXTERNO FROM UNIDADEVENDA WHERE COD_EMPRESA = $cod_empresa";
-											  
-											  $arrayHotel = mysqli_query(conntemp($cod_empresa,''),$sql);
-											  
-											  while($qrHoteis = mysqli_fetch_assoc($arrayHotel)){
-												echo "<option value='".$qrHoteis['COD_EXTERNO']."'>".$qrHoteis['NOM_UNIVEND']."</option>";
-											  }
-										?>		
-										</select>									
+										<select data-placeholder="Selecione um Hotel" name="COD_EXTERNO" id="COD_EXTERNO" class="chosen-select-deselect" style="width:100%;" required>
+											<option value=""></option>
+											<?php $sql = "SELECT NOM_UNIVEND,COD_EXTERNO FROM UNIDADEVENDA WHERE COD_EMPRESA = $cod_empresa";
+
+											$arrayHotel = mysqli_query(conntemp($cod_empresa, ''), $sql);
+
+											while ($qrHoteis = mysqli_fetch_assoc($arrayHotel)) {
+												echo "<option value='" . $qrHoteis['COD_EXTERNO'] . "'>" . $qrHoteis['NOM_UNIVEND'] . "</option>";
+											}
+											?>
+										</select>
 										<div class="help-block with-errors"></div>
 									</div>
 								</div>
@@ -328,7 +414,7 @@ $cod_empresa = 274;
 										<div class="help-block with-errors"></div>
 									</div>
 								</div>
-								
+
 								<div class="col-md-1">
 									<div class="form-group">
 										<label for="inputName" class="control-label">Código Quarto</label>
@@ -367,24 +453,24 @@ $cod_empresa = 274;
 
 							<div class="row">
 
-								<div class="col-md-1">   
+								<div class="col-md-1">
 									<div class="form-group">
-										<label for="inputName" class="control-label">Destaque Site</label> 
+										<label for="inputName" class="control-label">Destaque Site</label>
 										<div class="push5"></div>
 										<label class="switch">
-											<input type="checkbox" name="LOG_HOME" id="LOG_HOME" class="switch" value="S" <?=$check_status." ".$check_statusIni ?>>
+											<input type="checkbox" name="LOG_HOME" id="LOG_HOME" class="switch" value="S" <?= $check_status . " " . $check_statusIni ?>>
 											<span></span>
 										</label>
 										<div class="help-block with-errors">Aparecerá na seção destaques</div>
 									</div>
 								</div>
 
-								<div class="col-md-1">   
+								<div class="col-md-1">
 									<div class="form-group">
-										<label for="inputName" class="control-label">Banner</label> 
+										<label for="inputName" class="control-label">Banner</label>
 										<div class="push5"></div>
 										<label class="switch">
-											<input type="checkbox" name="LOG_BANNER" id="LOG_BANNER" class="switch" value="S" <?=$check_Banner." ".$check_Banner ?>>
+											<input type="checkbox" name="LOG_BANNER" id="LOG_BANNER" class="switch" value="S" <?= $check_Banner . " " . $check_Banner ?>>
 											<span></span>
 										</label>
 										<div class="help-block with-errors">Aparecerá no banner inicial</div>
@@ -436,7 +522,7 @@ $cod_empresa = 274;
 								<div class="col-md-2">
 									<div class="form-group">
 										<label for="inputName" class="control-label">Data Inicial Destaque</label>
-															
+
 										<div class="input-group date datePicker" id="DAT_INI_GRP">
 											<input type='text' class="form-control input-sm data" name="DAT_INI_DEST" id="DAT_INI_DEST" value="" />
 											<span class="input-group-addon">
@@ -446,11 +532,11 @@ $cod_empresa = 274;
 										<span class="help-block">Inicio da Reserva</span>
 									</div>
 								</div>
-													
+
 								<div class="col-md-2">
 									<div class="form-group">
 										<label for="inputName" class="control-label">Data Final Destaque</label>
-															
+
 										<div class="input-group date datePicker" id="DAT_FIM_GRP">
 											<input type='text' class="form-control input-sm data" name="DAT_FIM_DEST" id="DAT_FIM_DEST" value="" />
 											<span class="input-group-addon">
@@ -461,12 +547,12 @@ $cod_empresa = 274;
 									</div>
 								</div>
 
-								<div class="col-md-1">   
+								<div class="col-md-1">
 									<div class="form-group">
-										<label for="inputName" class="control-label">Badge</label> 
+										<label for="inputName" class="control-label">Badge</label>
 										<div class="push5"></div>
 										<label class="switch">
-											<input type="checkbox" name="LOG_BADGE" id="LOG_BADGE" class="switch" value="S" <?=$check_badge?>>
+											<input type="checkbox" name="LOG_BADGE" id="LOG_BADGE" class="switch" value="S" <?= $check_badge ?>>
 											<span></span>
 										</label>
 										<div class="help-block with-errors">Fita colorida do card</div>
@@ -496,7 +582,7 @@ $cod_empresa = 274;
 								</div>
 
 							</div>
-							
+
 							<div class="push10"></div>
 
 							<div class="row">
@@ -518,9 +604,9 @@ $cod_empresa = 274;
 								</div>
 
 							</div>
-							
+
 							<div class="push10"></div>
-							
+
 							<div class="row">
 								<div class="col-lg-12">
 									<div class="form-group">
@@ -579,14 +665,14 @@ $cod_empresa = 274;
 									</thead>
 									<tbody>
 
-										<?php	
+										<?php
 
 										$sql = "SELECT AC.*, UV.NOM_FANTASI, UV.COD_EXTERNO AS ID_HOTEL FROM ADORAI_CHALES AC
 												LEFT JOIN UNIDADEVENDA UV ON UV.COD_EXTERNO = AC.COD_HOTEL
 												WHERE AC.COD_EMPRESA = $cod_empresa
 												AND AC.COD_EXCLUSA = 0 
 												ORDER BY AC.COD_HOTEL, NOM_QUARTO";
-										$arrayQuery = mysqli_query(conntemp($cod_empresa,''), $sql);
+										$arrayQuery = mysqli_query(conntemp($cod_empresa, ''), $sql);
 
 										$count = 0;
 										while ($qrLista = mysqli_fetch_assoc($arrayQuery)) {
@@ -600,11 +686,11 @@ $cod_empresa = 274;
 															WHERE COD_EMPRESA = $cod_empresa
 															AND COD_CHALE = $qrLista[ID]";
 
-											$arrayDetalhes = mysqli_query(conntemp($cod_empresa,''), $sqlDetalhes);
+											$arrayDetalhes = mysqli_query(conntemp($cod_empresa, ''), $sqlDetalhes);
 
 											$detalhe = "<span class='fal fa-times text-danger'></span>";
 
-											if(mysqli_num_rows($arrayDetalhes) > 0){
+											if (mysqli_num_rows($arrayDetalhes) > 0) {
 												$detalhe = "<span class='fal fa-check text-success'></span>";
 											}
 
@@ -612,83 +698,83 @@ $cod_empresa = 274;
 															WHERE COD_EMPRESA = $cod_empresa
 															AND COD_CHALE = $qrLista[ID]";
 
-											$arrayFotos = mysqli_query(conntemp($cod_empresa,''), $sqlFotos);
+											$arrayFotos = mysqli_query(conntemp($cod_empresa, ''), $sqlFotos);
 
 											$fotos = "<span class='fal fa-times text-danger'></span>";
 
-											if(mysqli_num_rows($arrayFotos) > 0){
+											if (mysqli_num_rows($arrayFotos) > 0) {
 												$fotos = "<span class='fal fa-check text-success'></span>";
 											}
 
-											if($qrLista[LOG_HOME] == "S"){
+											if ($qrLista['LOG_HOME'] == "S") {
 												$destaque = "<span class='fal fa-check text-success'></span>";
 											}
 
-											if($qrLista[LOG_BANNER] == "S"){
+											if ($qrLista['LOG_BANNER'] == "S") {
 												$banner = "<span class='fal fa-check text-success'></span>";
 											}
 
-											?>
-												<tr>
-													<td class='text-center'><input type='radio' name='radio1' onclick='retornaForm(<?=$count?>)'></th>
-													<td><?=$qrLista['ID']?></td>
-													<td><?=$qrLista['NOM_FANTASI']?></td>
-													<td><?=$qrLista['NOM_QUARTO']?></td>
-													<td class="text-center"><?=$destaque?></td>
-													<td class="text-center"><?=$banner?></td>
-													<td><?=$qrLista['COD_EXTERNO']?></td>
-													<td class="text-center"><?=$detalhe?></td>
-													<td class="text-center"><?=$fotos?></td>
-													<td class="text-center">
-														<small>
-															<div class="btn-group dropdown dropleft">
-																<button type="button" class="btn btn-info btn-xs dropdown-toggle transparency" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-																	ações &nbsp;
-																	<span class="fas fa-caret-down"></span>
-																</button>
-																<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-																	<li><a href='javascript:void(0)' class='addBox' data-url="action.do?mod=<?php echo fnEncode(1843)?>&id=<?php echo fnEncode($cod_empresa)?>&idc=<?php echo fnEncode($qrLista['ID'])?>&pop=true" data-title="Cadastro <?=$qrLista['NOM_QUARTO']?>"><span class="fal fa-cog"></span>&nbsp;Detalhes</a></li>
-																	<li><a href='javascript:void(0)' class='addBox' data-url="action.do?mod=<?php echo fnEncode(1845)?>&id=<?php echo fnEncode($cod_empresa)?>&idc=<?php echo fnEncode($qrLista['ID'])?>&pop=true" data-title="Imagens <?=$qrLista['NOM_QUARTO']?>"><span class="fal fa-image"></span>&nbsp;Imagens</a></li>
-																	<li><a href='javascript:void(0)' class="bt<?php echo $count; ?>" onclick="copiaLink(<?php echo $count ?>)"><span class="fal fa-copy"></span>&nbsp;Copiar link da pág. de detalhes</a></li>
-																	<li><a href='javascript:void(0)' class="addBox" data-title="<?=$qrLista['NOM_QUARTO']?> (QrCode)" data-url="action.do?mod=<?php echo fnEncode(1855)?>&id=<?=fnEncode($cod_empresa)?>&idh=<?=$qrLista[ID_HOTEL]?>&idc=<?=$qrLista[COD_EXTERNO]?>&pop=true">qrCode</a></li>
+										?>
+											<tr>
+												<td class='text-center'><input type='radio' name='radio1' onclick='retornaForm(<?= $count ?>)'></th>
+												<td><?= $qrLista['ID'] ?></td>
+												<td><?= $qrLista['NOM_FANTASI'] ?></td>
+												<td><?= $qrLista['NOM_QUARTO'] ?></td>
+												<td class="text-center"><?= $destaque ?></td>
+												<td class="text-center"><?= $banner ?></td>
+												<td><?= $qrLista['COD_EXTERNO'] ?></td>
+												<td class="text-center"><?= $detalhe ?></td>
+												<td class="text-center"><?= $fotos ?></td>
+												<td class="text-center">
+													<small>
+														<div class="btn-group dropdown dropleft">
+															<button type="button" class="btn btn-info btn-xs dropdown-toggle transparency" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+																ações &nbsp;
+																<span class="fas fa-caret-down"></span>
+															</button>
+															<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+																<li><a href='javascript:void(0)' class='addBox' data-url="action.do?mod=<?php echo fnEncode(1843) ?>&id=<?php echo fnEncode($cod_empresa) ?>&idc=<?php echo fnEncode($qrLista['ID']) ?>&pop=true" data-title="Cadastro <?= $qrLista['NOM_QUARTO'] ?>"><span class="fal fa-cog"></span>&nbsp;Detalhes</a></li>
+																<li><a href='javascript:void(0)' class='addBox' data-url="action.do?mod=<?php echo fnEncode(1845) ?>&id=<?php echo fnEncode($cod_empresa) ?>&idc=<?php echo fnEncode($qrLista['ID']) ?>&pop=true" data-title="Imagens <?= $qrLista['NOM_QUARTO'] ?>"><span class="fal fa-image"></span>&nbsp;Imagens</a></li>
+																<li><a href='javascript:void(0)' class="bt<?php echo $count; ?>" onclick="copiaLink(<?php echo $count ?>)"><span class="fal fa-copy"></span>&nbsp;Copiar link da pág. de detalhes</a></li>
+																<li><a href='javascript:void(0)' class="addBox" data-title="<?= $qrLista['NOM_QUARTO'] ?> (QrCode)" data-url="action.do?mod=<?php echo fnEncode(1855) ?>&id=<?= fnEncode($cod_empresa) ?>&idh=<?= $qrLista['ID_HOTEL'] ?>&idc=<?= $qrLista['COD_EXTERNO'] ?>&pop=true">qrCode</a></li>
 
-																	<!-- <li class="divider"></li> -->
-																	<!-- <li><a tabindex="-1" href="#">Separated link</a></li> -->
-																</ul>
-															</div>
-														</small>
-													</td>
-												</tr>
-												<div id="AREACODE_OFF_<?php echo $count; ?>" style="display: none;">
-												<textarea id="AREACODE_<?php echo $count; ?>" rows="1" style="width: 100%;">https://roteirosadorai.com.br/detalhes.php?idh=<?=$qrLista[ID_HOTEL]?>&idc=<?=$qrLista[COD_EXTERNO]?></textarea>
-												<input type='hidden' id='ret_ID_<?=$count?>' value='<?=$qrLista['ID']?>'>
-												<input type='hidden' id='ret_COD_HOTEL_<?=$count?>' value='<?=$qrLista['COD_HOTEL']?>'>
-												<input type='hidden' id='ret_NOM_QUARTO_<?=$count?>' value='<?=$qrLista['NOM_QUARTO']?>'>
-												<input type='hidden' id='ret_COD_EXTERNO_<?=$count?>' value='<?=$qrLista['COD_EXTERNO']?>'>
-												<input type='hidden' id='ret_DES_IMAGEM_<?=$count?>' value='<?=$qrLista['DES_IMAGEM']?>'>
-												<input type='hidden' id='ret_DES_BANNER_<?=$count?>' value='<?=$qrLista['DES_BANNER']?>'>
-												<input type='hidden' id='ret_DES_VIDEO_<?=$count?>' value='<?=$qrLista['DES_VIDEO']?>'>
-												<input type='hidden' id='ret_DES_QUARTO_<?=$count?>' value='<?=$qrLista['DES_QUARTO']?>'>
-												<input type='hidden' id='ret_LOG_HOME_<?=$count?>' value='<?=$qrLista['LOG_HOME']?>'>
-												<input type='hidden' id='ret_LOG_BANNER_<?=$count?>' value='<?=$qrLista['LOG_BANNER']?>'>
-												<input type='hidden' id='ret_TAM_PROPRIEDADE_<?=$count?>' value='<?=$qrLista['TAM_PROPRIEDADE']?>'>
-												<input type='hidden' id='ret_QTD_HOSPEDES_<?=$count?>' value='<?=$qrLista['QTD_HOSPEDES']?>'>
-												<input type='hidden' id='ret_QTD_QUARTOS_<?=$count?>' value='<?=$qrLista['QTD_QUARTOS']?>'>
-												<input type='hidden' id='ret_QTD_BANHEIROS_<?=$count?>' value='<?=$qrLista['QTD_BANHEIROS']?>'>
-												<input type='hidden' id='ret_LOG_BADGE_<?=$count?>' value='<?=$qrLista['LOG_BADGE']?>'>
-												<input type='hidden' id='ret_TXT_BADGE_<?=$count?>' value='<?=$qrLista['TXT_BADGE']?>'>
-												<input type='hidden' id='ret_COR_BADGE_<?=$count?>' value='<?=$qrLista['COR_BADGE']?>'>
-												<input type='hidden' id='ret_COR_TXTBADGE_<?=$count?>' value='<?=$qrLista['COR_TXTBADGE']?>'>
-												<input type='hidden' id='ret_VAL_EFETIVO_<?=$count?>' value='<?=fnValor($qrLista['VAL_EFETIVO'],2)?>'>
-												<input type='hidden' id='ret_DAT_INI_DEST_<?=$count?>' value='<?=fnDataShort($qrLista['DAT_INI_DEST'])?>'>
-												<input type='hidden' id='ret_DAT_FIM_DEST_<?=$count?>' value='<?=fnDataShort($qrLista['DAT_FIM_DEST'])?>'>
-												<input type='hidden' id='ret_META_TITLE_<?=$count?>' value='<?=$qrLista['META_TITLE']?>'>
-												<input type='hidden' id='ret_META_DESCRIPTION_<?=$count?>' value='<?=$qrLista['META_DESCRIPTION']?>'>
+																<!-- <li class="divider"></li> -->
+																<!-- <li><a tabindex="-1" href="#">Separated link</a></li> -->
+															</ul>
+														</div>
+													</small>
+												</td>
+											</tr>
+											<div id="AREACODE_OFF_<?php echo $count; ?>" style="display: none;">
+												<textarea id="AREACODE_<?php echo $count; ?>" rows="1" style="width: 100%;">https://roteirosadorai.com.br/detalhes.php?idh=<?= $qrLista['ID_HOTEL'] ?>&idc=<?= $qrLista['COD_EXTERNO'] ?></textarea>
+												<input type='hidden' id='ret_ID_<?= $count ?>' value='<?= $qrLista['ID'] ?>'>
+												<input type='hidden' id='ret_COD_HOTEL_<?= $count ?>' value='<?= $qrLista['COD_HOTEL'] ?>'>
+												<input type='hidden' id='ret_NOM_QUARTO_<?= $count ?>' value='<?= $qrLista['NOM_QUARTO'] ?>'>
+												<input type='hidden' id='ret_COD_EXTERNO_<?= $count ?>' value='<?= $qrLista['COD_EXTERNO'] ?>'>
+												<input type='hidden' id='ret_DES_IMAGEM_<?= $count ?>' value='<?= $qrLista['DES_IMAGEM'] ?>'>
+												<input type='hidden' id='ret_DES_BANNER_<?= $count ?>' value='<?= $qrLista['DES_BANNER'] ?>'>
+												<input type='hidden' id='ret_DES_VIDEO_<?= $count ?>' value='<?= $qrLista['DES_VIDEO'] ?>'>
+												<input type='hidden' id='ret_DES_QUARTO_<?= $count ?>' value='<?= $qrLista['DES_QUARTO'] ?>'>
+												<input type='hidden' id='ret_LOG_HOME_<?= $count ?>' value='<?= $qrLista['LOG_HOME'] ?>'>
+												<input type='hidden' id='ret_LOG_BANNER_<?= $count ?>' value='<?= $qrLista['LOG_BANNER'] ?>'>
+												<input type='hidden' id='ret_TAM_PROPRIEDADE_<?= $count ?>' value='<?= $qrLista['TAM_PROPRIEDADE'] ?>'>
+												<input type='hidden' id='ret_QTD_HOSPEDES_<?= $count ?>' value='<?= $qrLista['QTD_HOSPEDES'] ?>'>
+												<input type='hidden' id='ret_QTD_QUARTOS_<?= $count ?>' value='<?= $qrLista['QTD_QUARTOS'] ?>'>
+												<input type='hidden' id='ret_QTD_BANHEIROS_<?= $count ?>' value='<?= $qrLista['QTD_BANHEIROS'] ?>'>
+												<input type='hidden' id='ret_LOG_BADGE_<?= $count ?>' value='<?= $qrLista['LOG_BADGE'] ?>'>
+												<input type='hidden' id='ret_TXT_BADGE_<?= $count ?>' value='<?= $qrLista['TXT_BADGE'] ?>'>
+												<input type='hidden' id='ret_COR_BADGE_<?= $count ?>' value='<?= $qrLista['COR_BADGE'] ?>'>
+												<input type='hidden' id='ret_COR_TXTBADGE_<?= $count ?>' value='<?= $qrLista['COR_TXTBADGE'] ?>'>
+												<input type='hidden' id='ret_VAL_EFETIVO_<?= $count ?>' value='<?= fnValor($qrLista['VAL_EFETIVO'], 2) ?>'>
+												<input type='hidden' id='ret_DAT_INI_DEST_<?= $count ?>' value='<?= fnDataShort($qrLista['DAT_INI_DEST']) ?>'>
+												<input type='hidden' id='ret_DAT_FIM_DEST_<?= $count ?>' value='<?= fnDataShort($qrLista['DAT_FIM_DEST']) ?>'>
+												<input type='hidden' id='ret_META_TITLE_<?= $count ?>' value='<?= $qrLista['META_TITLE'] ?>'>
+												<input type='hidden' id='ret_META_DESCRIPTION_<?= $count ?>' value='<?= $qrLista['META_DESCRIPTION'] ?>'>
 
 											<?php
 										}
 
-										?>
+											?>
 
 									</tbody>
 								</table>
@@ -710,7 +796,7 @@ $cod_empresa = 274;
 
 </div>
 
-<!-- modal -->									
+<!-- modal -->
 <div class="modal fade" id="popModal" tabindex='-1'>
 	<div class="modal-dialog" style="">
 		<div class="modal-content">
@@ -720,26 +806,25 @@ $cod_empresa = 274;
 			</div>
 			<div class="modal-body">
 				<iframe frameborder="0" style="width: 100%; height: 80%"></iframe>
-			</div>		
+			</div>
 		</div><!-- /.modal-content -->
 	</div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
 <div class="push20"></div>
 
-	<link rel="stylesheet" type="text/css" href="js/plugins/jQuery-TE/jquery-te-1.4.0.css">
-	<link rel="stylesheet" type="text/css" href="js/plugins/jQuery-TE/jquery-te.png">
-	<script type="text/javascript" src="js/plugins/jQuery-TE/jquery-te-1.4.0.min.js"></script>
-	<script type="text/javascript" src="js/plugins/datepicker/moment.js"></script>
-	<script type="text/javascript" src="js/plugins/datepicker/moment-pt-br.js"></script>
-	<script type="text/javascript" src="js/plugins/datepicker/bootstrap-datetimepicker.min.js"></script>
-	<link rel="stylesheet" href="css/bootstrap-datetimepicker.css" />
-	<script src="js/plugins/minicolors/jquery.minicolors.min.js"></script>
-	<link rel="stylesheet" href="js/plugins/minicolors/jquery.minicolors.css">	
-	
-<script type="text/javascript">
+<link rel="stylesheet" type="text/css" href="js/plugins/jQuery-TE/jquery-te-1.4.0.css">
+<link rel="stylesheet" type="text/css" href="js/plugins/jQuery-TE/jquery-te.png">
+<script type="text/javascript" src="js/plugins/jQuery-TE/jquery-te-1.4.0.min.js"></script>
+<script type="text/javascript" src="js/plugins/datepicker/moment.js"></script>
+<script type="text/javascript" src="js/plugins/datepicker/moment-pt-br.js"></script>
+<script type="text/javascript" src="js/plugins/datepicker/bootstrap-datetimepicker.min.js"></script>
+<link rel="stylesheet" href="css/bootstrap-datetimepicker.css" />
+<script src="js/plugins/minicolors/jquery.minicolors.min.js"></script>
+<link rel="stylesheet" href="js/plugins/minicolors/jquery.minicolors.css">
 
-	$(function(){
+<script type="text/javascript">
+	$(function() {
 		//color picker
 		$('.pickColor').minicolors({
 			control: $(this).attr('data-control') || 'hue',
@@ -749,21 +834,21 @@ $cod_empresa = 274;
 
 	$('.datePicker').datetimepicker({
 		format: 'DD/MM/YYYY',
-	}).on('changeDate', function(e){
+	}).on('changeDate', function(e) {
 		$(this).datetimepicker('hide');
 	});
 
-	function copiaLink(index){			
-		$("#AREACODE_OFF_"+index).show();
-		$("#AREACODE_"+index).select();
+	function copiaLink(index) {
+		$("#AREACODE_OFF_" + index).show();
+		$("#AREACODE_" + index).select();
 		document.execCommand('copy');
-		$('.bt'+index).fadeOut(function(){
+		$('.bt' + index).fadeOut(function() {
 			// $('.bt'+index).css('background','#2C3E50');
-			$('.bt'+index).text('Link copiado');
-			$('.bt'+index).fadeIn(200);
+			$('.bt' + index).text('Link copiado');
+			$('.bt' + index).fadeIn(200);
 		});
-		
-		$("#AREACODE_OFF_"+index).hide();
+
+		$("#AREACODE_OFF_" + index).hide();
 	}
 
 	function retornaForm(index) {
@@ -780,14 +865,14 @@ $cod_empresa = 274;
 		$("#formulario #QTD_HOSPEDES").val($("#ret_QTD_HOSPEDES_" + index).val());
 		$("#formulario #QTD_QUARTOS").val($("#ret_QTD_QUARTOS_" + index).val());
 		$("#formulario #QTD_BANHEIROS").val($("#ret_QTD_BANHEIROS_" + index).val());
-		$("#formulario #DAT_INI_DEST").val($("#ret_DAT_INI_DEST_"+index).val());
-		$("#formulario #DAT_FIM_DEST").val($("#ret_DAT_FIM_DEST_"+index).val());
-		$("#formulario #TXT_BADGE").val($("#ret_TXT_BADGE_"+index).val());
-		$("#formulario #COR_BADGE").val($("#ret_COR_BADGE_"+index).val());
-		$("#formulario #VAL_EFETIVO").val($("#ret_VAL_EFETIVO_"+index).val());
-		$("#formulario #COR_TXTBADGE").val($("#ret_COR_TXTBADGE_"+index).val());
-		$("#formulario #META_TITLE").val($("#ret_META_TITLE_"+index).val());
-		$("#formulario #META_DESCRIPTION").val($("#ret_META_DESCRIPTION_"+index).val());
+		$("#formulario #DAT_INI_DEST").val($("#ret_DAT_INI_DEST_" + index).val());
+		$("#formulario #DAT_FIM_DEST").val($("#ret_DAT_FIM_DEST_" + index).val());
+		$("#formulario #TXT_BADGE").val($("#ret_TXT_BADGE_" + index).val());
+		$("#formulario #COR_BADGE").val($("#ret_COR_BADGE_" + index).val());
+		$("#formulario #VAL_EFETIVO").val($("#ret_VAL_EFETIVO_" + index).val());
+		$("#formulario #COR_TXTBADGE").val($("#ret_COR_TXTBADGE_" + index).val());
+		$("#formulario #META_TITLE").val($("#ret_META_TITLE_" + index).val());
+		$("#formulario #META_DESCRIPTION").val($("#ret_META_DESCRIPTION_" + index).val());
 		if ($("#ret_LOG_BADGE_" + index).val() == 'S') {
 			$('#formulario #LOG_BADGE').prop('checked', true);
 		} else {
@@ -804,7 +889,7 @@ $cod_empresa = 274;
 		} else {
 			$('#formulario #LOG_BANNER').prop('checked', false);
 		}
-		
+
 		$('#formulario').validator('validate');
 		$("#formulario #hHabilitado").val('S');
 	}
