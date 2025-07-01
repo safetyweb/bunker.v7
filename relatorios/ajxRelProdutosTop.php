@@ -68,6 +68,11 @@ if ($cod_univend == "9999") {
 	$temUnivend = "S";
 }
 
+function encodeCsv($valor)
+{
+	return mb_convert_encoding($valor, 'ISO-8859-1', 'UTF-8');
+}
+
 switch ($opcao) {
 	case 'exportar':
 
@@ -86,7 +91,7 @@ switch ($opcao) {
 				" . $cod_persona . "															
 				) ";
 
-		fnEscreve($sql);
+		// fnEscreve($sql);
 
 		$arrayQuery = mysqli_query(connTemp($cod_empresa, ''), $sql);
 
@@ -113,12 +118,37 @@ switch ($opcao) {
 				$row['QTD_VENDA_RESGATE'] = fnValor($row['QTD_VENDA_RESGATE'], 0);
 				$row['VAL_RESGATE'] = fnValor($row['VAL_RESGATE'], 2);
 
+				$linhaCSV = [
+					encodeCsv($row['V_ID_SESSION']),
+					encodeCsv($row['DES_PRODUTO']),
+					encodeCsv($row['COD_PRODUTO']),
+					encodeCsv($row['COD_EXTERNO']),
+					encodeCsv($row['TOTAL_QTD_PROD']),
+					encodeCsv($row['TOTAL_QTD_FIDE']),
+					encodeCsv($row['PERC_QTDFIDELIZADO']),
+					encodeCsv($row['TOT_VENDAS']),
+					encodeCsv($row['TOT_VENDAS_FIDEL']),
+					encodeCsv($row['PERC_VOLUME']),
+					encodeCsv($row['VPM_GERAL']),
+					encodeCsv($row['VPM_FIDE']),
+					encodeCsv($row['TOTAL_CLIENTES_FIDEL']),
+					encodeCsv($row['TOTAL_CLI_PERSONAS']),
+					encodeCsv($row['PERC_CLI_PERSONAS']),
+					encodeCsv($row['QTD_PRODUTO_TOTAL']),
+					encodeCsv($row['QTD_VENDA']),
+					encodeCsv($row['QTD_FIDELIZADO_TOTAL']),
+					encodeCsv($row['VAL_FIDELIZA_TOTAL']),
+					encodeCsv($row['QTD_VENDA_RESGATE']),
+					encodeCsv($row['VAL_RESGATE'])
+				];
+
 
 
 				//$limpandostring = fnAcentos(Utf8_ansi(json_encode($row)));
 				//$textolimpo = json_decode($limpandostring, true);
-				$array = array_map("utf8_decode", $row);
-				fputcsv($arquivo, $array, ';', '"');
+				// $array = array_map("utf8_decode", $row);
+				// fputcsv($arquivo, $array, ';', '"');
+				fputcsv($arquivo, $linhaCSV, ';', '"');
 			}
 		} else {
 
