@@ -1,4 +1,89 @@
 <?php
+if ($_SESSION['SYS_COD_USUARIO'] == 127937) {
+    echo fnDebug('true');
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+}
+$opcao = "";
+$hotel = "";
+$log_diaria = "";
+$num_adultos = "";
+$num_criancas = "";
+$cod_hotel = "";
+$num_pessoas = "";
+$hoje = "";
+$dias30 = "";
+$hashLocal = "";
+$msgRetorno = "";
+$msgTipo = "";
+$dat_ini = "";
+$dat_fim = "";
+$dat_reserva = "";
+$Arr_COD_HOTEL = "";
+$Arr_COD_MULTEMP = "";
+$i = "";
+$nom_usuario = "";
+$actual_link = "";
+$MODULO = "";
+$COD_MODULO = "";
+$hHabilitado = "";
+$hashForm = "";
+$des_grupotr = "";
+$arrayProc = [];
+$cod_erro = "";
+$arrHotel = "";
+$reservaHotel = "";
+$hospedeCrianca = "";
+$curl = "";
+$response = "";
+$doc = "";
+$xml = "";
+$sqlDesc = "";
+$cod_chale = "";
+$arrayQuery = [];
+$qrBuscaEmpresa = "";
+$nom_empresa = "";
+$checkDiaria = "";
+$formBack = "";
+$abaAdorai = "";
+$sqlHotel = "";
+$arrayHotel = [];
+$qrHotel = "";
+$arrCanal = "";
+$qrCanal = "";
+$checkCanal = "";
+$countQuarto = "";
+$countVaga = "";
+$val_total = 0;
+$arrayVagas = [];
+$chave_linha = "";
+$dat_min = "";
+$dat_max = "";
+$nom_quarto = "";
+$id_hotel = "";
+$cod_quarto = "";
+$val_diaria = "";
+$diasemana = "";
+$data = "";
+$diasemana_inicio = "";
+$diasemana_fim = "";
+$nroQuarto = "";
+$nroDiarias = "";
+$arrayDesc = [];
+$qrDesc = "";
+$sqlVend = "";
+$arrayVend = [];
+$qrVend = "";
+$arrayOrdenado = [];
+$abrQuarto = "";
+$quarto = "";
+$quartosVaga = "";
+$vaga = "";
+$val_diarias = "";
+$qrQuarto = "";
+$linkEnvio = "";
+
 
 //echo "<h5>_".$opcao."</h5>";
 
@@ -22,7 +107,7 @@ $conn = conntemp($cod_empresa,"");
 $adm = $connAdm->connAdm();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	$request = md5(implode($_POST));
+	$request = md5(serialize($_POST));
 
 	if (isset($_SESSION['last_request']) && $_SESSION['last_request'] == $request) {
 		$msgRetorno = 'Essa página já foi utilizada';
@@ -31,22 +116,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$_SESSION['last_request']  = $request;
 
 		
-		$cod_empresa = fnLimpaCampo($_REQUEST['COD_EMPRESA']);
-		// $dat_ini = fnDataSql($_POST['DAT_INI']);
-		// $dat_fim = fnDataSql($_POST['DAT_FIM']);
-		$dat_reserva = fnLimpaCampo($_POST['DAT_RESERVA']);
-		$num_adultos = fnLimpaCampoZero($_POST['NUM_ADULTOS']);
-		$num_criancas = fnLimpaCampoZero($_POST['NUM_CRIANCAS']);
+		$cod_empresa = fnLimpaCampo(@$_REQUEST['COD_EMPRESA']);
+		// $dat_ini = fnDataSql(@$_POST['DAT_INI']);
+		// $dat_fim = fnDataSql(@$_POST['DAT_FIM']);
+		$dat_reserva = fnLimpaCampo(@$_POST['DAT_RESERVA']);
+		$num_adultos = fnLimpaCampoZero(@$_POST['NUM_ADULTOS']);
+		$num_criancas = fnLimpaCampoZero(@$_POST['NUM_CRIANCAS']);
 
-		if (empty($_REQUEST['LOG_DIARIA'])) {
+		if (empty(@$_REQUEST['LOG_DIARIA'])) {
 			$log_diaria = 'N';
 		} else {
-			$log_diaria = $_REQUEST['LOG_DIARIA'];
+			$log_diaria = @$_REQUEST['LOG_DIARIA'];
 		}
 
 		//array dos hoteis
-		if (isset($_POST['COD_HOTEL'])) {
-			$Arr_COD_HOTEL = $_POST['COD_HOTEL'];
+		if (isset(@$_POST['COD_HOTEL'])) {
+			$Arr_COD_HOTEL = @$_POST['COD_HOTEL'];
 			$cod_hotel = "";
 			//print_r($Arr_COD_MULTEMP);			 
 
@@ -62,15 +147,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		// fnEscreve($cod_hotel);
 
 		$nom_usuario = $_SESSION["SYS_NOM_USUARIO"];
-		$actual_link = "$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-		$MODULO = $_GET['mod'];
-		$COD_MODULO = fndecode($_GET['mod']);
+		$actual_link = "$_SERVER['HTTP_HOST']$_SERVER['REQUEST_URI']";
+		$MODULO = @$_GET['mod'];
+		$COD_MODULO = fndecode(@$_GET['mod']);
 
-		$opcao = $_REQUEST['opcao'];
-		$hHabilitado = $_REQUEST['hHabilitado'];
-		$hashForm = $_REQUEST['hashForm'];
+		$opcao = @$_REQUEST['opcao'];
+		$hHabilitado = @$_REQUEST['hHabilitado'];
+		$hashForm = @$_REQUEST['hashForm'];
 
-		if ($opcao != '') {
+		if ($opcao != '' && $opcao != 0) {
 
 			// $sql = "CALL SP_ALTERA_GRUPOTRABALHO (
 			// 	 '" . $cod_grupotr . "', 
@@ -88,7 +173,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			// 	$cod_erro = Log_error_comand($adm,$conn, $cod_empresa, $actual_link, $MODULO, $COD_MODULO, $sql,$nom_usuario);
 			// }
 
-			if($cod_hotel != 0){
+			if ($cod_hotel != 0 && $cod_hotel != ''){
 
 				$arrHotel = explode(",", $cod_hotel);
 				$reservaHotel = "";
@@ -98,8 +183,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 				$dat_reserva = explode("-", $dat_reserva);
 
-				$dat_ini = fnDataSql($dat_reserva[0]);
-				$dat_fim = fnDataSql($dat_reserva[1]);
+				$dat_ini = fnDataSql($dat_reserva['0']);
+				$dat_fim = fnDataSql($dat_reserva['1']);
 
 				// fnEscreve($dat_ini);
 				// fnEscreve($dat_fim);
@@ -167,7 +252,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 				// echo "</pre>";
 				$hotel= $hotel['body']['ota_hotelavailrs'];
 
-				if($_GET['dev'] == 'true'){
+				if(@$_GET['dev'] == 'true'){
 
 					echo "<pre>";
 					print_r($hotel);
@@ -246,9 +331,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
 //busca dados da url	
-if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
+if (is_numeric(fnLimpacampo(fnDecode(@$_GET['id'])))) {
 	//busca dados da empresa
-	$cod_empresa = fnDecode($_GET['id']);
+	$cod_empresa = fnDecode(@$_GET['id']);
 	$cod_empresa = 274;
 	$sql = "SELECT COD_EMPRESA, NOM_FANTASI FROM empresas where COD_EMPRESA = '" . $cod_empresa . "' ";
 	//fnEscreve($sql);
@@ -376,7 +461,7 @@ tr{
 
 													while ($qrHotel = mysqli_fetch_assoc($arrayHotel)) {
 												?>
-														<option value="<?=$qrHotel[COD_EXTERNO]?>">"<?=$qrHotel[NOM_FANTASI]?>"</option>
+														<option value="<?=$qrHotel['COD_EXTERNO']?>">"<?=$qrHotel['NOM_FANTASI']?>"</option>
 												<?php 
 													}
 												?>
@@ -493,7 +578,7 @@ tr{
 
 										while($qrCanal = mysqli_fetch_assoc($arrCanal)){
 
-											// if($qrCanal[LOG_PREF] == "S"){
+											// if($qrCanal['LOG_PREF'] == "S"){
 											// 	$checkCanal = "checked";
 											// }else{
 											// 	$checkCanal = "";
@@ -502,8 +587,8 @@ tr{
 
 											<div class="col-md-12">
 												<div class="radio radio-info radio-inline">
-													<input type="radio" id="canal_<?=$count?>" value="<?=$qrCanal[COD_CANAL]?>" name="canalEnvio" <?=$checkCanal?>>
-													<label for="canal_<?=$count?>"><?=$qrCanal[DES_CANAL]?>&nbsp;&nbsp;<small><small><?=$qrCanal[NUM_CANAL]?></small></small></label>
+													<input type="radio" id="canal_<?=$count?>" value="<?=$qrCanal['COD_CANAL']?>" name="canalEnvio" <?=$checkCanal?>>
+													<label for="canal_<?=$count?>"><?=$qrCanal['DES_CANAL']?>&nbsp;&nbsp;<small><small><?=$qrCanal['NUM_CANAL']?></small></small></label>
 												</div>
 											</div>
 
@@ -612,7 +697,7 @@ tr{
 
 										$diasemana_inicio = date('w', strtotime($dat_min));
 										$diasemana_fim = date('w', strtotime($dat_max));
-										$nroQuarto = explode(" ", $nom_quarto[0]);
+										$nroQuarto = explode(" ", $nom_quarto['0']);
 										$nroDiarias = fnDateDif($dat_min,$dat_max);
 
 										$sqlDesc = "SELECT DES_QUARTO, DES_IMAGEM, DES_VIDEO FROM ADORAI_CHALES 
@@ -625,22 +710,22 @@ tr{
 
 										$sqlVend = "SELECT VA.COD_EXT_VENDEDOR FROM VENDEDOR_ADORAI VA 
 														INNER JOIN UNIDADEVENDA UV ON UV.COD_UNIVEND = VA.COD_UNIVEND
-														WHERE VA.COD_USUARIO = $_SESSION[SYS_COD_USUARIO] 
+														WHERE VA.COD_USUARIO = $_SESSION['SYS_COD_USUARIO'] 
 														AND UV.COD_EXTERNO = $id_hotel";
 
-										// if($_GET['dev'] == 'true'){
+										// if(@$_GET['dev'] == 'true'){
 										// 	echo $sqlVend;
 										// }
 
 										$arrayVend = mysqli_query(connTemp($cod_empresa,''), $sqlVend);
 										$qrVend = mysqli_fetch_assoc($arrayVend);
 
-										$arrayVagas[$nroQuarto[1]] = array(
+										$arrayVagas[$nroQuarto['1']] = array(
 															"idHotel" => $id_hotel,
 															"idQuarto" => $cod_quarto,
-															"codVendedor" => "$qrVend[COD_EXT_VENDEDOR]",
-															"chale" => $nom_quarto[0],
-															"local" => $nom_quarto[1],
+															"codVendedor" => "$qrVend['COD_EXT_VENDEDOR']",
+															"chale" => $nom_quarto['0'],
+															"local" => $nom_quarto['1'],
 															"diaria" => $val_diaria,
 															"total" => $val_total,
 															"dataMin" => $dat_min,
@@ -649,12 +734,12 @@ tr{
 															"semanaFim" => $diasemana[$diasemana_fim],
 															"nroDiarias" => $nroDiarias,
 															"nroPessoas" => $num_pessoas,
-															"descricao" => "$qrDesc[DES_QUARTO]",
-															"imagem" => "$qrDesc[DES_IMAGEM]",
-															"video" => "$qrDesc[DES_VIDEO]"
+															"descricao" => "$qrDesc['DES_QUARTO']",
+															"imagem" => "$qrDesc['DES_IMAGEM']",
+															"video" => "$qrDesc['DES_VIDEO']"
 														);
 
-										$arrayOrdenado = fnorderby_array($arrayVagas, $nroQuarto[1], SORT_ASC );
+										$arrayOrdenado = fnorderby_array($arrayVagas, $nroQuarto['1'], SORT_ASC );
 								
 									}
 
@@ -740,8 +825,8 @@ tr{
 											}
 
 											if ($val_diaria == "") {
-												$val_diaria = $vaga[0]['@attributes']['amountaftertax'];
-												$val_diarias[$quartosVaga['@attributes']['effectivedate'] . "_" . $dat_max] = $vaga[0]['@attributes']['amountaftertax'];
+												$val_diaria = $vaga['0']['@attributes']['amountaftertax'];
+												$val_diarias[$quartosVaga['@attributes']['effectivedate'] . "_" . $dat_max] = $vaga['0']['@attributes']['amountaftertax'];
 											}
 											$val_total += $val_diaria;
 
@@ -759,7 +844,7 @@ tr{
 
 											$diasemana_inicio = date('w', strtotime($dat_min));
 											$diasemana_fim = date('w', strtotime($dat_max));
-											$nroQuarto = explode(" ", $nom_quarto[0]);
+											$nroQuarto = explode(" ", $nom_quarto['0']);
 											$nroDiarias = fnDateDif($dat_min,$dat_max);
 
 											$sqlDesc = "SELECT DES_QUARTO, DES_IMAGEM, DES_VIDEO FROM ADORAI_CHALES WHERE COD_EXTERNO = $cod_quarto AND COD_EXCLUSA = 0";
@@ -770,10 +855,10 @@ tr{
 
 											$sqlVend = "SELECT VA.COD_EXT_VENDEDOR FROM VENDEDOR_ADORAI VA 
 														INNER JOIN UNIDADEVENDA UV ON UV.COD_UNIVEND = VA.COD_UNIVEND
-														WHERE VA.COD_USUARIO = $_SESSION[SYS_COD_USUARIO] 
+														WHERE VA.COD_USUARIO = $_SESSION['SYS_COD_USUARIO'] 
 														AND UV.COD_EXTERNO = $id_hotel";
 
-											// if($_GET['dev'] == 'true'){
+											// if(@$_GET['dev'] == 'true'){
 											// 	echo $sqlVend;
 											// }
 
@@ -781,12 +866,12 @@ tr{
 											$qrVend = mysqli_fetch_assoc($arrayVend);
 
 
-											$arrayVagas[$nroQuarto[1]] = array(
+											$arrayVagas[$nroQuarto['1']] = array(
 																"idHotel" => $id_hotel,
 																"idQuarto" => $cod_quarto,
-																"codVendedor" => "$qrVend[COD_EXT_VENDEDOR]",
-																"chale" => $nom_quarto[0],
-																"local" => $nom_quarto[1],
+																"codVendedor" => "$qrVend['COD_EXT_VENDEDOR']",
+																"chale" => $nom_quarto['0'],
+																"local" => $nom_quarto['1'],
 																"diaria" => $val_diaria,
 																"diarias" => $val_diarias,
 																"total" => $val_total,
@@ -796,12 +881,12 @@ tr{
 																"semanaFim" => $diasemana[$diasemana_fim],
 																"nroDiarias" => $nroDiarias,
 																"nroPessoas" => $num_pessoas,
-																"descricao" => "$qrDesc[DES_QUARTO]",
-																"imagem" => "$qrDesc[DES_IMAGEM]",
-																"video" => "$qrDesc[DES_VIDEO]"
+																"descricao" => "$qrDesc['DES_QUARTO']",
+																"imagem" => "$qrDesc['DES_IMAGEM']",
+																"video" => "$qrDesc['DES_VIDEO']"
 															);
 
-											$arrayOrdenado = fnorderby_array($arrayVagas, $nroQuarto[1], SORT_ASC );
+											$arrayOrdenado = fnorderby_array($arrayVagas, $nroQuarto['1'], SORT_ASC );
 
 
 										}
@@ -821,7 +906,7 @@ tr{
 								
 										$chave_linha = $countQuarto;
 
-										$linkEnvio = "https://roteirosadorai.com.br/detalhes.php?datI=".fnDataShort($qrQuarto['dataMin'])."&datF=".fnDataShort($qrQuarto['dataMax'])."&idh=".$qrQuarto['idHotel']."&idc=".$qrQuarto['idQuarto']."&infQ=".base64_encode(json_encode($qrQuarto))."&iv=".base64_encode($qrQuarto[total])."&cv=".$qrQuarto['codVendedor'];
+										$linkEnvio = "https://roteirosadorai.com.br/detalhes.php?datI=".fnDataShort($qrQuarto['dataMin'])."&datF=".fnDataShort($qrQuarto['dataMax'])."&idh=".$qrQuarto['idHotel']."&idc=".$qrQuarto['idQuarto']."&infQ=".base64_encode(json_encode($qrQuarto))."&iv=".base64_encode($qrQuarto['total'])."&cv=".$qrQuarto['codVendedor'];
 
 										$linkEnvio = file_get_contents("http://tinyurl.com/api-create.php?url=".$linkEnvio);
 								?>
