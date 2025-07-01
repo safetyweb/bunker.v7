@@ -1,4 +1,79 @@
 <?php
+if ($_SESSION['SYS_COD_USUARIO'] == 127937) {
+	echo fnDebug('true');
+	ini_set('display_errors', 1);
+	ini_set('display_startup_errors', 1);
+	error_reporting(E_ALL);
+}
+$opcao = "";
+$hoje = "";
+$ontem = "";
+$hashLocal = "";
+$msgRetorno = "";
+$msgTipo = "";
+$valorpag = "";
+$cod_propriedade = "";
+$cod_chale = "";
+$cod_statuspag = "";
+$cod_formapag = "";
+$dat_ini = "";
+$dat_fim = "";
+$filtro_data = "";
+$id_reserva = "";
+$des_chavecupom = "";
+$nom_usuario = "";
+$actual_link = "";
+$MODULO = "";
+$COD_MODULO = "";
+$hHabilitado = "";
+$hashForm = "";
+$arrayQuery = [];
+$qrBuscaEmpresa = "";
+$nom_empresa = "";
+$checkDiaria = "";
+$log_diaria = "";
+$formBack = "";
+$sqlHotel = "";
+$arrayHotel = [];
+$qrHotel = "";
+$qrStatuspag = "";
+$andreserva = "";
+$andchavecupom = "";
+$and_propriedade = "";
+$and_chale = "";
+$andDat = "";
+$andStatusPag = "";
+$andFormaPag = "";
+$retorno = "";
+$totalitens_por_pagina = 0;
+$qrResult = "";
+$inicio = "";
+$countChale = "";
+$countOpcionais = "";
+$countReserva = "";
+$total_registros = 0;
+$qrBusca = "";
+$val_cobrado = "";
+$valor = "";
+$pct = "";
+$tot_reserva = "";
+$cod_cupom = "";
+$descCupom = "";
+$qtd_diarias = 0;
+$tip_desconto = "";
+$val_desconto = "";
+$pct_desc = "";
+$val_diaria = "";
+$valor_chale = "";
+$desc = "";
+$val_descPix = "";
+$reserva = "";
+$restaPag = "";
+$infoReserva = "";
+$dat_comp = "";
+$dat_alterac = "";
+$content = "";
+
 
 //echo "<h5>_".$opcao."</h5>";
 $itens_por_pagina = 50;
@@ -12,7 +87,7 @@ $hashLocal = mt_rand();
 $adm = $connAdm->connAdm();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	$request = md5(implode($_POST));
+	$request = md5(serialize($_POST));
 
 	if (isset($_SESSION['last_request']) && $_SESSION['last_request'] == $request) {
 		$msgRetorno = 'Essa página já foi utilizada';
@@ -20,35 +95,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	} else {
 		$_SESSION['last_request']  = $request;
 
-		$valorpag = fnLimpaCampo($_REQUEST['VALOR']);
-		$cod_empresa = fnLimpaCampo($_REQUEST['COD_EMPRESA']);
-		$cod_propriedade = fnLimpaCampo($_REQUEST['COD_PROPRIEDADE']);
-		$cod_chale = fnLimpaCampo($_REQUEST['COD_CHALE']);
-		$cod_statuspag = fnLimpaCampo($_REQUEST['COD_STATUSPAG']);
-		$cod_formapag = fnLimpaCampo($_REQUEST['COD_FORMAPAG']);
-		$dat_ini = fnDataSql($_REQUEST['DAT_INI']);
-		$dat_fim = fnDataSql($_REQUEST['DAT_FIM']);
-		$filtro_data = fnLimpaCampo($_REQUEST['FILTRO_DATA']);
-		$id_reserva = fnLimpacampoZero($_REQUEST['ID_RESERVA']);
-		$des_chavecupom = fnLimpaCampo($_REQUEST['DES_CHAVECUPOM']);
+		$valorpag = fnLimpaCampo(@$_REQUEST['VALOR']);
+		$cod_empresa = fnLimpaCampo(@$_REQUEST['COD_EMPRESA']);
+		$cod_propriedade = fnLimpaCampo(@$_REQUEST['COD_PROPRIEDADE']);
+		$cod_chale = fnLimpaCampo(@$_REQUEST['COD_CHALE']);
+		$cod_statuspag = fnLimpaCampo(@$_REQUEST['COD_STATUSPAG']);
+		$cod_formapag = fnLimpaCampo(@$_REQUEST['COD_FORMAPAG']);
+		$dat_ini = fnDataSql(@$_REQUEST['DAT_INI']);
+		$dat_fim = fnDataSql(@$_REQUEST['DAT_FIM']);
+		$filtro_data = fnLimpaCampo(@$_REQUEST['FILTRO_DATA']);
+		$id_reserva = fnLimpacampoZero(@$_REQUEST['ID_RESERVA']);
+		$des_chavecupom = fnLimpaCampo(@$_REQUEST['DES_CHAVECUPOM']);
 
 
 		$nom_usuario = $_SESSION["SYS_NOM_USUARIO"];
 		$actual_link = "$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-		$MODULO = $_GET['mod'];
-		$COD_MODULO = fndecode($_GET['mod']);
+		$MODULO = @$_GET['mod'];
+		$COD_MODULO = fndecode(@$_GET['mod']);
 
-		$opcao = $_REQUEST['opcao'];
-		$hHabilitado = $_REQUEST['hHabilitado'];
-		$hashForm = $_REQUEST['hashForm'];
+		$opcao = @$_REQUEST['opcao'];
+		$hHabilitado = @$_REQUEST['hHabilitado'];
+		$hashForm = @$_REQUEST['hashForm'];
 	}
 }
 
 
 //busca dados da url	
-if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
+if (is_numeric(fnLimpacampo(fnDecode(@$_GET['id'])))) {
 	//busca dados da empresa
-	$cod_empresa = fnDecode($_GET['id']);
+	$cod_empresa = fnDecode(@$_GET['id']);
 	$sql = "SELECT COD_EMPRESA, NOM_FANTASI FROM empresas where COD_EMPRESA = '" . $cod_empresa . "' ";
 	//fnEscreve($sql);
 	$arrayQuery = mysqli_query($adm, $sql);
@@ -392,7 +467,7 @@ if ($filtro_data == "") {
 									} else {
 										$andreserva = "";
 									}
-									if ($des_chavecupom != "") {
+									if ($des_chavecupom != '' && $des_chavecupom != 0) {
 										$andchavecupom = "AND AP.COD_CUPOM = '$des_chavecupom'";
 									} else {
 										$andchavecupom = "";
@@ -404,7 +479,7 @@ if ($filtro_data == "") {
 									} else {
 										$and_propriedade = "AND AI.COD_PROPRIEDADE = $cod_propriedade";
 									}
-									if ($cod_chale != "") {
+									if ($cod_chale != '' && $cod_chale != 0) {
 										$and_chale = "AND AI.COD_CHALE = $cod_chale";
 									} else {
 										$and_chale = " ";
@@ -418,13 +493,13 @@ if ($filtro_data == "") {
 										AND AI.DAT_CADASTR <= '$dat_fim 23:59:59'";
 									}
 
-									// if($cod_statuspag != ""){
+									// if ($cod_statuspag != '' && $cod_statuspag != 0){
 									// 	$andStatusPag = "AND AP.COD_STATUSPAG = $cod_statuspag";
 									// }else{
 									// 	$andStatusPag ="";
 									// }	
 
-									if ($cod_formapag != "") {
+									if ($cod_formapag != '' && $cod_formapag != 0) {
 										$andFormaPag = "AND AP.COD_FORMAPAG = $cod_formapag";
 									} else {
 										$andFormaPag = "";
@@ -517,12 +592,12 @@ if ($filtro_data == "") {
 
 										$val_cobrado = $qrBusca['VALOR_COBRADO'];
 										$valor = $qrBusca['VALOR'];
-										$pct = $valor / 2;
+										$pct = 2 != 0 ? ($valor / 2) : 0;
 										$tot_reserva = $qrBusca['VALOR_PEDIDO'] + $qrBusca['VALOR_OPCIONAIS'];
 										$cod_cupom = $qrBusca['COD_CUPOM'];
 
 										$descCupom = 0;
-										if ($cod_cupom != "") {
+										if ($cod_cupom != '' && $cod_cupom != 0) {
 
 											$qtd_diarias = fnDateDif($qrBusca['DAT_INICIAL'], $qrBusca['DAT_FINAL']);
 
@@ -535,15 +610,15 @@ if ($filtro_data == "") {
 													break;
 
 												case '2':
-													$pct_desc = $val_desconto / 100;
-													$val_diaria = $valor_chale / $qtd_diarias;
+													$pct_desc = 100 != 0 ? ($val_desconto / 100) : 0;
+													$val_diaria = $qtd_diarias != 0 ? ($valor_chale / $qtd_diarias) : 0;
 													$desc = $val_diaria * $pct_desc;
 													$descCupom = $desc * $qtd_diarias;
 
 													break;
 
 												case '3':
-													$pct_desc = $val_desconto / 100;
+													$pct_desc = 100 != 0 ? ($val_desconto / 100) : 0;
 													$descCupom = $tot_reserva * $pct_desc;
 
 													break;
