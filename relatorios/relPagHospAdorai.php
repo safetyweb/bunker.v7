@@ -1,4 +1,88 @@
 <?php
+if ($_SESSION['SYS_COD_USUARIO'] == 127937) {
+    echo fnDebug('true');
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+}
+$dat_ini = "";
+$dat_fim = "";
+$hashLocal = "";
+$hoje = "";
+$dias30 = "";
+$msgRetorno = "";
+$msgTipo = "";
+$cod_propriedade = "";
+$cod_chale = "";
+$cod_statuspag = "";
+$cod_tipo = "";
+$filtro_data = "";
+$log_statusreserva = "";
+$opcao = "";
+$hHabilitado = "";
+$hashForm = "";
+$arrayQuery = [];
+$qrBuscaEmpresa = "";
+$nom_empresa = "";
+$sqlHotel = "";
+$arrayHotel = [];
+$qrHotel = "";
+$qrStatuspag = "";
+$selecionado = "";
+$andProp = "";
+$andChale = "";
+$andStatusReserva = "";
+$andStatus = "";
+$andStatusCancel = "";
+$andDat = "";
+$andTipCredito = "";
+$sqlContador = "";
+$queryCont = "";
+$result = "";
+$total_hospedagem = 0;
+$total_desconto = 0;
+$total_pagoPropriedade = 0;
+$sqlChale = "";
+$queryChale = "";
+$qrResultChale = "";
+$sqlOpci = "";
+$array = [];
+$qrOpcionais = "";
+$total_opcionais = 0;
+$total_liquido = 0;
+$total_margem = 0;
+$retorno = "";
+$totalitens_por_pagina = 0;
+$inicio = "";
+$tot_hosp = "";
+$tot_marg = "";
+$tot_descCupom = "";
+$val_liquido = "";
+$tot_liquido = "";
+$tot_cafe = "";
+$tot_pet = "";
+$tot_fond = "";
+$tot_ref = "";
+$tot_dec = "";
+$tot_pago = "";
+$qrListaVendas = "";
+$temCafe = "";
+$temPet = "";
+$temFound = "";
+$temRefeicao = "";
+$temDecoracao = "";
+$tot_opcionais = "";
+$qrLista = "";
+$valEfetivo = "";
+$val_margem = "";
+$pct_margem = "";
+$sqlCancela = "";
+$arrayQueryCancela = [];
+$qrBuscaCancela = "";
+$cancelada = "";
+$cupom = "";
+$content = "";
+
 
 //echo fnDebug('true');
 
@@ -20,7 +104,7 @@ $dias30 = fnFormatDate(date("Y-m-d"));
 //$cod_univend = "9999"; //todas revendas - default
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $request = md5(implode($_POST));
+    $request = md5(serialize($_POST));
 
     if (isset($_SESSION['last_request']) && $_SESSION['last_request'] == $request) {
         $msgRetorno = 'Essa página já foi utilizada';
@@ -28,29 +112,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         $_SESSION['last_request']  = $request;
 
-        $cod_empresa = fnLimpaCampoZero($_POST['COD_EMPRESA']);
-        $cod_propriedade = fnLimpaCampoZero($_POST['COD_PROPRIEDADE']);
-        $cod_chale = fnLimpaCampoZero($_POST['COD_CHALE']);
-        $cod_statuspag = fnLimpaCampoArray($_POST['COD_STATUSPAG']);
-        $cod_tipo = fnLimpaCampoArray($_POST['COD_TIPO']);
-        $dat_ini = fnDataSql($_POST['DAT_INI']);
-        $dat_fim = fnDataSql($_POST['DAT_FIM']);
-        $filtro_data = fnLimpaCampo($_REQUEST['FILTRO_DATA']);
-        $log_statusreserva = fnLimpaCampo($_REQUEST['LOG_STATUSRESERVA']);
+        $cod_empresa = fnLimpaCampoZero(@$_POST['COD_EMPRESA']);
+        $cod_propriedade = fnLimpaCampoZero(@$_POST['COD_PROPRIEDADE']);
+        $cod_chale = fnLimpaCampoZero(@$_POST['COD_CHALE']);
+        $cod_statuspag = fnLimpaCampoArray(@$_POST['COD_STATUSPAG']);
+        $cod_tipo = fnLimpaCampoArray(@$_POST['COD_TIPO']);
+        $dat_ini = fnDataSql(@$_POST['DAT_INI']);
+        $dat_fim = fnDataSql(@$_POST['DAT_FIM']);
+        $filtro_data = fnLimpaCampo(@$_REQUEST['FILTRO_DATA']);
+        $log_statusreserva = fnLimpaCampo(@$_REQUEST['LOG_STATUSRESERVA']);
 
-        $opcao = $_REQUEST['opcao'];
-        $hHabilitado = $_REQUEST['hHabilitado'];
-        $hashForm = $_REQUEST['hashForm'];
+        $opcao = @$_REQUEST['opcao'];
+        $hHabilitado = @$_REQUEST['hHabilitado'];
+        $hashForm = @$_REQUEST['hashForm'];
 
-        if ($opcao != '') {
+        if ($opcao != '' && $opcao != 0) {
         }
     }
 }
 
 //busca dados url
-if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
+if (is_numeric(fnLimpacampo(fnDecode(@$_GET['id'])))) {
     //busca dados da empresa
-    $cod_empresa = fnDecode($_GET['id']);
+    $cod_empresa = fnDecode(@$_GET['id']);
     $sql = "SELECT COD_EMPRESA, NOM_FANTASI, COD_CLIENTE_AV, TIP_RETORNO FROM empresas where COD_EMPRESA = '" . $cod_empresa . "' ";
     //fnEscreve($sql);
     $arrayQuery = mysqli_query($connAdm->connAdm(), $sql);
@@ -215,7 +299,7 @@ if ($filtro_data == "") {
                                             $arrayQuery = mysqli_query(connTemp($cod_empresa, ''), $sql);
 
                                             while ($qrStatuspag = mysqli_fetch_assoc($arrayQuery)) {
-                                                if (recursive_array_search($qrStatuspag['COD_STATUSPAG'], array_filter($_REQUEST['COD_STATUSPAG'])) !== false) {
+                                                if (recursive_array_search($qrStatuspag['COD_STATUSPAG'], array_filter(@$_REQUEST['COD_STATUSPAG'])) !== false) {
                                                     $selecionado = "selected";
                                                 } else {
                                                     $selecionado = "";
@@ -240,7 +324,7 @@ if ($filtro_data == "") {
                                             $arrayQuery = mysqli_query(connTemp($cod_empresa, ''), $sql);
 
                                             while ($qrStatuspag = mysqli_fetch_assoc($arrayQuery)) {
-                                                if (recursive_array_search($qrStatuspag['COD_TIPO'], array_filter($_REQUEST['COD_TIPO'])) !== false) {
+                                                if (recursive_array_search($qrStatuspag['COD_TIPO'], array_filter(@$_REQUEST['COD_TIPO'])) !== false) {
                                                     $selecionado = "selected";
                                                 } else {
                                                     $selecionado = "";
@@ -337,18 +421,18 @@ if ($filtro_data == "") {
                                         $andProp = "";
                                     }
 
-                                    if ($cod_chale != "") {
+                                    if ($cod_chale != '' && $cod_chale != 0) {
                                         $andChale = "AND API.COD_CHALE = $cod_chale";
                                     } else {
                                         $andChale = "";
                                     }
 
                                     $andStatusReserva = "";
-                                    if ($log_statusreserva != "") {
+                                    if ($log_statusreserva != '' && $log_statusreserva != 0) {
                                         $andStatusReserva = "AND AP.LOG_STATUSRESERVA = '$log_statusreserva'";
                                     }
 
-                                    if ($cod_statuspag != "") {
+                                    if ($cod_statuspag != '' && $cod_statuspag != 0) {
                                         if ($cod_statuspag != 4 && $cod_statuspag != 8) {
                                             $andStatus = "AND AP.COD_STATUSPAG in ($cod_statuspag)";
                                         } else {
@@ -381,7 +465,7 @@ if ($filtro_data == "") {
                                             break;
                                     }
 
-                                    if ($cod_tipo != "") {
+                                    if ($cod_tipo != '' && $cod_tipo != 0) {
                                         $andTipCredito = "INNER JOIN CAIXA AS CX ON AP.COD_PEDIDO = CX.COD_CONTRAT AND CX.COD_TIPO IN ($cod_tipo)";
                                     } else {
                                         $andTipCredito = "";
@@ -597,7 +681,7 @@ if ($filtro_data == "") {
 
                                         $val_liquido = ($qrListaVendas['VALOR_PEDIDO'] + $tot_opcionais) - $qrListaVendas['VAL_CUPOM'];
                                         $val_margem = $val_liquido - $valEfetivo;
-                                        $pct_margem = ($val_margem / $qrListaVendas['VALOR_PEDIDO']) * 100;
+                                        $pct_margem = $qrListaVendas['VALOR_PEDIDO'] != 0 ? (($val_margem) / $qrListaVendas['VALOR_PEDIDO']) * 100 : 0;
 
 
                                         //CONTADORES
