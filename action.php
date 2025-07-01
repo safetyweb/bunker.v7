@@ -5,6 +5,8 @@ if ($_SERVER['REMOTE_ADDR'] == '177.104.209.219') {
 	error_reporting(E_ALL);
 }
 
+$connUser = "";
+
 ob_start('ob_gzhandler');
 //gc_enable();
 require_once "_system/_functionsMain.php";
