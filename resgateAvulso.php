@@ -7,7 +7,7 @@ $hashLocal = mt_rand();
 $tem_prodaux = "";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	$request = md5(implode($_POST));
+	$request = md5(serialize($_POST));
 
 	if (isset($_SESSION['last_request']) && $_SESSION['last_request'] == $request) {
 		$msgRetorno = 'Essa página já foi utilizada';
@@ -22,7 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$cod_produto = fnLimpacampoZero($_REQUEST['COD_PRODUTO']);
 		$qtd_produto = fnLimpacampo($_REQUEST['QTD_PRODUTO']);
 		$val_unitario = fnLimpacampo($_REQUEST['VAL_UNITARIO']);
-		$val_totprod = fnLimpacampo($_REQUEST['VAL_TOTPROD']);
+		if (isset($_REQUEST['VAL_TOTPROD'])) {
+			$val_totprod = fnLimpacampo($_REQUEST['VAL_TOTPROD']);
+		}
 		$des_comenta = fnLimpaCampo($_REQUEST['DES_COMENTA']);
 		$casasDec = fnLimpaCampo($_REQUEST['CASAS_DEC']);
 
