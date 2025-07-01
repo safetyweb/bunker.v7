@@ -1,11 +1,50 @@
 <?php
+if ($_SESSION['SYS_COD_USUARIO'] == 127937) {
+	echo fnDebug('true');
+	ini_set('display_errors', 1);
+	ini_set('display_startup_errors', 1);
+	error_reporting(E_ALL);
+}
+$hashLocal = "";
+$msgRetorno = "";
+$msgTipo = "";
+$cod_usucada = "";
+$cod_pagamento = "";
+$cod_propriedade = "";
+$des_formapag = "";
+$abv_formapag = "";
+$des_pagamento = "";
+$des_imagem = "";
+$actual_link = "";
+$MODULO = "";
+$COD_MODULO = "";
+$opcao = "";
+$hHabilitado = "";
+$hashForm = "";
+$arrayProc = [];
+$cod_error = "";
+$connTemp = "";
+$nom_usuarioSESSION = "";
+$cod_erro = "";
+$arrayQuery = [];
+$qrBuscaEmpresa = "";
+$nom_empresa = "";
+$formBack = "";
+$abaAdorai = "";
+$abaManutencaoAdorai = "";
+$abaUsuario = "";
+$sqlHotel = "";
+$arrayHotel = [];
+$qrHotel = "";
+$qrBusca = "";
+
 
 
 $hashLocal = mt_rand();
 $adm = $connAdm->connAdm();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	$request = md5(implode($_POST));
+	$request = md5(serialize($_POST));
 
 	if (isset($_SESSION['last_request']) && $_SESSION['last_request'] == $request) {
 		$msgRetorno = 'Essa página já foi utilizada';
@@ -15,23 +54,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 		$cod_usucada = $_SESSION['SYS_COD_USUARIO'];
 
-		$cod_empresa = fnLimpaCampoZero($_REQUEST['COD_EMPRESA']);
-		$cod_pagamento =  fnLimpaCampoZero($_REQUEST['COD_FORMAPAG']);
-		$cod_propriedade =  fnLimpaCampoZero($_REQUEST['COD_PROPRIEDADE']);
-		$des_formapag = fnLimpaCampo($_REQUEST['DES_FORMAPAG']);
-		$abv_formapag = fnLimpaCampo($_REQUEST['ABV_FORMAPAG']);
-		$des_pagamento = fnLimpaCampo($_REQUEST['DES_PAGAMENTO']);
-		$des_imagem = fnLimpaCampo($_REQUEST['DES_IMAGEM']);
+		$cod_empresa = fnLimpaCampoZero(@$_REQUEST['COD_EMPRESA']);
+		$cod_pagamento =  fnLimpaCampoZero(@$_REQUEST['COD_FORMAPAG']);
+		$cod_propriedade =  fnLimpaCampoZero(@$_REQUEST['COD_PROPRIEDADE']);
+		$des_formapag = fnLimpaCampo(@$_REQUEST['DES_FORMAPAG']);
+		$abv_formapag = fnLimpaCampo(@$_REQUEST['ABV_FORMAPAG']);
+		$des_pagamento = fnLimpaCampo(@$_REQUEST['DES_PAGAMENTO']);
+		$des_imagem = fnLimpaCampo(@$_REQUEST['DES_IMAGEM']);
 
 		$actual_link = "$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-		$MODULO = $_GET['mod'];
-		$COD_MODULO = fndecode($_GET['mod']);
+		$MODULO = @$_GET['mod'];
+		$COD_MODULO = fndecode(@$_GET['mod']);
 
-		$opcao = $_REQUEST['opcao'];
-		$hHabilitado = $_REQUEST['hHabilitado'];
-		$hashForm = $_REQUEST['hashForm'];
+		$opcao = @$_REQUEST['opcao'];
+		$hHabilitado = @$_REQUEST['hHabilitado'];
+		$hashForm = @$_REQUEST['hashForm'];
 
-		if ($opcao != '') {
+		if ($opcao != '' && $opcao != 0) {
 
 			//mensagem de retorno
 			switch ($opcao) {
@@ -111,9 +150,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
 //busca dados da url	
-if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
+if (is_numeric(fnLimpacampo(fnDecode(@$_GET['id'])))) {
 	//busca dados da empresa
-	$cod_empresa = fnDecode($_GET['id']);
+	$cod_empresa = fnDecode(@$_GET['id']);
 	$cod_empresa = 274;
 	$sql = "SELECT COD_EMPRESA, NOM_FANTASI FROM empresas where COD_EMPRESA = '" . $cod_empresa . "' ";
 	//fnEscreve($sql);
