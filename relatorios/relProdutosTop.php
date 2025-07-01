@@ -446,7 +446,7 @@ include "unidadesAutorizadas.php";
 										</tr>
 									<?php
 
-										$totalProd += $qrListaVendas['TOTAL_QTD_PROD'];
+										$totalProd += fnValorSql($qrListaVendas['TOTAL_QTD_PROD']);
 										$totalProdFid += $qrListaVendas['TOTAL_QTD_FIDE'];
 										$totalVendas += $qrListaVendas['TOT_VENDAS'];
 										$totalVendasFid += $qrListaVendas['TOT_VENDAS_FIDEL'];
