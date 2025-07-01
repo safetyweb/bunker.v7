@@ -492,7 +492,7 @@ if (is_numeric(fnLimpacampo(fnDecode(@$_GET['id'])))) {
 														<td class='text-center'><input type='radio' name='radio1' onclick='retornaForm(" . $count . ")'></td>
 														<td>" . $qrBuscaFAQ['COD_PERGUNTA'] . "</td>
 														<td>" . $qrBuscaFAQ['NOM_FANTASI'] . "</td>
-														<!--<td>" . $qrBuscaFAQ['NOM_QUARTO'] . "</td> -->
+										
 														<td>" . $qrBuscaFAQ['DES_PERGUNTA'] . "</td>
 
 													</tr>
