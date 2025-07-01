@@ -3,9 +3,10 @@
 //echo fnDebug('true');
 
 $hashLocal = mt_rand();
+$msgRetorno = "";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	$request = md5(implode($_POST));
+	$request = md5(serialize($_POST));
 
 	if (isset($_SESSION['last_request']) && $_SESSION['last_request'] == $request) {
 		$msgRetorno = 'Essa página já foi utilizada';
@@ -15,10 +16,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 		$cod_empresa = fnLimpacampoZero($_REQUEST['COD_EMPRESA']);
 		$cod_cliente = fnLimpacampoZero($_REQUEST['COD_CLIENTE']);
-		$cod_tipmoti = fnLimpacampoZero($_REQUEST['COD_TIPMOTI']);
+		if (isset($_REQUEST['COD_TIPMOTI '])) {
+			$cod_tipmoti = fnLimpacampoZero($_REQUEST['COD_TIPMOTI']);
+		}
 
 		$num_cartao = fnLimpacampo($_REQUEST['NUM_CARTAO']);
-		$num_cartao_novo = fnLimpacampo($_REQUEST['NUM_CARTAO_NOVO']);
+
+		if (isset($_REQUEST['NUM_CARTAO_NOVO'])) {
+			$num_cartao_novo = fnLimpacampo($_REQUEST['NUM_CARTAO_NOVO']);
+		}
 
 		$opcao = $_REQUEST['opcao'];
 		$hHabilitado = $_REQUEST['hHabilitado'];
@@ -31,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			//busca dados da empresa
 			$sql = "select LOG_AUTOCAD FROM EMPRESAS WHERE COD_EMPRESA = '" . $cod_empresa . "' ";
 			//fnEscreve($sql);
-			$arrayQuery = mysqli_query($connAdm->connAdm(), $sql) or die(mysqli_error());
+			$arrayQuery = mysqli_query($connAdm->connAdm(), $sql);
 			$qrBuscaLOG_AUTOCAD = mysqli_fetch_assoc($arrayQuery);
 			$log_autocad = $qrBuscaLOG_AUTOCAD['LOG_AUTOCAD'];
 
@@ -76,7 +82,7 @@ if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
 
 	$sql = "SELECT COD_EMPRESA, NOM_FANTASI FROM empresas where COD_EMPRESA = '" . $cod_empresa . "' ";
 	//fnEscreve($sql);
-	$arrayQuery = mysqli_query($connAdm->connAdm(), $sql) or die(mysqli_error());
+	$arrayQuery = mysqli_query($connAdm->connAdm(), $sql);
 	$qrBuscaEmpresa = mysqli_fetch_assoc($arrayQuery);
 
 	if (isset($arrayQuery)) {
@@ -92,7 +98,7 @@ if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
 //busca dados do cliente
 $sql = "SELECT NOM_CLIENTE, NUM_CARTAO, NUM_CGCECPF, COD_CLIENTE FROM CLIENTES where COD_CLIENTE = '" . $cod_cliente . "' ";
 //fnEscreve($sql);
-$arrayQuery = mysqli_query(connTemp($cod_empresa, ''), $sql) or die(mysqli_error());
+$arrayQuery = mysqli_query(connTemp($cod_empresa, ''), $sql);
 $qrBuscaCliente = mysqli_fetch_assoc($arrayQuery);
 
 if (isset($arrayQuery)) {
@@ -167,7 +173,7 @@ include "labelLibrary.php";
 						include "abasClienteRH.php";
 						break;
 					case 21: //gestão garantias
-					include "abasGestaoGarantiasCli.php";
+						include "abasGestaoGarantiasCli.php";
 						break;
 					default:
 						include "abasClienteConfig.php";
