@@ -520,9 +520,15 @@ if ($filtro_data == "") {
 												";
 
 									$retorno = mysqli_query(connTemp($cod_empresa, ''), $sql);
-									$totalitens_por_pagina = mysqli_num_rows($retorno);
-
-									$qrResult = mysqli_fetch_assoc($retorno);
+									if ($retorno === false) {
+										$totalitens_por_pagina = 0;
+										$qrResult = null;
+										// Optionally log or display the error for debugging:
+										// error_log("MySQL Error: " . mysqli_error(connTemp($cod_empresa, '')));
+									} else {
+										$totalitens_por_pagina = mysqli_num_rows($retorno);
+										$qrResult = mysqli_fetch_assoc($retorno);
+									}
 
 									// fnescreve($sql);
 									$numPaginas = ceil($totalitens_por_pagina / $itens_por_pagina);
