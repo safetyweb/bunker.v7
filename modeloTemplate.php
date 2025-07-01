@@ -44,6 +44,7 @@ $ano_nascime = "";
 $NOM_CLIENTE = "";
 $TEXTOENVIO = "";
 $msgsbtr = "";
+$disableBtn = "";
 
 
 $hashLocal = mt_rand();
