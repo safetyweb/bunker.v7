@@ -1237,7 +1237,7 @@ LOG_VISUAPP
 LOG_VISUTOTEM
 LOG_VISUPDVVITUAL 
 */
-$Canal = $_GET['ch'];
+$Canal = @$_GET['ch'];
 switch ($Canal) {
 	case 1: //PDV virtual
 		$update = ",LOG_VISUPDVVIRTUAL='1'";
