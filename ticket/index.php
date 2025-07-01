@@ -651,13 +651,13 @@ $produtoOferta = "";
 
 						$procsaldo = "CALL SP_CONSULTA_SALDO_CLIENTE ($cod_cliente)";
 						$SALDO_CLIENTE = mysqli_query(connTemptkt($connAdm->connAdm(), $cod_empresa, ""), trim($procsaldo));
-						@$rowSALDO_CLIENTE = mysqli_fetch_assoc($SALDO_CLIENTE);
+						$rowSALDO_CLIENTE = mysqli_fetch_assoc($SALDO_CLIENTE);
 					?>
 						<div class="bloco">
 							<center>
 								<div style="font-size: 16px; line-height: 22px;"><span style="font-weight:900;"><?php echo fnMascaraCampo($nom_cliente); ?></span> <br />
-									Seu saldo total é: R$ <?php echo fnValor($rowSALDO_CLIENTE['TOTAL_CREDITO'], 2); ?> <br />
-									<span style="font-size: 12px; line-height: 18px;">Disponível imediatamente é: R$ <?php echo fnValor($rowSALDO_CLIENTE['CREDITO_DISPONIVEL'], 2); ?> <span /> <br />
+									Seu saldo total é: R$ <?php echo fnValor(@$rowSALDO_CLIENTE['TOTAL_CREDITO'], 2); ?> <br />
+									<span style="font-size: 12px; line-height: 18px;">Disponível imediatamente é: R$ <?php echo fnValor(@$rowSALDO_CLIENTE['CREDITO_DISPONIVEL'], 2); ?> <span /> <br />
 										<?php echo date("d/m/Y"); ?> às <?php echo date("H:i"); ?> <br />
 								</div>
 							</center>
@@ -772,7 +772,7 @@ $produtoOferta = "";
 		<center>
 			<div style="font-size: 16px; line-height: 22px;"><span style="font-size: 21px; font-weight:900;"><?php echo $nom_cliente; ?></span> <br />
 				<small>cartão: <?php echo fnMascaraCampo($num_cartao); ?></small> <br />
-				Seu saldo é: R$ <?php echo fnValor($rowSALDO_CLIENTE['CREDITO_DISPONIVEL'], 2); ?> <br />
+				Seu saldo é: R$ <?php echo fnValor(@$rowSALDO_CLIENTE['CREDITO_DISPONIVEL'], 2); ?> <br />
 				<?php echo date("d/m/Y"); ?> às <?php echo date("H:i"); ?> <br />
 			</div>
 		</center>
