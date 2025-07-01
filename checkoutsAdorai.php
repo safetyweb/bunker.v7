@@ -605,7 +605,13 @@ $conn = conntemp($cod_empresa, "");
 
 									$retorno = mysqli_query(connTemp($cod_empresa, ''), $sql2);
 
-									$totalitens_por_pagina = mysqli_num_rows($retorno);
+									if ($retorno) {
+										$totalitens_por_pagina = mysqli_num_rows($retorno);
+									} else {
+										$totalitens_por_pagina = 0;
+										// Optionally log or display the error:
+										// error_log("MySQL Error: " . mysqli_error(connTemp($cod_empresa, '')));
+									}
 
 									// fnescreve($sql);
 									$numPaginas = ceil($totalitens_por_pagina / $itens_por_pagina);
