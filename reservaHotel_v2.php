@@ -1,10 +1,4 @@
 <?php
-if ($_SESSION['SYS_COD_USUARIO'] == 127937) {
-	echo fnDebug('true');
-	ini_set('display_errors', 1);
-	ini_set('display_startup_errors', 1);
-	error_reporting(E_ALL);
-}
 $opcao = "";
 $hotel = "";
 $log_diaria = "";
