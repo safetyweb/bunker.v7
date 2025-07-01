@@ -7,15 +7,16 @@ $itens_por_pagina = 50;
 
 // Página default
 $pagina = 1;
+$cod_empresa = 0;
 
-$dias30="";
+$dias30 = "";
 //inicialização de variáveis
 $hoje = fnFormatDate(date("Y-m-d"));
-$dias30 = fnFormatDate(date('Y-m-d', strtotime($dias30. '- 1 days')));
+$dias30 = fnFormatDate(date('Y-m-d', strtotime($dias30 . '- 1 days')));
 
 $hashLocal = mt_rand();
 
-$conn = conntemp($cod_empresa,"");
+$conn = conntemp($cod_empresa, "");
 $adm = $connAdm->connAdm();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -44,9 +45,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$hashForm = $_REQUEST['hashForm'];
 
 		if ($opcao != '') {
-
-			
-			
 		}
 	}
 }
@@ -104,59 +102,59 @@ if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
 					</div>
 				<?php } ?>
 
-				<?php 
-					$abaAdorai = 2006;
-					include "abasAdorai.php"; 
+				<?php
+				$abaAdorai = 2006;
+				include "abasAdorai.php";
 
-					$abaManutencaoAdorai = fnDecode($_GET['mod']);
-					//echo $abaUsuario;
+				$abaManutencaoAdorai = fnDecode($_GET['mod']);
+				//echo $abaUsuario;
 
-					//se não for sistema de campanhas
+				//se não for sistema de campanhas
 
-					echo ('<div class="push20"></div>');
-					include "abasSistemaAdorai.php";
+				echo ('<div class="push20"></div>');
+				include "abasSistemaAdorai.php";
 				?>
 
 				<div class="push30"></div>
 
 				<div class="login-form">
-									
-					<form data-toggle="validator" role="form2" method="post" id="formulario" action="<?php echo $cmdPage; ?>">
-					
-					
 
-					<div class="row">
-						<div class="services-list buscavel">
-						
-							<div class="row" style="margin: 0 0 0 1px;">
-							
-								<div class="col-sm-6 col-md-4">
-									<div class="service-block" style="visibility: visible;">
-										<div class="text-block">
-											<div class="text">Pagamento</div>
-											<div class="push10"></div>
-											
-											<a href="https://roteirosadorai.com.br/checkout.php" target="_blank">&rsaquo; Checkout</a> <br/>
-											<a href="https://roteirosadorai.com.br/checkout.php?datI=29/04/2024&datF=30/04/2024&idh=977&idc=7715546&numC=15981146246&iv=ODAw&infQ=eyJpZEhvdGVsIjoiOTc3IiwiaWRRdWFydG8iOiI3NzE1NTQ2IiwidWYiOiIiLCJjb2RWZW5kZWRvciI6IiIsImNoYWxlIjoiRmFtXHUwMGVkbGlhIiwibG9jYWwiOiIiLCJkaWFyaWEiOiI0MDAiLCJkaWFyaWFzIjp7IjIwMjQtMDQtMjZfMjAyNC0wNC0yNyI6IjQwMCIsIjIwMjQtMDQtMjZfMjAyNC0wNC0yOCI6IjQwMCJ9LCJ0b3RhbCI6ODAwLCJkYXRhTWluIjoiMjAyNC0wNC0yNiIsImRhdGFNYXgiOiIyMDI0LTA0LTI4Iiwic2VtYW5hSW5pIjoiU2V4dGEiLCJzZW1hbmFGaW0iOiJEb21pbmdvIiwibnJvRGlhcmlhcyI6MiwibnJvUGVzc29hcyI6MiwiZGVzY3JpY2FvIjoiVGVzdGUiLCJpbWFnZW0iOiJodHRwczpcL1wvaW1nLmJ1bmtlci5ta1wvbWVkaWFcL2NsaWVudGVzXC9mb3Rvc19jaGFsZVwvQ2hhbGVfMzAyXC9DaGFsZV8zMDJfLV9DYXNhbF9uYV9waXNjaW5hLmpwZyIsInZpZGVvIjoiaHR0cHM6XC9cL2ltZy5idW5rZXIubWtcL21lZGlhXC9jbGllbnRlc1wvZm90b3NfY2hhbGVcL0NoYWxlXzIwXC9DaGFsZV8yMF8tX3ZpZGVvLm1wNCJ9" target="_blank">&rsaquo; Checkout c/ parâmetros</a> <br/>
-											
-											
+					<form data-toggle="validator" role="form2" method="post" id="formulario" action="<?php echo $cmdPage; ?>">
+
+
+
+						<div class="row">
+							<div class="services-list buscavel">
+
+								<div class="row" style="margin: 0 0 0 1px;">
+
+									<div class="col-sm-6 col-md-4">
+										<div class="service-block" style="visibility: visible;">
+											<div class="text-block">
+												<div class="text">Pagamento</div>
+												<div class="push10"></div>
+
+												<a href="https://roteirosadorai.com.br/checkout.php" target="_blank">&rsaquo; Checkout</a> <br />
+												<a href="https://roteirosadorai.com.br/checkout.php?datI=29/04/2024&datF=30/04/2024&idh=977&idc=7715546&numC=15981146246&iv=ODAw&infQ=eyJpZEhvdGVsIjoiOTc3IiwiaWRRdWFydG8iOiI3NzE1NTQ2IiwidWYiOiIiLCJjb2RWZW5kZWRvciI6IiIsImNoYWxlIjoiRmFtXHUwMGVkbGlhIiwibG9jYWwiOiIiLCJkaWFyaWEiOiI0MDAiLCJkaWFyaWFzIjp7IjIwMjQtMDQtMjZfMjAyNC0wNC0yNyI6IjQwMCIsIjIwMjQtMDQtMjZfMjAyNC0wNC0yOCI6IjQwMCJ9LCJ0b3RhbCI6ODAwLCJkYXRhTWluIjoiMjAyNC0wNC0yNiIsImRhdGFNYXgiOiIyMDI0LTA0LTI4Iiwic2VtYW5hSW5pIjoiU2V4dGEiLCJzZW1hbmFGaW0iOiJEb21pbmdvIiwibnJvRGlhcmlhcyI6MiwibnJvUGVzc29hcyI6MiwiZGVzY3JpY2FvIjoiVGVzdGUiLCJpbWFnZW0iOiJodHRwczpcL1wvaW1nLmJ1bmtlci5ta1wvbWVkaWFcL2NsaWVudGVzXC9mb3Rvc19jaGFsZVwvQ2hhbGVfMzAyXC9DaGFsZV8zMDJfLV9DYXNhbF9uYV9waXNjaW5hLmpwZyIsInZpZGVvIjoiaHR0cHM6XC9cL2ltZy5idW5rZXIubWtcL21lZGlhXC9jbGllbnRlc1wvZm90b3NfY2hhbGVcL0NoYWxlXzIwXC9DaGFsZV8yMF8tX3ZpZGVvLm1wNCJ9" target="_blank">&rsaquo; Checkout c/ parâmetros</a> <br />
+
+
+											</div>
 										</div>
 									</div>
-								</div>	
+
+								</div>
 
 							</div>
-							
+
 						</div>
-						
-					</div>
 
-									
 
-					
+
+
 					</form>
-					
+
 					<div class="push50"></div>
-				
+
 				</div>
 
 			</div>
@@ -170,6 +168,6 @@ if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
 
 <script type="text/javascript">
 
-	
+
 
 </script>
