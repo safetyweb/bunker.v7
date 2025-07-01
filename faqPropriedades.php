@@ -16,6 +16,52 @@
 ); -->
 
 <?php
+if ($_SESSION['SYS_COD_USUARIO'] == 127937) {
+	echo fnDebug('true');
+	ini_set('display_errors', 1);
+	ini_set('display_startup_errors', 1);
+	error_reporting(E_ALL);
+}
+$hashLocal = "";
+$msgRetorno = "";
+$msgTipo = "";
+$log_ativo = "";
+$nom_usuario = "";
+$cod_usuario = "";
+$cod_pergunta = "";
+$des_pergunta = "";
+$des_resposta = "";
+$num_ordenac = "";
+$cod_propriedade = "";
+$cod_acomodacao = "";
+$des_imagem = "";
+$nom_submenus = "";
+$num_usuario = "";
+$actual_link = "";
+$MODULO = "";
+$COD_MODULO = "";
+$opcao = "";
+$hHabilitado = "";
+$hashForm = "";
+$arrayProc = [];
+$sqlPerguntas = "";
+$perguntaquery = "";
+$qrPergunta = "";
+$cod_erro = "";
+$alteraProc = "";
+$cod_usucada = "";
+$ExcluiProc = "";
+$arrayQuery = [];
+$qrBuscaEmpresa = "";
+$nom_empresa = "";
+$abaAdorai = "";
+$abaManutencaoAdorai = "";
+$sqlHotel = "";
+$arrayHotel = [];
+$qrHotel = "";
+$des_regras = "";
+$qrBuscaFAQ = "";
+
 
 //echo fnDebug('true');
 
@@ -23,44 +69,44 @@ $hashLocal = mt_rand();
 
 $cod_empresa = 274;
 
-$conn = conntemp($cod_empresa,"");
+$conn = conntemp($cod_empresa, "");
 $adm = $connAdm->connAdm();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	$request = md5(implode($_POST));
+	$request = md5(serialize($_POST));
 
 	if (isset($_SESSION['last_request']) && $_SESSION['last_request'] == $request) {
 		$msgRetorno = 'Essa página já foi utilizada';
 		$msgTipo = 'alert-warning';
 	} else {
 		$_SESSION['last_request']  = $request;
-		
+
 		$log_ativo = 'S';
 
 		$nom_usuario = $_SESSION["SYS_NOM_USUARIO"];
 		$cod_usuario = $_SESSION["SYS_COD_USUARIO"];
 
-		$cod_pergunta = fnLimpaCampoZero($_REQUEST['COD_PERGUNTA']);
-		$des_pergunta = $_REQUEST['DES_PERGUNTA'];
-		$des_resposta = addslashes(htmlentities($_REQUEST['DES_RESPOSTA']));
-		$num_ordenac = $_REQUEST['NUM_ORDENAC'];
-		$cod_empresa = $_REQUEST['COD_EMPRESA'];
-		$cod_propriedade = $_REQUEST['COD_PROPRIEDADE'];
-		$cod_acomodacao = $_REQUEST['COD_ACOMODACAO'];
-		$des_imagem = fnLimpaCampo($_REQUEST['DES_IMAGEM']);
+		$cod_pergunta = fnLimpaCampoZero(@$_REQUEST['COD_PERGUNTA']);
+		$des_pergunta = @$_REQUEST['DES_PERGUNTA'];
+		$des_resposta = addslashes(htmlentities(@$_REQUEST['DES_RESPOSTA']));
+		$num_ordenac = @$_REQUEST['NUM_ORDENAC'];
+		$cod_empresa = @$_REQUEST['COD_EMPRESA'];
+		$cod_propriedade = @$_REQUEST['COD_PROPRIEDADE'];
+		$cod_acomodacao = @$_REQUEST['COD_ACOMODACAO'];
+		$des_imagem = fnLimpaCampo(@$_REQUEST['DES_IMAGEM']);
 		// fnEscreve($nom_submenus);
 		// fnEscreve($num_ordenac);
 		// fnEscreve($num_usuario);
 
 		$actual_link = "$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-		$MODULO = $_GET['mod'];
-		$COD_MODULO = fndecode($_GET['mod']);
+		$MODULO = @$_GET['mod'];
+		$COD_MODULO = fndecode(@$_GET['mod']);
 
-		$opcao = $_REQUEST['opcao'];
-		$hHabilitado = $_REQUEST['hHabilitado'];
-		$hashForm = $_REQUEST['hashForm'];
+		$opcao = @$_REQUEST['opcao'];
+		$hHabilitado = @$_REQUEST['hHabilitado'];
+		$hashForm = @$_REQUEST['hashForm'];
 
-		if ($opcao != '') {
+		if ($opcao != '' && $opcao != 0) {
 
 			// $sql = "CALL SP_ALTERA_PERGUNTAS (
 			// 	 '" . $cod_pergunta . "', 
@@ -79,10 +125,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 				case 'CAD':
 					$sqlPerguntas = "SELECT MAX(NUM_ORDENAC) AS NUM_ORDENAC FROM PERGUNTAS_ADORAI WHERE COD_PROPRIEDADE = $cod_propriedade AND COD_ACOMODACAO = $cod_acomodacao";
 					$perguntaquery = mysqli_query(connTemp($cod_empresa, ''), $sqlPerguntas);
-					
+
 					$qrPergunta = mysqli_fetch_assoc($perguntaquery);
 					$num_ordenac = $qrPergunta['NUM_ORDENAC'] + 1;
-					
+
 					$sql = "INSERT INTO PERGUNTAS_ADORAI (
 						COD_EMPRESA,
 						COD_PROPRIEDADE,
@@ -108,29 +154,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 						NOW()
 						)
 						";
-			// fnEscreve($sql);
+					// fnEscreve($sql);
 
-			$arrayProc = mysqli_query(conntemp($cod_empresa,""), $sql);
-			
-			// if (!$arrayProc) {
+					$arrayProc = mysqli_query(conntemp($cod_empresa, ""), $sql);
 
-			// 	$cod_erro = Log_error_comand($adm,conntemp($cod_empresa,""), $cod_empresa, $actual_link, $MODULO, $COD_MODULO, $sql,$nom_usuario);
-			// }
+					// if (!$arrayProc) {
 
-// COD_PERGUNTA INT PRIMARY KEY AUTO_INCREMENT,
-// COD_EMPRESA INT NOT NULL DEFAULT '0',
-// COD_PROPRIEDADE INT NOT NULL DEFAULT '0',
-// COD_ACOMODACAO INT NOT NULL DEFAULT '0',
-// DES_PERGUNTA VARCHAR(500),
-// DES_RESPOSTA TEXT,
-// NUM_ORDENAC INT NOT NULL DEFAULT '0',
-// LOG_ATIVO CHAR(1) NOT NULL DEFAULT 'S',
-// COD_USUCADA INT,
-// DAT_CADASTR TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-// COD_ALTERAC INT,
-// DAT_ALTERAC DATETIME,
-// COD_EXCLUSA INT,
-// DAT_EXCLUSA DATETIME
+					// 	$cod_erro = Log_error_comand($adm,conntemp($cod_empresa,""), $cod_empresa, $actual_link, $MODULO, $COD_MODULO, $sql,$nom_usuario);
+					// }
+
+					// COD_PERGUNTA INT PRIMARY KEY AUTO_INCREMENT,
+					// COD_EMPRESA INT NOT NULL DEFAULT '0',
+					// COD_PROPRIEDADE INT NOT NULL DEFAULT '0',
+					// COD_ACOMODACAO INT NOT NULL DEFAULT '0',
+					// DES_PERGUNTA VARCHAR(500),
+					// DES_RESPOSTA TEXT,
+					// NUM_ORDENAC INT NOT NULL DEFAULT '0',
+					// LOG_ATIVO CHAR(1) NOT NULL DEFAULT 'S',
+					// COD_USUCADA INT,
+					// DAT_CADASTR TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+					// COD_ALTERAC INT,
+					// DAT_ALTERAC DATETIME,
+					// COD_EXCLUSA INT,
+					// DAT_EXCLUSA DATETIME
 
 					if ($cod_erro == 0 || $cod_erro ==  "") {
 						$msgRetorno = "Registro gravado com <strong>sucesso!</strong>";
@@ -155,8 +201,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 						";
 					// fnEscreve($sql);
 
-					$alteraProc = mysqli_query(conntemp($cod_empresa,""), $sql);
-			
+					$alteraProc = mysqli_query(conntemp($cod_empresa, ""), $sql);
+
 					if ($cod_erro == 0 || $cod_erro ==  "") {
 						$msgRetorno = "Registro gravado com <strong>sucesso!</strong>";
 					} else {
@@ -168,15 +214,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 						COD_EXCLUSA = $cod_usucada,
 						DAT_EXCLUSA = NOW()
 					 WHERE = COD_EMPRESA = $cod_empresa AND COD_PERGUNTA = $cod_pergunta";
-					
-					$ExcluiProc = mysqli_query(conntemp($cod_empresa,""), $sql);
-					
+
+					$ExcluiProc = mysqli_query(conntemp($cod_empresa, ""), $sql);
+
 					if ($cod_erro == 0 || $cod_erro ==  "") {
 						$msgRetorno = "Registro gravado com <strong>sucesso!</strong>";
 					} else {
 						$msgRetorno = "Não foi possível excluir o registro : $cod_erro";
 					}
-					break;					
+					break;
 			}
 			if ($cod_erro == 0 || $cod_erro == "") {
 				$msgTipo = 'alert-success';
@@ -188,9 +234,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 //busca dados da url	
-if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
+if (is_numeric(fnLimpacampo(fnDecode(@$_GET['id'])))) {
 	//busca dados da empresa
-	$cod_empresa = fnDecode($_GET['id']);
+	$cod_empresa = fnDecode(@$_GET['id']);
 	$sql = "SELECT COD_EMPRESA, NOM_FANTASI FROM empresas where COD_EMPRESA = '" . $cod_empresa . "' ";
 	//fnEscreve($sql);
 	$arrayQuery = mysqli_query($adm, $sql);
@@ -275,17 +321,17 @@ if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
 				<?php } ?>
 
 				<?php
-	
+
 				//faq - isolado adorai
-				if (fndecode($_GET['mod']) == 2028){
+				if (fndecode(@$_GET['mod']) == 2028) {
 					$abaAdorai = 1833;
 					include "abasAdorai.php";
-					
+
 					$abaManutencaoAdorai = 2028;
 					echo ('<div class="push20"></div>');
 					include "abasManutencaoAdorai.php";
 				}
-				
+
 				?>
 
 				<div class="push30"></div>
@@ -306,16 +352,16 @@ if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
 								<div class="col-xs-3">
 									<div class="form-group">
 										<label for="inputName" class="control-label ">Propriedades</label>
-										<select data-placeholder="Selecione os hotéis" name="COD_PROPRIEDADE" id="COD_PROPRIEDADE" class="chosen-select-deselect" >
+										<select data-placeholder="Selecione os hotéis" name="COD_PROPRIEDADE" id="COD_PROPRIEDADE" class="chosen-select-deselect">
 											<option value="9999">Todas</option>
 											<?php
 											$sqlHotel = "SELECT COD_EXTERNO, NOM_FANTASI FROM UNIDADEVENDA WHERE COD_EMPRESA = $cod_empresa AND LOG_ESTATUS = 'S'";
-											$arrayHotel = mysqli_query(connTemp($cod_empresa,''), $sqlHotel);
+											$arrayHotel = mysqli_query(connTemp($cod_empresa, ''), $sqlHotel);
 
 											while ($qrHotel = mysqli_fetch_assoc($arrayHotel)) {
-												?>
-												<option value="<?=$qrHotel[COD_EXTERNO]?>"><?=$qrHotel[NOM_FANTASI]?></option>
-												<?php 
+											?>
+												<option value="<?= $qrHotel['COD_EXTERNO'] ?>"><?= $qrHotel['NOM_FANTASI'] ?></option>
+											<?php
 											}
 											?>
 										</select>
@@ -353,9 +399,9 @@ if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
 										<span class="input-group-btn">
 											<a type="button" name="btnBusca" id="btnBusca" style="height:35px;" class="btn btn-primary upload" idinput="DES_IMAGEM" extensao="img"><i class="fal fa-cloud-upload" aria-hidden="true"></i></a>
 										</span>
-										<input type="text" name="IMAGEM" id="IMAGEM" class="form-control input-sm" style="border-radius: 0 3px 3px  0;" maxlength="100" value="" >
-										<input type="hidden" name="DES_IMAGEM" id="DES_IMAGEM" class="form-control input-sm" maxlength="100" value="" >
-									</div>																
+										<input type="text" name="IMAGEM" id="IMAGEM" class="form-control input-sm" style="border-radius: 0 3px 3px  0;" maxlength="100" value="">
+										<input type="hidden" name="DES_IMAGEM" id="DES_IMAGEM" class="form-control input-sm" maxlength="100" value="">
+									</div>
 									<span class="help-block">(.png 300px X 80px)</span>
 								</div>
 							</div>
@@ -435,7 +481,7 @@ if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
 										INNER JOIN UNIDADEVENDA AS UNIV ON UNIV.COD_EXTERNO = PA.COD_PROPRIEDADE 
 										WHERE PA.COD_EMPRESA = $cod_empresa AND PA.COD_EXCLUSA IS NULL order by PA.NUM_ORDENAC
 										";
-										$arrayQuery = mysqli_query(conntemp($cod_empresa,""), $sql);
+										$arrayQuery = mysqli_query(conntemp($cod_empresa, ""), $sql);
 
 										$count = 0;
 										while ($qrBuscaFAQ = mysqli_fetch_assoc($arrayQuery)) {
@@ -462,7 +508,7 @@ if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
 										}
 
 										?>
-	
+
 									</tbody>
 								</table>
 
@@ -494,95 +540,93 @@ if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
 <script type="text/javascript">
 	$(function() {
 
-$(".table-sortable tbody").sortable();
+		$(".table-sortable tbody").sortable();
 
-$('.table-sortable tbody').sortable({
-	handle: 'span'
-});
-
-$(".table-sortable tbody").sortable({
-
-	stop: function(event, ui) {	
-
-		var Ids = "";
-		$('.table-sortable  tr').each(function(index) {
-			if (index != 0) {
-				console.log(index);
-				// if (index !== undefined){
-					Ids = Ids + $(this).children().find('span.fa-equals').attr('data-id') + ",";
-				// }
-			}
+		$('.table-sortable tbody').sortable({
+			handle: 'span'
 		});
 
-		//update ordenação
-		//console.log(Ids.substring(0,(Ids.length-1)));
+		$(".table-sortable tbody").sortable({
 
-		var arrayOrdem = Ids.substring(0, (Ids.length - 1));
-		//alert(arrayOrdem);
-		execOrdenacao(arrayOrdem, 13, '<?= $cod_empresa ?>');
+			stop: function(event, ui) {
 
-		function execOrdenacao(p1, p2, p3) {
-			//alert(p2);
-			$.ajax({
-				type: "GET",
-				url: "ajxOrdenacaoEmp.php",
-				data: {
-					ajx1: p1,
-					ajx2: p2,
-					ajx3: p3
-				},
-				beforeSend: function() {
-					//$('#divId_sub').html('<div class="loading" style="width: 100%;"></div>');
-				},
-				success: function(data) {
-					// $("#divId_sub").html(data); 
-				},
-				error: function() {
-					$('#divId_sub').html('<p class="error" style="margin-top: 10px;"><strong>Oops!</strong> Falha no processamento...</p>');
+				var Ids = "";
+				$('.table-sortable  tr').each(function(index) {
+					if (index != 0) {
+						console.log(index);
+						// if (index !== undefined){
+						Ids = Ids + $(this).children().find('span.fa-equals').attr('data-id') + ",";
+						// }
+					}
+				});
+
+				//update ordenação
+				//console.log(Ids.substring(0,(Ids.length-1)));
+
+				var arrayOrdem = Ids.substring(0, (Ids.length - 1));
+				//alert(arrayOrdem);
+				execOrdenacao(arrayOrdem, 13, '<?= $cod_empresa ?>');
+
+				function execOrdenacao(p1, p2, p3) {
+					//alert(p2);
+					$.ajax({
+						type: "GET",
+						url: "ajxOrdenacaoEmp.php",
+						data: {
+							ajx1: p1,
+							ajx2: p2,
+							ajx3: p3
+						},
+						beforeSend: function() {
+							//$('#divId_sub').html('<div class="loading" style="width: 100%;"></div>');
+						},
+						success: function(data) {
+							// $("#divId_sub").html(data); 
+						},
+						error: function() {
+							$('#divId_sub').html('<p class="error" style="margin-top: 10px;"><strong>Oops!</strong> Falha no processamento...</p>');
+						}
+					});
 				}
-			});
-		}
 
-	}
+			}
 
-});
+		});
 
-	$(".table-sortable tbody").disableSelection();
+		$(".table-sortable tbody").disableSelection();
 
-	//arrastar 
-	$('.grabbable').on('change', function(e) {
-		//console.log(e.icon);
-		$("#COD_PERGUNTA").val(e);
-		console.log( $("#COD_PERGUNTA").val(e));
+		//arrastar 
+		$('.grabbable').on('change', function(e) {
+			//console.log(e.icon);
+			$("#COD_PERGUNTA").val(e);
+			console.log($("#COD_PERGUNTA").val(e));
+		});
+
+		$(".grabbable").click(function() {
+			$(this).parent().addClass('selected').siblings().removeClass('selected');
+		});
+
 	});
 
-	$(".grabbable").click(function() {
-		$(this).parent().addClass('selected').siblings().removeClass('selected');
+
+
+	$(document).ready(function() {
+
+		//arrastar 
+		$('.grabbable').on('change', function(e) {
+			//console.log(e.icon);
+			$("#COD_PERGUNTA").val(e.n);
+		});
+
+		$(".grabbable").click(function() {
+			$(this).parent().addClass('selected').siblings().removeClass('selected');
+
+		});
+
 	});
-
-});
-
-
-	
-	$(document).ready( function() {
-			
-			//arrastar 
-			$('.grabbable').on('change', function(e) { 
-				//console.log(e.icon);
-				$("#COD_PERGUNTA").val(e.n);		
-			});	
-
-			$(".grabbable").click(function() {
-				$(this).parent().addClass('selected').siblings().removeClass('selected');
-
-			});
-			
-        });
-
 </script>
 
 <script>
-	
 	$("#COD_PROPRIEDADE").change(function() {
 		var codBusca = $("#COD_PROPRIEDADE").val();
 		var codBusca3 = $("#COD_EMPRESA").val();
@@ -603,15 +647,14 @@ $(".table-sortable tbody").sortable({
 		$("#formulario #hHabilitado").val('S');
 	}
 
-	function buscaSubCat(codprop, idEmp) 
-	{
+	function buscaSubCat(codprop, idEmp) {
 		$.ajax({
 			type: "GET",
 			url: "ajxAcomodacoesSubCat.do?opcao=SubBusca",
 			data: {
 				COD_PROPRIEDADE: codprop,
 				COD_EMPRESA: idEmp
-				
+
 			},
 
 			beforeSend: function() {
@@ -627,93 +670,93 @@ $(".table-sortable tbody").sortable({
 		});
 	}
 	/*****************************
-	* ESCRIPT PARA UPLOAD IMAGEM 
-	******************************/
+	 * ESCRIPT PARA UPLOAD IMAGEM 
+	 ******************************/
 	$('.upload').on('click', function(e) {
-        var idField = 'arqUpload_' + $(this).attr('idinput');
-        var typeFile = $(this).attr('extensao');
+		var idField = 'arqUpload_' + $(this).attr('idinput');
+		var typeFile = $(this).attr('extensao');
 
-        $.dialog({
-            title: 'Arquivo',
-            content: '' +
-            '<form method = "POST" enctype = "multipart/form-data">' +
-            '<input id="' + idField + '" type="file" name="image" style="margin-bottom: 20px;" />' +
-			'<div class="progress" style="display: none">' +
-            	'<div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width:0%;">' +
-           		'   <span style="position: absolute; display: block; width: 100%; color:#2c3e50;">12</span></div>' +
-			'</div>' +
-            	'<a type="button" id="btnUploadFile" class="btn btn-primary btn-sm" style="font-weight: bold" onClick="uploadFile(\'' + idField + '\', \'' + typeFile + '\')">UPLOAD</a>' +
-            '</form>'
-        });
-    });
+		$.dialog({
+			title: 'Arquivo',
+			content: '' +
+				'<form method = "POST" enctype = "multipart/form-data">' +
+				'<input id="' + idField + '" type="file" name="image" style="margin-bottom: 20px;" />' +
+				'<div class="progress" style="display: none">' +
+				'<div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width:0%;">' +
+				'   <span style="position: absolute; display: block; width: 100%; color:#2c3e50;">12</span></div>' +
+				'</div>' +
+				'<a type="button" id="btnUploadFile" class="btn btn-primary btn-sm" style="font-weight: bold" onClick="uploadFile(\'' + idField + '\', \'' + typeFile + '\')">UPLOAD</a>' +
+				'</form>'
+		});
+	});
 
 	function uploadFile(idField, typeFile) {
 
-        var nomeArquivo = $('#' + idField)[0].files[0]['name'];
+		var nomeArquivo = $('#' + idField)[0].files[0]['name'];
 
-        if(nomeArquivo.indexOf(' ') > 0){
-            $.alert({
-                title: "Erro ao efetuar o upload",
-                content: "O nome do arquivo não pode conter espaços, renomeie o arquivo e faça o upload novamente",
-                type: 'red'
-            });
-        }else{
-            
-            var formData = new FormData();
+		if (nomeArquivo.indexOf(' ') > 0) {
+			$.alert({
+				title: "Erro ao efetuar o upload",
+				content: "O nome do arquivo não pode conter espaços, renomeie o arquivo e faça o upload novamente",
+				type: 'red'
+			});
+		} else {
 
-            formData.append('arquivo', $('#' + idField)[0].files[0]);
-            formData.append('diretorio', '../media/clientes');
-            formData.append('diretorioAdicional', 'faqPropriedades');
-            formData.append('id', <?php echo $cod_empresa ?>);
-            formData.append('typeFile', typeFile);
+			var formData = new FormData();
 
-            $('.progress').show();
-            $.ajax({
-                xhr: function() {
-                    var xhr = new window.XMLHttpRequest();
-                    $('#btnUploadFile').addClass('disabled');
-                    xhr.upload.addEventListener("progress", function(evt) {
-                        if (evt.lengthComputable) {
-                            var percentComplete = evt.loaded / evt.total;
-                            percentComplete = parseInt(percentComplete * 100);
-                            if (percentComplete !== 100) {
-                                $('.progress-bar').css('width', percentComplete + "%");
-                                $('.progress-bar > span').html(percentComplete + "%");
-                            }
-                        }
-                    }, false);
-                    return xhr;
-                },
-                url: '../uploads/uploaddoc.php',
-                type: 'POST',
-                data: formData,
-                processData: false, // tell jQuery not to process the data
-                contentType: false, // tell jQuery not to set contentType
-                success: function(data) {
+			formData.append('arquivo', $('#' + idField)[0].files[0]);
+			formData.append('diretorio', '../media/clientes');
+			formData.append('diretorioAdicional', 'faqPropriedades');
+			formData.append('id', <?php echo $cod_empresa ?>);
+			formData.append('typeFile', typeFile);
 
-                	var data = JSON.parse(data);
+			$('.progress').show();
+			$.ajax({
+				xhr: function() {
+					var xhr = new window.XMLHttpRequest();
+					$('#btnUploadFile').addClass('disabled');
+					xhr.upload.addEventListener("progress", function(evt) {
+						if (evt.lengthComputable) {
+							var percentComplete = evt.loaded / evt.total;
+							percentComplete = parseInt(percentComplete * 100);
+							if (percentComplete !== 100) {
+								$('.progress-bar').css('width', percentComplete + "%");
+								$('.progress-bar > span').html(percentComplete + "%");
+							}
+						}
+					}, false);
+					return xhr;
+				},
+				url: '../uploads/uploaddoc.php',
+				type: 'POST',
+				data: formData,
+				processData: false, // tell jQuery not to process the data
+				contentType: false, // tell jQuery not to set contentType
+				success: function(data) {
 
-                    $('.jconfirm-open').fadeOut(300, function() {
-                        $(this).remove();
-                    });
-                    if (data.success) {
-                    	$('#IMAGEM').val(nomeArquivo);
+					var data = JSON.parse(data);
+
+					$('.jconfirm-open').fadeOut(300, function() {
+						$(this).remove();
+					});
+					if (data.success) {
+						$('#IMAGEM').val(nomeArquivo);
 						$('#DES_IMAGEM').val(data.nome_arquivo);
-                        $.alert({
-                            title: "Mensagem",
-                            content: "Upload feito com sucesso",
-                            type: 'green'
-                        });
+						$.alert({
+							title: "Mensagem",
+							content: "Upload feito com sucesso",
+							type: 'green'
+						});
 
-                    } else {
-                        $.alert({
-                            title: "Erro ao efetuar o upload",
-                            content: data,
-                            type: 'red'
-                        });
-                    }
-                }
-            });
-        }
-    }
+					} else {
+						$.alert({
+							title: "Erro ao efetuar o upload",
+							content: data,
+							type: 'red'
+						});
+					}
+				}
+			});
+		}
+	}
 </script>
