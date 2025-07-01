@@ -1,4 +1,38 @@
 <?php
+if ($_SESSION['SYS_COD_USUARIO'] == 127937) {
+	echo fnDebug('true');
+	ini_set('display_errors', 1);
+	ini_set('display_startup_errors', 1);
+	error_reporting(E_ALL);
+}
+$opcao = "";
+$hashLocal = "";
+$msgRetorno = "";
+$msgTipo = "";
+$cod_canal = "";
+$des_canal = "";
+$num_canal = "";
+$key_canal = "";
+$log_pref = "";
+$nom_usuario = "";
+$cod_usucada = "";
+$actual_link = "";
+$MODULO = "";
+$COD_MODULO = "";
+$hHabilitado = "";
+$hashForm = "";
+$arrayProc = [];
+$cod_erro = "";
+$arrayQuery = [];
+$qrBuscaEmpresa = "";
+$nom_empresa = "";
+$formBack = "";
+$abaAdorai = "";
+$abaManutencaoAdorai = "";
+$abaUsuario = "";
+$qrBuscaModulos = "";
+$pref = "";
+
 
 //echo "<h5>_".$opcao."</h5>";
 
@@ -6,11 +40,11 @@ $hashLocal = mt_rand();
 
 $cod_empresa = 274;
 
-$conn = conntemp($cod_empresa,"");
+$conn = conntemp($cod_empresa, "");
 $adm = $connAdm->connAdm();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	$request = md5(implode($_POST));
+	$request = md5(serialize($_POST));
 
 	if (isset($_SESSION['last_request']) && $_SESSION['last_request'] == $request) {
 		$msgRetorno = 'Essa página já foi utilizada';
@@ -18,28 +52,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	} else {
 		$_SESSION['last_request']  = $request;
 
-		$cod_canal = fnLimpaCampoZero($_REQUEST['COD_CANAL']);
-		$cod_empresa = fnLimpaCampo($_REQUEST['COD_EMPRESA']);
-		$des_canal = fnLimpaCampo($_REQUEST['DES_CANAL']);
-		$num_canal = fnLimpaCampo($_REQUEST['NUM_CANAL']);
-		$key_canal = fnLimpaCampo($_REQUEST['KEY_CANAL']);
-		if (empty($_REQUEST['LOG_PREF'])) {
+		$cod_canal = fnLimpaCampoZero(@$_REQUEST['COD_CANAL']);
+		$cod_empresa = fnLimpaCampo(@$_REQUEST['COD_EMPRESA']);
+		$des_canal = fnLimpaCampo(@$_REQUEST['DES_CANAL']);
+		$num_canal = fnLimpaCampo(@$_REQUEST['NUM_CANAL']);
+		$key_canal = fnLimpaCampo(@$_REQUEST['KEY_CANAL']);
+		if (empty(@$_REQUEST['LOG_PREF'])) {
 			$log_pref = 'N';
 		} else {
-			$log_pref = $_REQUEST['LOG_PREF'];
+			$log_pref = @$_REQUEST['LOG_PREF'];
 		}
 
 		$nom_usuario = $_SESSION["SYS_NOM_USUARIO"];
 		$cod_usucada = $_SESSION["SYS_COD_USUARIO"];
 		$actual_link = "$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-		$MODULO = $_GET['mod'];
-		$COD_MODULO = fndecode($_GET['mod']);
+		$MODULO = @$_GET['mod'];
+		$COD_MODULO = fndecode(@$_GET['mod']);
 
-		$opcao = $_REQUEST['opcao'];
-		$hHabilitado = $_REQUEST['hHabilitado'];
-		$hashForm = $_REQUEST['hashForm'];
+		$opcao = @$_REQUEST['opcao'];
+		$hHabilitado = @$_REQUEST['hHabilitado'];
+		$hashForm = @$_REQUEST['hashForm'];
 
-		if ($opcao != '') {
+		if ($opcao != '' && $opcao != 0) {
 
 			// CREATE TABLE CANAL_ADORAI(
 			// COD_CANAL INT PRIMARY KEY AUTO_INCREMENT,
@@ -73,11 +107,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 					//echo $sql;
 
-					$arrayProc = mysqli_query(conntemp($cod_empresa,""), $sql);
+					$arrayProc = mysqli_query(conntemp($cod_empresa, ""), $sql);
 
 					if (!$arrayProc) {
 
-						$cod_erro = Log_error_comand($adm,conntemp($cod_empresa,""), $cod_empresa, $actual_link, $MODULO, $COD_MODULO, $sql,$nom_usuario);
+						$cod_erro = Log_error_comand($adm, conntemp($cod_empresa, ""), $cod_empresa, $actual_link, $MODULO, $COD_MODULO, $sql, $nom_usuario);
 					}
 
 					if ($cod_erro == 0 || $cod_erro ==  "") {
@@ -98,11 +132,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 					// fnEscreve($sql);
 
-					$arrayProc = mysqli_query(conntemp($cod_empresa,""), $sql);
+					$arrayProc = mysqli_query(conntemp($cod_empresa, ""), $sql);
 
 					if (!$arrayProc) {
 
-						$cod_erro = Log_error_comand($adm,conntemp($cod_empresa,""), $cod_empresa, $actual_link, $MODULO, $COD_MODULO, $sql,$nom_usuario);
+						$cod_erro = Log_error_comand($adm, conntemp($cod_empresa, ""), $cod_empresa, $actual_link, $MODULO, $COD_MODULO, $sql, $nom_usuario);
 					}
 
 					if ($cod_erro == 0 || $cod_erro ==  "") {
@@ -119,11 +153,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 					//echo $sql;
 
-					$arrayProc = mysqli_query(conntemp($cod_empresa,""), $sql);
+					$arrayProc = mysqli_query(conntemp($cod_empresa, ""), $sql);
 
 					if (!$arrayProc) {
 
-						$cod_erro = Log_error_comand($adm,conntemp($cod_empresa,""), $cod_empresa, $actual_link, $MODULO, $COD_MODULO, $sql,$nom_usuario);
+						$cod_erro = Log_error_comand($adm, conntemp($cod_empresa, ""), $cod_empresa, $actual_link, $MODULO, $COD_MODULO, $sql, $nom_usuario);
 					}
 
 					if ($cod_erro == 0 || $cod_erro ==  "") {
@@ -131,7 +165,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 					} else {
 						$msgRetorno = "Não foi possível excluir o registro : $cod_erro";
 					}
-					break;					
+					break;
 			}
 			if ($cod_erro == 0 || $cod_erro == "") {
 				$msgTipo = 'alert-success';
@@ -144,9 +178,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
 //busca dados da url	
-if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
+if (is_numeric(fnLimpacampo(fnDecode(@$_GET['id'])))) {
 	//busca dados da empresa
-	$cod_empresa = fnDecode($_GET['id']);
+	$cod_empresa = fnDecode(@$_GET['id']);
 	$sql = "SELECT COD_EMPRESA, NOM_FANTASI FROM empresas where COD_EMPRESA = '" . $cod_empresa . "' ";
 	//fnEscreve($sql);
 	$arrayQuery = mysqli_query($adm, $sql);
@@ -193,17 +227,17 @@ if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
 					</div>
 				<?php } ?>
 
-				<?php 
-					$abaAdorai = 1833;
-					include "abasAdorai.php";
+				<?php
+				$abaAdorai = 1833;
+				include "abasAdorai.php";
 
-					$abaManutencaoAdorai = fnDecode($_GET['mod']);
-					//echo $abaUsuario;
+				$abaManutencaoAdorai = fnDecode(@$_GET['mod']);
+				//echo $abaUsuario;
 
-					//se não for sistema de campanhas
+				//se não for sistema de campanhas
 
-					echo ('<div class="push20"></div>');
-					include "abasManutencaoAdorai.php";
+				echo ('<div class="push20"></div>');
+				include "abasManutencaoAdorai.php";
 				?>
 
 				<div class="push30"></div>
@@ -306,7 +340,7 @@ if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
 										<?php
 
 										$sql = "SELECT * FROM CANAL_ADORAI WHERE COD_EMPRESA = $cod_empresa";
-										$arrayQuery = mysqli_query(conntemp($cod_empresa,""), $sql);
+										$arrayQuery = mysqli_query(conntemp($cod_empresa, ""), $sql);
 
 										$count = 0;
 										while ($qrBuscaModulos = mysqli_fetch_assoc($arrayQuery)) {
@@ -360,20 +394,19 @@ if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
 <div class="push20"></div>
 
 <script type="text/javascript">
+	$(function() {
 
-	$(function(){
-		
-		var SPMaskBehavior = function (val) {
-			return val.replace(/\D/g, '').length === 11 ? '(00) 00000-0000' : '(00) 0000-00009';
-		},
-		spOptions = {
-			onKeyPress: function(val, e, field, options) {
-				field.mask(SPMaskBehavior.apply({}, arguments), options);
-			}
-		};			
-		
-		$('.sp_celphones').mask(SPMaskBehavior, spOptions);	
-		
+		var SPMaskBehavior = function(val) {
+				return val.replace(/\D/g, '').length === 11 ? '(00) 00000-0000' : '(00) 0000-00009';
+			},
+			spOptions = {
+				onKeyPress: function(val, e, field, options) {
+					field.mask(SPMaskBehavior.apply({}, arguments), options);
+				}
+			};
+
+		$('.sp_celphones').mask(SPMaskBehavior, spOptions);
+
 	});
 
 	function retornaForm(index) {
@@ -391,5 +424,4 @@ if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
 		$("#formulario #hHabilitado").val('S');
 
 	}
-
 </script>
