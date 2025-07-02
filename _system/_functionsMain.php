@@ -2441,7 +2441,10 @@ function fnPrevisaoSAC($esteira = false, $qrUser = array(), $qrSac = array())
         return "";
     }
 
-    list($data, $hora) = explode(" ", $qrSac["INICIO"]);
+    $partes = explode(" ", $qrSac["INICIO"]);
+    $data = $partes[0] ?? "";
+    $hora = $partes[1] ?? "00:00:00";
+
     if ($data == "1969-12-31" || $data == "0000-00-00" || $data == "") {
         return "";
     }
