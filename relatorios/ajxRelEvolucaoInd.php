@@ -142,7 +142,7 @@ switch ($opcao) {
             $array = array_map("utf8_decode", $qrMes);
             fputcsv($arquivo, $array, ';', '"', '"');
         }
-
+        fnEscreveArray($mesesIntervalo);
         fnEscreveArray($qrMes);
 
         fclose($arquivo);
