@@ -482,37 +482,14 @@ if (strlen($dat_fim) == 0 || $dat_fim == "1969-12-31") {
                                         <td class='text-right bold'></td>
                                       </tr>                      
                                         ";
-                            if (is_numeric($qrCampanhasEmail['QTD_LISTA'])) {
-                              $tot_qtd += $qrCampanhasEmail['QTD_LISTA'];
-                            }
-                            if (is_numeric($qrCampanhasEmail['QTD_SUCESSO'])) {
-                              $tot_sucesso += $qrCampanhasEmail['QTD_SUCESSO'];
-                            }
-                            if (is_numeric($qrCampanhasEmail['QTD_FALHA'])) {
-                              $tot_falha += $qrCampanhasEmail['QTD_FALHA'];
-                            }
-                            if (is_numeric($qrCampanhasEmail['QTD_CLIQUES'])) {
-                              $tot_cliques += $qrCampanhasEmail['QTD_CLIQUES'];
-                            }
-                            if (is_numeric($qrCampanhasEmail['QTD_OPTOUT'])) {
-                              $tot_optout += $qrCampanhasEmail['QTD_OPTOUT'];
-                            }
-                            if (is_numeric($qrCampanhasEmail['QTD_SOFT'])) {
-                              $tot_soft += $qrCampanhasEmail['QTD_SOFT'];
-                            }
-                            if (is_numeric($qrCampanhasEmail['QTD_HARD'])) {
-                              $tot_hard += $qrCampanhasEmail['QTD_HARD'];
-                            }
-                            if (is_numeric($qrCampanhasEmail['QTD_SPAM'])) {
-                              $tot_spam += $qrCampanhasEmail['QTD_SPAM'];
-                            }
-                            // $tot_sucesso += $qrCampanhasEmail['QTD_SUCESSO'];
-                            // $tot_falha += $qrCampanhasEmail['QTD_LIDOS'];
-                            // $tot_cliques += $qrCampanhasEmail['QTD_CLIQUES'];
-                            // $tot_optout += $qrCampanhasEmail['QTD_OPTOUT'];
-                            // $tot_soft += $qrCampanhasEmail['QTD_SOFT'];
-                            // $tot_hard += $qrCampanhasEmail['QTD_HARD'];
-                            // $tot_spam += $qrCampanhasEmail['QTD_SPAM'];
+
+                            $tot_sucesso += $qrCampanhasEmail['QTD_SUCESSO'];
+                            $tot_falha += $qrCampanhasEmail['QTD_LIDOS'];
+                            $tot_cliques += $qrCampanhasEmail['QTD_CLIQUES'];
+                            $tot_optout += $qrCampanhasEmail['QTD_OPTOUT'];
+                            $tot_soft += $qrCampanhasEmail['QTD_SOFT'];
+                            $tot_hard += $qrCampanhasEmail['QTD_HARD'];
+                            $tot_spam += $qrCampanhasEmail['QTD_SPAM'];
                           }
                         }
 
