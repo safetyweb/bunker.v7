@@ -449,10 +449,11 @@ while ($qrMes = mysqli_fetch_assoc($arrQuery)) {
                                         data: $('#formulario').serialize(),
                                         method: 'POST'
                                     }).done(function(response) {
+                                        console.log(response);
                                         self.setContentAppend('<div>Exportação realizada com sucesso.</div>');
                                         var fileName = '<?php echo $cod_empresa; ?>_' + nome + '.csv';
                                         SaveToDisk('media/excel/' + fileName, fileName);
-                                        console.log(response);
+
                                     }).fail(function() {
                                         self.setContentAppend('<div>Erro ao realizar o procedimento!</div>');
                                     });
