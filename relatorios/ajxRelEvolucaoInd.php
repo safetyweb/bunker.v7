@@ -10,9 +10,7 @@ if ($_SESSION['SYS_COD_EMPRESA'] == 2) {
 }
 
 setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
-date_default_timezone_set("america/sao_paulo");
-
-//echo fnDebug('true');
+date_default_timezone_set("America/Sao_Paulo");
 
 $opcao = $_GET['opcao'];
 $itens_por_pagina = 0;
@@ -64,7 +62,6 @@ if (isset($_POST['COD_CONTROLE'])) {
 $dat_ini = date('Y-m-d', strtotime($dat_ini));
 $dat_fim = date('Y-m-t', strtotime($dat_fim));
 
-
 switch ($opcao) {
     case 'exportar':
 
@@ -91,14 +88,14 @@ switch ($opcao) {
         $meses = array();
 
         foreach ($mesesIntervalo as $mes) {
-
             $dataLoop = explode("-", $mes);
-
             $anoLoop = $dataLoop[0];
             $mesLoop = $dataLoop[1];
             $concatData = $anoLoop . "-" . $mesLoop;
 
-            $indice = substr(ucfirst(strftime("%B", strtotime($mes . '-01'))), 0, 3) . "/" . date("Y", strtotime($mes . '-01'));
+            // ✅ Substituição do strftime por DateTime::format('F')
+            $dataObj = new DateTime($mes . '-01');
+            $indice = substr(ucfirst($dataObj->format("F")), 0, 3) . "/" . $dataObj->format("Y");
 
             $selectValues .= "SUM(PCT_DIARIO$anoLoop$mesLoop) '" . $indice . "',";
             $caseWhen .= "CASE WHEN DATE_FORMAT(DAT_MOVIMENTO, \"%Y-%m\") = '" . $mes . "' THEN ROUND(((SUM(QTD_TOTFIDELIZ)/ SUM(QTD_TOTVENDA))*100),2) ELSE 0 END AS PCT_DIARIO$anoLoop$mesLoop,";
@@ -108,47 +105,44 @@ switch ($opcao) {
         $selectValues = rtrim($selectValues, ",");
         $caseWhen = rtrim($caseWhen, ",");
 
-
-        $sql = "SELECT  COD_UNIVEND, 
-                            NOM_FANTASI,
-
-                            $selectValues
-            FROM(
-            SELECT vendas_diarias.COD_UNIVEND, uni.NOM_FANTASI, 
-            $caseWhen
-            FROM vendas_diarias
-            INNER JOIN unidadevenda uni ON uni.COD_UNIVEND=vendas_diarias.COD_UNIVEND
-            WHERE DAT_MOVIMENTO BETWEEN '$dat_ini' AND '$dat_fim' AND uni.COD_UNIVEND IN($lojasSelecionadas)
-            GROUP BY COD_UNIVEND,DATE_FORMAT(DAT_MOVIMENTO, \"%Y-%m\"))tmpvendasmovi
-            GROUP BY COD_UNIVEND";
-
-        // fnEscreve($sql);
-        // exit();
+        $sql = "SELECT COD_UNIVEND, 
+                       NOM_FANTASI,
+                       $selectValues
+                FROM(
+                    SELECT vendas_diarias.COD_UNIVEND, uni.NOM_FANTASI, 
+                           $caseWhen
+                    FROM vendas_diarias
+                    INNER JOIN unidadevenda uni ON uni.COD_UNIVEND=vendas_diarias.COD_UNIVEND
+                    WHERE DAT_MOVIMENTO BETWEEN '$dat_ini' AND '$dat_fim' 
+                    AND uni.COD_UNIVEND IN($lojasSelecionadas)
+                    GROUP BY COD_UNIVEND, DATE_FORMAT(DAT_MOVIMENTO, \"%Y-%m\")
+                ) tmpvendasmovi
+                GROUP BY COD_UNIVEND";
 
         $arrQuery = mysqli_query(connTemp($cod_empresa, ''), $sql);
 
         $arrResult = array();
 
-        $arquivo = fopen($arquivoCaminho, 'w', 0);
+        $arquivo = fopen($arquivoCaminho, 'w');
 
+        // Cabeçalho
         while ($headers = mysqli_fetch_field($arrQuery)) {
             $CABECHALHO[] = $headers->name;
         }
-        fputcsv($arquivo, $CABECHALHO, ';', '"', '\n');
+        // ✅ Corrigido: escape character padrão (aspas duplas)
+        fputcsv($arquivo, $CABECHALHO, ';', '"', '"');
 
+        // Dados
         while ($qrMes = mysqli_fetch_assoc($arrQuery)) {
-
             foreach ($mesesIntervalo as $mes) {
-
-
-                $indice = substr(ucfirst(strftime("%B", strtotime($mes . '-01'))), 0, 3) . "/" . date("Y", strtotime($mes . '-01'));
-
+                $dataObj = new DateTime($mes . '-01');
+                $indice = substr(ucfirst($dataObj->format("F")), 0, 3) . "/" . $dataObj->format("Y");
                 $qrMes[$indice] = fnValor($qrMes[$indice], 2);
             }
-
             $array = array_map("utf8_decode", $qrMes);
-            fputcsv($arquivo, $array, ';', '"', '\n');
+            fputcsv($arquivo, $array, ';', '"', '"');
         }
+
         fclose($arquivo);
         break;
 }
