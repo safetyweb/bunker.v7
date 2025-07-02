@@ -5,6 +5,7 @@
 $hashLocal = mt_rand();
 
 $cod_campaprod = 0;
+$tipoGanho = "";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$request = md5(implode($_POST));
