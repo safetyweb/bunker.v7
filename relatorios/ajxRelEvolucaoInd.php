@@ -1,6 +1,9 @@
 <?php
 
 include '../_system/_functionsMain.php';
+if (!isset($_SESSION['SYS_COD_EMPRESA'])) {
+    die('Sessão expirada ou não iniciada');
+}
 
 // if ($_SESSION['SYS_COD_EMPRESA'] == 2) {
 //     echo fnDebug('true');
