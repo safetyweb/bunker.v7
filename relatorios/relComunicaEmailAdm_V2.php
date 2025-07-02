@@ -483,14 +483,14 @@ if (strlen($dat_fim) == 0 || $dat_fim == "1969-12-31") {
                                       </tr>                      
                                         ";
 
-                            $tot_qtd += $qrCampanhasEmail['QTD_LISTA'];
-                            $tot_sucesso += $qrCampanhasEmail['QTD_SUCESSO'];
-                            $tot_falha += $qrCampanhasEmail['QTD_LIDOS'];
-                            $tot_cliques += $qrCampanhasEmail['QTD_CLIQUES'];
-                            $tot_optout += $qrCampanhasEmail['QTD_OPTOUT'];
-                            $tot_soft += $qrCampanhasEmail['QTD_SOFT'];
-                            $tot_hard += $qrCampanhasEmail['QTD_HARD'];
-                            $tot_spam += $qrCampanhasEmail['QTD_SPAM'];
+                            $tot_qtd += fnValorSql($qrCampanhasEmail['QTD_LISTA']);
+                            $tot_sucesso += fnValorSql($qrCampanhasEmail['QTD_SUCESSO']);
+                            $tot_falha += fnValorSql($qrCampanhasEmail['QTD_LIDOS']);
+                            $tot_cliques += fnValorSql($qrCampanhasEmail['QTD_CLIQUES']);
+                            $tot_optout += fnValorSql($qrCampanhasEmail['QTD_OPTOUT']);
+                            $tot_soft += fnValorSql($qrCampanhasEmail['QTD_SOFT']);
+                            $tot_hard += fnValorSql($qrCampanhasEmail['QTD_HARD']);
+                            $tot_spam += fnValorSql($qrCampanhasEmail['QTD_SPAM']);
                           }
                         }
 
