@@ -2,7 +2,10 @@
 
 include '../_system/_functionsMain.php';
 
-setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');                    
+fnEscreveArray($_REQUEST);
+exit;
+
+setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
 date_default_timezone_set("america/sao_paulo");
 
 //echo fnDebug('true');
@@ -14,8 +17,8 @@ $cod_empresa = fnDecode($_GET['id']);
 $num_cgcecpf = fnLimpaCampo(fnLimpaDoc($_POST['NUM_CGCECPF']));
 $num_cartao = fnLimpaCampo($_POST['NUM_CARTAO']);
 $casasDec = $_REQUEST['CASAS_DEC'];
-$dat_ini =$_POST['DATA_INI'];
-$dat_fim =$_POST['DATA_FIM'];
+$dat_ini = $_POST['DATA_INI'];
+$dat_fim = $_POST['DATA_FIM'];
 $lojasSelecionadas = $_POST['LOJAS'];
 $cod_controle = $_POST['COD_CONTROLE'];
 
@@ -38,10 +41,10 @@ switch ($opcao) {
         $mesesIntervalo = "";
 
         foreach ($period as $dt) {
-            $mesesIntervalo .= $dt->format("Y-m").",";
+            $mesesIntervalo .= $dt->format("Y-m") . ",";
         }
 
-        $mesesIntervalo = rtrim($mesesIntervalo,",");
+        $mesesIntervalo = rtrim($mesesIntervalo, ",");
         $mesesIntervalo = explode(",", $mesesIntervalo);
 
         $selectValues = "";
@@ -54,21 +57,20 @@ switch ($opcao) {
 
             $anoLoop = $dataLoop[0];
             $mesLoop = $dataLoop[1];
-            $concatData = $anoLoop."-".$mesLoop;
+            $concatData = $anoLoop . "-" . $mesLoop;
 
-            $indice = substr(ucfirst(strftime("%B", strtotime($mes.'-01'))),0,3)."/".date("Y", strtotime($mes.'-01'));
+            $indice = substr(ucfirst(strftime("%B", strtotime($mes . '-01'))), 0, 3) . "/" . date("Y", strtotime($mes . '-01'));
 
-            $selectValues .= "SUM(PCT_DIARIO$anoLoop$mesLoop) '".$indice."',";
-            $caseWhen .= "CASE WHEN DATE_FORMAT(DAT_MOVIMENTO, \"%Y-%m\") = '".$mes."' THEN ROUND(((SUM(QTD_TOTFIDELIZ)/ SUM(QTD_TOTVENDA))*100),2) ELSE 0 END AS PCT_DIARIO$anoLoop$mesLoop,";
+            $selectValues .= "SUM(PCT_DIARIO$anoLoop$mesLoop) '" . $indice . "',";
+            $caseWhen .= "CASE WHEN DATE_FORMAT(DAT_MOVIMENTO, \"%Y-%m\") = '" . $mes . "' THEN ROUND(((SUM(QTD_TOTFIDELIZ)/ SUM(QTD_TOTVENDA))*100),2) ELSE 0 END AS PCT_DIARIO$anoLoop$mesLoop,";
             array_push($meses, $indice);
-
         }
 
-        $selectValues = rtrim($selectValues,",");
-        $caseWhen = rtrim($caseWhen,",");
+        $selectValues = rtrim($selectValues, ",");
+        $caseWhen = rtrim($caseWhen, ",");
 
 
-            $sql = "SELECT  COD_UNIVEND, 
+        $sql = "SELECT  COD_UNIVEND, 
                             NOM_FANTASI,
 
                             $selectValues
@@ -81,36 +83,33 @@ switch ($opcao) {
             GROUP BY COD_UNIVEND,DATE_FORMAT(DAT_MOVIMENTO, \"%Y-%m\"))tmpvendasmovi
             GROUP BY COD_UNIVEND";
 
-            // fnEscreve($sql);
-            // exit();
+        // fnEscreve($sql);
+        // exit();
 
-            $arrQuery = mysqli_query(connTemp($cod_empresa,''),$sql);
+        $arrQuery = mysqli_query(connTemp($cod_empresa, ''), $sql);
 
-            $arrResult = array();
+        $arrResult = array();
 
-            $arquivo = fopen($arquivoCaminho, 'w',0);
-                        
-            while($headers=mysqli_fetch_field($arrQuery)){
-                 $CABECHALHO[]=$headers->name;
-            }
-            fputcsv ($arquivo,$CABECHALHO,';','"','\n');
-          
-            while ($qrMes=mysqli_fetch_assoc($arrQuery)){  
+        $arquivo = fopen($arquivoCaminho, 'w', 0);
 
-               foreach ($mesesIntervalo as $mes) {
-
-
-                    $indice = substr(ucfirst(strftime("%B", strtotime($mes.'-01'))),0,3)."/".date("Y", strtotime($mes.'-01'));
-
-                    $qrMes[$indice] = fnValor($qrMes[$indice],2);
-
-                }
-
-                $array = array_map("utf8_decode", $qrMes);
-                fputcsv($arquivo, $array, ';', '"', '\n');  
-            }
-            fclose($arquivo);
-        break;
-
+        while ($headers = mysqli_fetch_field($arrQuery)) {
+            $CABECHALHO[] = $headers->name;
         }
-       
+        fputcsv($arquivo, $CABECHALHO, ';', '"', '\n');
+
+        while ($qrMes = mysqli_fetch_assoc($arrQuery)) {
+
+            foreach ($mesesIntervalo as $mes) {
+
+
+                $indice = substr(ucfirst(strftime("%B", strtotime($mes . '-01'))), 0, 3) . "/" . date("Y", strtotime($mes . '-01'));
+
+                $qrMes[$indice] = fnValor($qrMes[$indice], 2);
+            }
+
+            $array = array_map("utf8_decode", $qrMes);
+            fputcsv($arquivo, $array, ';', '"', '\n');
+        }
+        fclose($arquivo);
+        break;
+}
