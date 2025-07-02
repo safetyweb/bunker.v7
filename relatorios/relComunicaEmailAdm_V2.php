@@ -124,7 +124,7 @@ if (strlen($dat_fim) == 0 || $dat_fim == "1969-12-31") {
 }
 
 //busca revendas do usuário
-include "unidadesAutorizadas.php";
+// include "unidadesAutorizadas.php";
 
 //fnEscreve($cod_empresa); 	
 //fnEscreve($cod_persona); 	
