@@ -2,8 +2,12 @@
 
 include '../_system/_functionsMain.php';
 
-fnEscreveArray($_REQUEST);
-exit;
+if ($_SESSION['SYS_COD_EMPRESA'] == 2) {
+    echo fnDebug('true');
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+}
 
 setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
 date_default_timezone_set("america/sao_paulo");
