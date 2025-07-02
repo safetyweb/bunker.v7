@@ -57,13 +57,13 @@ $qtd_sms = 0;
 $qtd_wpp = 0;
 $qtd_email = 0;
 $tot_qtd = 0;
-$tot_sucesso = "";
-$tot_falha = "";
-$tot_cliques = "";
-$tot_optout = "";
-$tot_soft = "";
-$tot_hard = "";
-$tot_spam = "";
+$tot_sucesso = 0;
+$tot_falha = 0;
+$tot_cliques = 0;
+$tot_optout = 0;
+$tot_soft = 0;
+$tot_hard = 0;
+$tot_spam = 0;
 $content = "";
 
 
