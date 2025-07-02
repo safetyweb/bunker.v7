@@ -9,6 +9,7 @@ $qtd_wpp = 0;
 $qtd_email = 0;
 $qtd_sms = 0;
 $qtd_whatsapp = 0;
+$count = 0;
 if (isset($_GET['pop'])) {
 	$popUp = fnLimpaCampo($_GET['pop']);
 } else {
