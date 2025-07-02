@@ -5,6 +5,7 @@ if ($_SESSION['SYS_COD_USUARIO'] == 127937) {
 	ini_set('display_startup_errors', 1);
 	error_reporting(E_ALL);
 }
+$cod_empresa = fnDecode(@$_GET['id']);
 $hashLocal = "";
 $msgRetorno = "";
 $msgTipo = "";
