@@ -1261,8 +1261,15 @@ $arrayControle = mysqli_query(connTemp($cod_empresa, ''), $sqlControle);
 
 $qrControle = mysqli_fetch_assoc($arrayControle);
 
-$log_separa = $qrControle['LOG_SEPARA'];
-$log_lgpd = $qrControle['LOG_LGPD'];
+$log_separa = "";
+if (isset($qrControle['LOG_SEPARA'])) {
+	$log_separa = $qrControle['LOG_SEPARA'];
+}
+
+$log_lgpd = "";
+if (isset($qrControle['LOG_LGPD'])) {
+	$log_lgpd = $qrControle['LOG_LGPD'];
+}
 
 $sqlCanal = "SELECT * FROM LOG_CANAL 
 	WHERE COD_EMPRESA = $cod_empresa 
