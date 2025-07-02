@@ -134,6 +134,7 @@ switch ($opcao) {
 
         // Dados
         while ($qrMes = mysqli_fetch_assoc($arrQuery)) {
+            fnEscreveArray($qrMes);
             foreach ($mesesIntervalo as $mes) {
                 $dataObj = new DateTime($mes . '-01');
                 $indice = substr(ucfirst($dataObj->format("F")), 0, 3) . "/" . $dataObj->format("Y");
@@ -142,8 +143,8 @@ switch ($opcao) {
             $array = array_map("utf8_decode", $qrMes);
             fputcsv($arquivo, $array, ';', '"', '"');
         }
-        fnEscreveArray($mesesIntervalo);
-        fnEscreveArray($qrMes);
+        // fnEscreveArray($mesesIntervalo);
+        // fnEscreveArray($qrMes);
 
         fclose($arquivo);
         break;
