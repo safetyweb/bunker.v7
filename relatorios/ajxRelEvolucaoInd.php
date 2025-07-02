@@ -15,16 +15,51 @@ date_default_timezone_set("america/sao_paulo");
 //echo fnDebug('true');
 
 $opcao = $_GET['opcao'];
-$itens_por_pagina = $_GET['itens_por_pagina'];
-$pagina = $_GET['idPage'];
+$itens_por_pagina = 0;
+if (isset($_GET['itens_por_pagina'])) {
+    $itens_por_pagina = $_GET['itens_por_pagina'];
+}
+
+$pagina = 0;
+if (isset($_GET['idPage'])) {
+    $pagina = $_GET['idPage'];
+}
+
 $cod_empresa = fnDecode($_GET['id']);
-$num_cgcecpf = fnLimpaCampo(fnLimpaDoc($_POST['NUM_CGCECPF']));
-$num_cartao = fnLimpaCampo($_POST['NUM_CARTAO']);
-$casasDec = $_REQUEST['CASAS_DEC'];
-$dat_ini = $_POST['DATA_INI'];
-$dat_fim = $_POST['DATA_FIM'];
-$lojasSelecionadas = $_POST['LOJAS'];
-$cod_controle = $_POST['COD_CONTROLE'];
+$num_cgcecpf = "";
+if (isset($_POST['NUM_CGCECPF'])) {
+    $num_cgcecpf = fnLimpaCampo(fnLimpaDoc($_POST['NUM_CGCECPF']));
+}
+
+$num_cartao = "";
+if (isset($_POST['NUM_CARTAO'])) {
+    $num_cartao = fnLimpaCampo($_POST['NUM_CARTAO']);
+}
+
+$casasDec = 2;
+if (isset($_REQUEST['CASAS_DEC'])) {
+    $casasDec = $_REQUEST['CASAS_DEC'];
+}
+
+$dat_ini = "";
+if (isset($_POST['DATA_INI'])) {
+    $dat_ini = $_POST['DATA_INI'];
+}
+
+$dat_fim = "";
+if (isset($_POST['DATA_FIM'])) {
+    $dat_fim = $_POST['DATA_FIM'];
+}
+
+$lojasSelecionadas = "";
+if (isset($_POST['LOJAS'])) {
+    $lojasSelecionadas = $_POST['LOJAS'];
+}
+
+$cod_controle = "";
+if (isset($_POST['COD_CONTROLE'])) {
+    $cod_controle = $_POST['COD_CONTROLE'];
+}
 
 $dat_ini = date('Y-m-d', strtotime($dat_ini));
 $dat_fim = date('Y-m-t', strtotime($dat_fim));
