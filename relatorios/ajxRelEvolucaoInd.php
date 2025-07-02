@@ -143,6 +143,8 @@ switch ($opcao) {
             fputcsv($arquivo, $array, ';', '"', '"');
         }
 
+        fnEscreveArray($qrMes);
+
         fclose($arquivo);
         break;
 }
