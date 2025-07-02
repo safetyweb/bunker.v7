@@ -1,8 +1,8 @@
-<?php 
+<?php
 
 include '_system/_functionsMain.php';
 
-	//fnDebug("true");
+//fnDebug("true");
 $cod_empresa = fnLimpaCampoZero(fnDecode($_GET['id']));
 $cod_campanha = fnLimpaCampoZero(fnDecode($_GET['idc']));
 $cod_usucada = $_SESSION['SYS_COD_USUARIO'];
@@ -12,7 +12,7 @@ from SENHAS_WHATSAPP
 WHERE COD_EMPRESA = $cod_empresa
 LIMIT 1";
 
-    // fnEscreve($sql);
+// fnEscreve($sql);
 $arrayQuery = mysqli_query($connAdm->connAdm(), $sql);
 
 $count = 0;
@@ -20,54 +20,54 @@ $qrBuscaModulos = mysqli_fetch_assoc($arrayQuery);
 
 $session = $qrBuscaModulos['NOM_SESSAO'];
 
-    //if($qrBuscaModulos[COD_UNIVEND] != 0 && $qrBuscaModulos[COD_UNIVEND] != ""){
-     //   $session = $cod_empresa."_".$qrBuscaModulos[COD_UNIVEND];
-   // }
+//if($qrBuscaModulos[COD_UNIVEND] != 0 && $qrBuscaModulos[COD_UNIVEND] != ""){
+//   $session = $cod_empresa."_".$qrBuscaModulos[COD_UNIVEND];
+// }
 
 $des_token = $qrBuscaModulos[DES_TOKEN];
 $des_authkey = $qrBuscaModulos[DES_AUTHKEY];
 $log_login = $qrBuscaModulos[LOG_LOGIN];
 $port = $qrBuscaModulos[PORT_SERVICAO];
 
-	// echo "EM MANUTENÇÃO";       	
-	// exit();
+// echo "EM MANUTENÇÃO";       	
+// exit();
 
 
-$ARRAY_UNIDADE1=array(
-	'sql'=>"select COD_UNIVEND,cod_empresa,nom_fantasi,NOM_UNIVEND from unidadevenda where cod_empresa=$cod_empresa  and cod_exclusa=0",
-	'cod_empresa'=>$cod_empresa,
-	'conntadm'=>$connAdm->connAdm(),
-	'IN'=>'N',
-	'nomecampo'=>'',
-	'conntemp'=>'',
-	'SQLIN'=> ""   
+$ARRAY_UNIDADE1 = array(
+	'sql' => "select COD_UNIVEND,cod_empresa,nom_fantasi,NOM_UNIVEND from unidadevenda where cod_empresa=$cod_empresa  and cod_exclusa=0",
+	'cod_empresa' => $cod_empresa,
+	'conntadm' => $connAdm->connAdm(),
+	'IN' => 'N',
+	'nomecampo' => '',
+	'conntemp' => '',
+	'SQLIN' => ""
 );
-$ARRAY_UNIDADE=fnUnivend($ARRAY_UNIDADE1);
+$ARRAY_UNIDADE = fnUnivend($ARRAY_UNIDADE1);
 
 $sqlDec = "SELECT TIP_RETORNO, NUM_DECIMAIS_B FROM empresas where COD_EMPRESA = $cod_empresa";
-	//fnEscreve($sql);
-$arrayQuery = mysqli_query($connAdm->connAdm(),$sqlDec);
+//fnEscreve($sql);
+$arrayQuery = mysqli_query($connAdm->connAdm(), $sqlDec);
 $qrBuscaEmpresa = mysqli_fetch_assoc($arrayQuery);
 
-if (isset($arrayQuery)){
+if (isset($arrayQuery)) {
 
 	$tip_retorno = $qrBuscaEmpresa['TIP_RETORNO'];
 	$num_decimais_b = $qrBuscaEmpresa['NUM_DECIMAIS_B'];
 
-	if($tip_retorno == 1){
+	if ($tip_retorno == 1) {
 		$casasDec = 0;
-	}else{
+	} else {
 		$casasDec = $qrBuscaEmpresa['NUM_DECIMAIS_B'];
 	}
 }
 
-	// fnEscreve($casasDec);
+// fnEscreve($casasDec);
 
-	// exit();
+// exit();
 
 $sql = "SELECT DES_CAMPANHA FROM CAMPANHA WHERE COD_EMPRESA = $cod_empresa AND COD_CAMPANHA = $cod_campanha";
 
-$qrCamp = mysqli_fetch_assoc(mysqli_query(connTemp($cod_empresa,''),$sql));
+$qrCamp = mysqli_fetch_assoc(mysqli_query(connTemp($cod_empresa, ''), $sql));
 
 $des_campanha = preg_replace('/\s+/', '_', fnAcentos($qrCamp['DES_CAMPANHA']));
 
@@ -93,77 +93,77 @@ INNER JOIN WHATSAPP_CONTROLE_AUX ECA ON ECA.COD_CAMPANHA = CP.COD_CAMPANHA
 INNER JOIN TEMPLATE_WHATSAPP TE ON TE.COD_TEMPLATE = ECA.COD_TEMPLATE
 WHERE CP.COD_EMPRESA = $cod_empresa
 AND CP.COD_CAMPANHA = $cod_campanha";
-					// AND ME.LOG_PRINCIPAL = 'S'";
-	// fnEscreve($sql);
-$qrMsg = mysqli_fetch_assoc(mysqli_query(connTemp($cod_empresa,''),$sql));
+// AND ME.LOG_PRINCIPAL = 'S'";
+// fnEscreve($sql);
+$qrMsg = mysqli_fetch_assoc(mysqli_query(connTemp($cod_empresa, ''), $sql));
 $des_imagem = $qrMsg['DES_IMAGEM'];
 $des_titulo = $qrMsg['DES_TITULO'];
 
-$tagsPersonaliza=procpalavras($qrMsg['HTML'],$connAdm->connAdm());
+$tagsPersonaliza = procpalavras($qrMsg['HTML'], $connAdm->connAdm());
 
-$nomeRel = $cod_empresa.'_'.date("YmdHis")."_".$des_campanha."_CONTROLE.csv";
-$arquivo = '_system/ibope/listas_envio/'.$nomeRel;
+$nomeRel = $cod_empresa . '_' . date("YmdHis") . "_" . $des_campanha . "_CONTROLE.csv";
+$arquivo = '_system/ibope/listas_envio/' . $nomeRel;
 $caminhoRelat = '_system/ibope/listas_envio/';
 
-$tagsPersonaliza = '<#EMAIL>,<#CODIGO>,'.$tagsPersonaliza;
+$tagsPersonaliza = '<#EMAIL>,<#CODIGO>,' . $tagsPersonaliza;
 
-$tags = explode(',',$tagsPersonaliza);
+$tags = explode(',', $tagsPersonaliza);
 
 $selectCliente = "";
 $idDisparo = date('Ymd');
-$insertListaRet = "";		
+$insertListaRet = "";
 
-for ($i=0; $i < count($tags) ; $i++) {
-		// fnEscreve($tags[$i]);
-	switch($tags[$i]){
+for ($i = 0; $i < count($tags); $i++) {
+	// fnEscreve($tags[$i]);
+	switch ($tags[$i]) {
 
 		case '<#NOME>';
-		$selectCliente .= "C.NOM_CLIENTE,";
-		break;
+			$selectCliente .= "C.NOM_CLIENTE,";
+			break;
 		case '<#CARTAO>';
-		$selectCliente .= "";
-		break;
+			$selectCliente .= "";
+			break;
 		case '<#ESTADOCIVIL>';
-		$selectCliente .= "";
-		break;
+			$selectCliente .= "";
+			break;
 		case '<#SEXO>';
-		$selectCliente .= "";
-		break;
+			$selectCliente .= "";
+			break;
 		case '<#PROFISSAO>';
-		$selectCliente .= "";
-		break;
+			$selectCliente .= "";
+			break;
 		case '<#NASCIMENTO>';
-		$selectCliente .= "";
-		break;
+			$selectCliente .= "";
+			break;
 		case '<#ENDERECO>';
-		$selectCliente .= "";
-		break;
+			$selectCliente .= "";
+			break;
 		case '<#NUMERO>';
-		$selectCliente .= "";
-		break;
+			$selectCliente .= "";
+			break;
 		case '<#BAIRRO>';
-		$selectCliente .= "";
-		break;
+			$selectCliente .= "";
+			break;
 		case '<#CIDADE>';
-		$selectCliente .= "";
-		break;
+			$selectCliente .= "";
+			break;
 		case '<#ESTADO>';
-		$selectCliente .= "";
-		break;
+			$selectCliente .= "";
+			break;
 		case '<#CEP>';
-		$selectCliente .= "";
-		break;
+			$selectCliente .= "";
+			break;
 		case '<#COMPLEMENTO>';
-		$selectCliente .= "";
-		break;
+			$selectCliente .= "";
+			break;
 		case '<#TELEFONE>';
-		$selectCliente .= "";
-		break;
+			$selectCliente .= "";
+			break;
 		case '<#CELULAR>';
-		$selectCliente .= "";
-		break;
+			$selectCliente .= "";
+			break;
 		case '<#SALDO>';
-		$selectCliente .= "FORMAT(TRUNCATE(IFNULL((
+			$selectCliente .= "FORMAT(TRUNCATE(IFNULL((
 		SELECT IFNULL((
 		SELECT  SUM(val_saldo)
 		FROM creditosdebitos f
@@ -178,62 +178,60 @@ for ($i=0; $i < count($tags) ; $i++) {
 		FROM creditosdebitos cred
 		WHERE cred.cod_cliente=C.cod_CLIENTE
 		GROUP BY cred.cod_cliente),0),$casasDec),$casasDec,'pt_BR') AS CREDITO_DISPONIVEL, ";
-		break;
+			break;
 		case '<#PRIMEIRACOMPRA>';
-		$selectCliente .= "";
-		break;
+			$selectCliente .= "";
+			break;
 		case '<#ULTIMACOMPRA>';
-		$selectCliente .= "";
-		break;
+			$selectCliente .= "";
+			break;
 		case '<#TOTALCOMPRAS>';
-		$selectCliente .= "";
-		break;
+			$selectCliente .= "";
+			break;
 		case '<#CODIGO>';
-		$selectCliente .= "C.COD_CLIENTE,";
-		break;
+			$selectCliente .= "C.COD_CLIENTE,";
+			break;
 		case '<#CUPOMSORTEIO>';
-		$selectCliente .= "";
-		break;
+			$selectCliente .= "";
+			break;
 		case '<#CUPOM_INDICACAO>';
-		$selectCliente .= "";
-		break;
+			$selectCliente .= "";
+			break;
 		case '<#NUMEROLOJA>';
-		$selectCliente .= "";
-		break;
+			$selectCliente .= "";
+			break;
 		case '<#BAIRROLOJA>';
-		$selectCliente .= "";
-		break;
+			$selectCliente .= "";
+			break;
 		case '<#NOMELOJA>';
-		$selectCliente .= "C.COD_UNIVEND,";
-		break;
+			$selectCliente .= "C.COD_UNIVEND,";
+			break;
 		case '<#ENDERECOLOJA>';
-		$selectCliente .= "";
-		break;
+			$selectCliente .= "";
+			break;
 		case '<#TELEFONELOJA>';
-		$selectCliente .= "";
-		break;
+			$selectCliente .= "";
+			break;
 		case '<#ANIVERSARIO>';
-		$selectCliente .= "C.DAT_NASCIME,";
-		break;
+			$selectCliente .= "C.DAT_NASCIME,";
+			break;
 		case '<#DATAEXPIRA>';
-		$selectCliente .= "(SELECT 
+			$selectCliente .= "(SELECT 
 		MIN(DAT_EXPIRA) AS DAT_EXPIRA
 		FROM creditosdebitos 
 		WHERE DAT_EXPIRA >= NOW() AND  cod_CLIENTE=C.cod_CLIENTE) AS DAT_EXPIRA,";
-		break;
+			break;
 		default:
-		$selectCliente .= "C.COD_CLIENTE, C.NUM_CELULAR, C.NOM_CLIENTE, C.COD_UNIVEND,";
-		break;
-
+			$selectCliente .= "C.COD_CLIENTE, C.NUM_CELULAR, C.NOM_CLIENTE, C.COD_UNIVEND,";
+			break;
 	}
-
 }
 
-$selectCliente = rtrim(trim($selectCliente),',');
+$selectCliente = rtrim(trim($selectCliente), ',');
 
-	// echo'<pre>';
-	// print_r($tags);
-	// echo'</pre>';
+// echo'<pre>';
+// print_r($tags);
+// echo'</pre>';
 
 
 $sql = "SELECT $selectCliente
@@ -241,267 +239,267 @@ FROM clientes C
 INNER JOIN WHATSAPP_CONTROLE EC ON EC.COD_CLIENTE = C.COD_CLIENTE
 WHERE EC.COD_EMPRESA = $cod_empresa 
 AND EC.COD_CAMPANHA = $cod_campanha";
-			// AND EC.COD_CLIENTE IN($cod_clientes)";
+// AND EC.COD_CLIENTE IN($cod_clientes)";
 
-	// fnEscreve($sql);
-	// fnEscreve($arquivo);
+// fnEscreve($sql);
+// fnEscreve($arquivo);
 
-$arrayQuery = mysqli_query(connTemp($cod_empresa,''),$sql);
+$arrayQuery = mysqli_query(connTemp($cod_empresa, ''), $sql);
 
-	// fnEscreve('chegou 2');
+// fnEscreve('chegou 2');
 
 $array = array();
 $linhas = 0;
 
-	// fnEscreve('chega aqui');
+// fnEscreve('chega aqui');
 
-	// include "autenticaNexux.php";
-	// retorna: $usuario, $senha, $cliente_externo e $parc_cadastrado(0/1)
-	// fnEscreve('chega aqui - autentica');
+// include "autenticaNexux.php";
+// retorna: $usuario, $senha, $cliente_externo e $parc_cadastrado(0/1)
+// fnEscreve('chega aqui - autentica');
 
-	// if($parc_cadastrado == 0){
-	// 	fnEscreve("Parceiro não cadastrado na empresa");
-	// }
+// if($parc_cadastrado == 0){
+// 	fnEscreve("Parceiro não cadastrado na empresa");
+// }
 
 $sqlInsert = "";
 
 $dat_envio = date("Y-m-d H:i:s", strtotime("+ 10 seconds"));
 $dat_envio = date("Y-m-d H:i:s", strtotime("- 1 hour"));
 
-while($row = mysqli_fetch_assoc($arrayQuery)){
+while ($row = mysqli_fetch_assoc($arrayQuery)) {
 
 	$linha = "";
 
-	for ($i=0; $i < count($tags) ; $i++) {
-			// fnEscreve($tags[$i]);
-		switch($tags[$i]){
+	for ($i = 0; $i < count($tags); $i++) {
+		// fnEscreve($tags[$i]);
+		switch ($tags[$i]) {
 
 			case '<#NOME>';
-			$nome = explode(' ', $row['NOM_CLIENTE']);
-			$itemLinha = ucfirst(strtolower($nome[0]));
-			break;
+				$nome = explode(' ', $row['NOM_CLIENTE']);
+				$itemLinha = ucfirst(strtolower($nome[0]));
+				break;
 			case '<#CARTAO>';
-			$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
-			break;
+				$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+				break;
 			case '<#ESTADOCIVIL>';
-			$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
-			break;
+				$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+				break;
 			case '<#SEXO>';
-			$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
-			break;
+				$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+				break;
 			case '<#PROFISSAO>';
-			$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
-			break;
+				$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+				break;
 			case '<#NASCIMENTO>';
-			$itemLinha = $row['DAT_NASCIME'];
-			break;
+				$itemLinha = $row['DAT_NASCIME'];
+				break;
 			case '<#ENDERECO>';
-			$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
-			break;
+				$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+				break;
 			case '<#NUMERO>';
-			$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
-			break;
+				$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+				break;
 			case '<#BAIRRO>';
-			$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
-			break;
+				$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+				break;
 			case '<#CIDADE>';
-			$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
-			break;
+				$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+				break;
 			case '<#ESTADO>';
-			$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
-			break;
+				$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+				break;
 			case '<#CEP>';
-			$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
-			break;
+				$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+				break;
 			case '<#COMPLEMENTO>';
-			$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
-			break;
+				$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+				break;
 			case '<#TELEFONE>';
-			$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
-			break;
+				$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+				break;
 			case '<#CELULAR>';
-			$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
-			break;
+				$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+				break;
 			case '<#SALDO>';
-			$itemLinha = fnValor($row['CREDITO_DISPONIVEL'],$casasDec);
-			break;
+				$itemLinha = fnValor($row['CREDITO_DISPONIVEL'], $casasDec);
+				break;
 			case '<#PRIMEIRACOMPRA>';
-			$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
-			break;
+				$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+				break;
 			case '<#ULTIMACOMPRA>';
-			$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
-			break;
+				$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+				break;
 			case '<#TOTALCOMPRAS>';
-			$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
-			break;
+				$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+				break;
 			case '<#CODIGO>';
-			$itemLinha = $row['COD_CLIENTE'];
-			break;
+				$itemLinha = $row['COD_CLIENTE'];
+				break;
 			case '<#CUPOMSORTEIO>';
-			$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
-			break;
+				$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+				break;
 			case '<#CUPOM_INDICACAO>';
-			$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
-			break;
+				$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+				break;
 			case '<#NUMEROLOJA>';
-			$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
-			break;
+				$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+				break;
 			case '<#BAIRROLOJA>';
-			$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
-			break;
+				$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+				break;
 			case '<#NOMELOJA>';
-			$NOM_ARRAY_UNIDADE=(array_search($row['COD_UNIVEND'], array_column($ARRAY_UNIDADE, 'COD_UNIVEND')));
-			$itemLinha = fnAcentos($ARRAY_UNIDADE[$NOM_ARRAY_UNIDADE]['nom_fantasi']);
-			break;
+				$NOM_ARRAY_UNIDADE = (array_search($row['COD_UNIVEND'], array_column($ARRAY_UNIDADE, 'COD_UNIVEND')));
+				$itemLinha = fnAcentos($ARRAY_UNIDADE[$NOM_ARRAY_UNIDADE]['nom_fantasi']);
+				break;
 			case '<#ENDERECOLOJA>';
-			$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
-			break;
+				$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+				break;
 			case '<#TELEFONELOJA>';
-			$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
-			break;
+				$itemLinha = "DES_EMAILUS AS '<#EMAIL>',";
+				break;
 			case '<#ANIVERSARIO>';
-			$itemLinha = substr($row['DAT_NASCIME'], 0,-5);
-			break;
+				$itemLinha = substr($row['DAT_NASCIME'], 0, -5);
+				break;
 			case '<#DATAEXPIRA>';
-			$itemLinha = fnDataShort($row['DAT_EXPIRA']);
-			break;
+				$itemLinha = fnDataShort($row['DAT_EXPIRA']);
+				break;
 			default:
-			$itemLinha = $row['DES_EMAILUS'];
-			break;
-
+				$itemLinha = $row['DES_EMAILUS'];
+				break;
 		}
-		$linha .= $itemLinha.";";
+		$linha .= $itemLinha . ";";
 	}
 
 
-	$rand = rand(1,5);
+	$rand = rand(1, 5);
 
-	if($rand == 1){
+	if ($rand == 1) {
 		$rand = "";
 	}
 
 	switch ($rand) {
 		case 1:
-		$templateNro = "HTML";
-		break;
+			$templateNro = "HTML";
+			break;
 
 		case 2:
-		$templateNro = "HTML2";
-		break;
+			$templateNro = "HTML2";
+			break;
 
 		case 3:
-		$templateNro = "HTML3";
-		break;
+			$templateNro = "HTML3";
+			break;
 
 		case 4:
-		$templateNro = "HTML4";
-		break;
+			$templateNro = "HTML4";
+			break;
 
 		case 5:
-		$templateNro = "HTML5";
-		break;
+			$templateNro = "HTML5";
+			break;
 
 		default:
-		$templateNro = "HTML";
-		break;
+			$templateNro = "HTML";
+			break;
 	}
 
-	$newRow[] = rtrim($linha,';');
+	$newRow[] = rtrim($linha, ';');
 	$linhas++;
 
 	$msgCli = $qrMsg[$templateNro];
 
-	$NOM_CLIENTE=explode(" ", ucfirst(strtolower(fnAcentos($row['NOM_CLIENTE']))));                                
-	$TEXTOENVIO=str_replace('<#NOME>', $NOM_CLIENTE[0], $msgCli);
-	$TEXTOENVIO=str_replace('<#SALDO>', $row['CREDITO_DISPONIVEL'], $TEXTOENVIO);
-	$TEXTOENVIO=str_replace('<#NOMELOJA>',  $row['NOM_FANTASI'], $TEXTOENVIO);
-	$TEXTOENVIO=str_replace('<#ANIVERSARIO>', $row['DAT_NASCIME'], $TEXTOENVIO); 
-	$TEXTOENVIO=str_replace('<#DATAEXPIRA>', fnDataShort($row['DAT_EXPIRA']), $TEXTOENVIO); 
-	$TEXTOENVIO=str_replace('<#EMAIL>', $row['DES_EMAILUS'], $TEXTOENVIO); 
-	$msgsbtr=nl2br($TEXTOENVIO,true);                                
-	$msgsbtr = str_replace('<br />',"\n", $msgsbtr);
+	$NOM_CLIENTE = explode(" ", ucfirst(strtolower(fnAcentos($row['NOM_CLIENTE']))));
+	$TEXTOENVIO = str_replace('<#NOME>', $NOM_CLIENTE[0], $msgCli);
+	$TEXTOENVIO = str_replace('<#CODCLIENTE>', $row['COD_CLIENTE'], $TEXTOENVIO);
+	$TEXTOENVIO = str_replace('<#SALDO>', $row['CREDITO_DISPONIVEL'], $TEXTOENVIO);
+	$TEXTOENVIO = str_replace('<#NOMELOJA>',  $row['NOM_FANTASI'], $TEXTOENVIO);
+	$TEXTOENVIO = str_replace('<#ANIVERSARIO>', $row['DAT_NASCIME'], $TEXTOENVIO);
+	$TEXTOENVIO = str_replace('<#DATAEXPIRA>', fnDataShort($row['DAT_EXPIRA']), $TEXTOENVIO);
+	$TEXTOENVIO = str_replace('<#EMAIL>', $row['DES_EMAILUS'], $TEXTOENVIO);
+	$msgsbtr = nl2br($TEXTOENVIO, true);
+	$msgsbtr = str_replace('<br />', "\n", $msgsbtr);
 
-		// fnEscreve($msgsbtr);
+	// fnEscreve($msgsbtr);
 
 
-		// $nom_camp_msg=$qrMsg[COD_CAMPANHA].'||'.$qrMsg[COD_EMPRESA].'||'.$row[COD_CLIENTE].'||'.$qrMsg[COD_TEMPLATE];
+	// $nom_camp_msg=$qrMsg[COD_CAMPANHA].'||'.$qrMsg[COD_EMPRESA].'||'.$row[COD_CLIENTE].'||'.$qrMsg[COD_TEMPLATE];
 
-	$CLIE_WHATSAPP_L[]=array("type"=> "text",
-		"message"=> "$msgsbtr",                   
-		"token"=> "$des_token",               
-		"session"=> "$session",               
-		"number"=> fnLimpaDoc($row['NUM_CELULAR'])
+	$CLIE_WHATSAPP_L[] = array(
+		"type" => "text",
+		"message" => "$msgsbtr",
+		"token" => "$des_token",
+		"session" => "$session",
+		"number" => fnLimpaDoc($row['NUM_CELULAR'])
 	);
 
 
-	$insertListaRet .= "('".$cod_empresa."',
-                         '".$cod_campanha."',       
-                         '".$row['NOM_CLIENTE']."',       
-                         '".$row['COD_UNIVEND']."',
-                         '".$row['COD_CLIENTE']."',
-                         '".$row['NUM_CELULAR']."',
+	$insertListaRet .= "('" . $cod_empresa . "',
+                         '" . $cod_campanha . "',       
+                         '" . $row['NOM_CLIENTE'] . "',       
+                         '" . $row['COD_UNIVEND'] . "',
+                         '" . $row['COD_CLIENTE'] . "',
+                         '" . $row['NUM_CELULAR'] . "',
                          0,
-                         '".$msgsbtr."',
+                         '" . $msgsbtr . "',
                          NOW(),
                          'S'  
                         ),";
-
 }
 
 
 
 
-	// À PRINCÍPIO, NÃO HAVERÁ DÉBITOS
-	// $arraydebitos=array('quantidadeEmailenvio'=>$linhas,
-    //                     'COD_EMPRESA'=>$cod_empresa,
-    //                     'PERMITENEGATIVO'=>'N',
-    //                     'COD_CANALCOM'=>'2',
-    //                     'CONFIRMACAO'=>'S',
-    //                     'COD_CAMPANHA'=>$cod_campanha,    
-    //                     'LOG_TESTE'=> 'S',
-    //                     'DAT_CADASTR'=> date('Y-m-d H:i:s'),
-    //                     'CONNADM'=>$connAdm->connAdm()
-    //                     ); 
+// À PRINCÍPIO, NÃO HAVERÁ DÉBITOS
+// $arraydebitos=array('quantidadeEmailenvio'=>$linhas,
+//                     'COD_EMPRESA'=>$cod_empresa,
+//                     'PERMITENEGATIVO'=>'N',
+//                     'COD_CANALCOM'=>'2',
+//                     'CONFIRMACAO'=>'S',
+//                     'COD_CAMPANHA'=>$cod_campanha,    
+//                     'LOG_TESTE'=> 'S',
+//                     'DAT_CADASTR'=> date('Y-m-d H:i:s'),
+//                     'CONNADM'=>$connAdm->connAdm()
+//                     ); 
 
-    // $retornoDeb=FnDebitos($arraydebitos);
+// $retornoDeb=FnDebitos($arraydebitos);
 
-    // if($retornoDeb['cod_msg'] == 1){
+// if($retornoDeb['cod_msg'] == 1){
 
-fngravacvs($newRow,$caminhoRelat,$nomeRel);
+fngravacvs($newRow, $caminhoRelat, $nomeRel);
 
-		// include './_system/func_nexux/func_transacional.php';
+// include './_system/func_nexux/func_transacional.php';
 
-		// $mensagensContatos = rtrim($mensagensContatos,',');
+// $mensagensContatos = rtrim($mensagensContatos,',');
 
-		// $sqlCont = "SELECT NUM_CONTADOR FROM contador WHERE NUM_TKT = 50";
-		// 				$arrayCont = mysqli_query(connTemp($cod_empresa,''),$sqlCont);
-		// 				$qrCont = mysqli_fetch_assoc($arrayCont);
-		// 				$contador = $qrCont['NUM_CONTADOR'];
+// $sqlCont = "SELECT NUM_CONTADOR FROM contador WHERE NUM_TKT = 50";
+// 				$arrayCont = mysqli_query(connTemp($cod_empresa,''),$sqlCont);
+// 				$qrCont = mysqli_fetch_assoc($arrayCont);
+// 				$contador = $qrCont['NUM_CONTADOR'];
 
-       	// looping ENVIO -------------------------------------------------------------------------------------------------------------------------
-		// $CLIE_WHATSAPP_L[]=array("type"=> "text",
-		// 						 "message"=> "$msgsbtr",                   
-		// 						 "token"=> "$des_token",               
-		// 						 "number"=> "11946335250"
-	    //                         );
+// looping ENVIO -------------------------------------------------------------------------------------------------------------------------
+// $CLIE_WHATSAPP_L[]=array("type"=> "text",
+// 						 "message"=> "$msgsbtr",                   
+// 						 "token"=> "$des_token",               
+// 						 "number"=> "11946335250"
+//                         );
 
-       	//include_once '_system/whatsapp/wsp.php';
+//include_once '_system/whatsapp/wsp.php';
 include_once '_system/whatsapp/wstAdorai.php';
 
-       	// $retorno = FnEnvioText($session,$des_token,$CLIE_WHATSAPP_L);
-        //$retorno = FnEnvioMULT($session,$des_token,$CLIE_WHATSAPP_L);
+// $retorno = FnEnvioText($session,$des_token,$CLIE_WHATSAPP_L);
+//$retorno = FnEnvioMULT($session,$des_token,$CLIE_WHATSAPP_L);
 
 // fnEscreve('chega aqui depois do include');
 
 foreach ($CLIE_WHATSAPP_L as $key => $dadosArray) {
 	$tempo_aleatorio = mt_rand(3, 20);
 
-	if(empty($des_imagem)){
+	if (empty($des_imagem)) {
 		// fnEscreve('sem imagem');
-		$retorno = FnsendText($session,$des_authkey,'55'.$dadosArray[number],$dadosArray[message],$tempo_aleatorio,$port);			
-	}else{
+		$retorno = FnsendText($session, $des_authkey, '55' . $dadosArray[number], $dadosArray[message], $tempo_aleatorio, $port);
+	} else {
 		// fnEscreve('com imagem');
-		$retorno=sendMedia($session,$des_authkey,'55'.$dadosArray[number],$tempo_aleatorio,'image',$des_imagem,$dadosArray[message],"https://img.bunker.mk/media/clientes/$cod_empresa/wpp/$des_imagem",$port);
+		$retorno = sendMedia($session, $des_authkey, '55' . $dadosArray[number], $tempo_aleatorio, 'image', $des_imagem, $dadosArray[message], "https://img.bunker.mk/media/clientes/$cod_empresa/wpp/$des_imagem", $port);
 	}
 
 	// echo "<pre>";
@@ -510,11 +508,11 @@ foreach ($CLIE_WHATSAPP_L as $key => $dadosArray) {
 	// echo "</pre>";
 }
 
-	// exit();
+// exit();
 
-	$insertListaRet = rtrim($insertListaRet,',');
+$insertListaRet = rtrim($insertListaRet, ',');
 
-	$sqlControle = "INSERT INTO WHATSAPP_LOTE(
+$sqlControle = "INSERT INTO WHATSAPP_LOTE(
 								COD_CAMPANHA,
 								COD_EMPRESA,
 								COD_PERSONAS,
@@ -531,7 +529,7 @@ foreach ($CLIE_WHATSAPP_L as $key => $dadosArray) {
 								$cod_campanha,
 								$cod_empresa,
 								'$qrMsg[COD_PERSONAS]',
-								".date('Ymd').",
+								" . date('Ymd') . ",
 								0,
 								'$linhas',
 								(SELECT MAX(COD_LISTA) FROM WHATSAPP_PARAMETROS WHERE COD_EMPRESA = $cod_empresa AND COD_CAMPANHA = $cod_campanha),
@@ -546,11 +544,11 @@ foreach ($CLIE_WHATSAPP_L as $key => $dadosArray) {
 					WHERE COD_EMPRESA = $cod_empresa 
 					AND COD_CAMPANHA = $cod_campanha";
 
-	mysqli_multi_query(connTemp($cod_empresa,''), $sqlControle);
+mysqli_multi_query(connTemp($cod_empresa, ''), $sqlControle);
 
-	if($sqlInsertRel != ""){
+if ($sqlInsertRel != "") {
 
-		$sqlInsertRel= "INSERT INTO WHATSAPP_LISTA_RET(
+	$sqlInsertRel = "INSERT INTO WHATSAPP_LISTA_RET(
                                     COD_EMPRESA,
                                     COD_CAMPANHA,                                                                               
                                     NOM_CLIENTE,
@@ -562,16 +560,13 @@ foreach ($CLIE_WHATSAPP_L as $key => $dadosArray) {
                                     DAT_CADASTR,
                                     LOG_TESTE
                                     )values $insertListaRet";
-			// fnEscreve($sqlInsertRel);
-		mysqli_query(connTemp($cod_empresa,''), $sqlInsertRel);
+	// fnEscreve($sqlInsertRel);
+	mysqli_query(connTemp($cod_empresa, ''), $sqlInsertRel);
+}
 
-	}
-
-	$msgErro = fnDataFull($dat_envio);
+$msgErro = fnDataFull($dat_envio);
 
 
-	// }else {
-	// 	echo $retornoDeb[MSG];
-	// }	
-
-?>
+// }else {
+// 	echo $retornoDeb[MSG];
+// }	
