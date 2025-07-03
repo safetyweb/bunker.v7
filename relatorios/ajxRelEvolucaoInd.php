@@ -1,7 +1,7 @@
 <?php
 
 include '../_system/_functionsMain.php';
-echo $_SESSION['SYS_COD_EMPRESA'];
+// echo $_SESSION['SYS_COD_EMPRESA'];
 
 // if ($_SESSION['SYS_COD_EMPRESA'] == 2) {
 //     echo fnDebug('true');
@@ -94,7 +94,7 @@ switch ($opcao) {
             $mesLoop = $dataLoop[1];
             $concatData = $anoLoop . "-" . $mesLoop;
 
-            // ✅ Substituição do strftime por DateTime::format('F')
+
             $dataObj = new DateTime($mes . '-01');
             $indice = substr(ucfirst($dataObj->format("F")), 0, 3) . "/" . $dataObj->format("Y");
 
@@ -130,7 +130,7 @@ switch ($opcao) {
         while ($headers = mysqli_fetch_field($arrQuery)) {
             $CABECHALHO[] = $headers->name;
         }
-        // ✅ Corrigido: escape character padrão (aspas duplas)
+
         fputcsv($arquivo, $CABECHALHO, ';', '"', '"');
 
         // Dados
