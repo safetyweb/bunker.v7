@@ -124,9 +124,14 @@ $sql = "SELECT COD_MENSAGEM, COD_TEMPLATE_SMS FROM MENSAGEM_SMS
 			AND COD_TEMPLATE_BLOCO = $cod_template_bloco";
 
 $qrTempl = mysqli_fetch_assoc(mysqli_query(connTemp($cod_empresa, ''), $sql));
+if ($qrTempl) {
+	$cod_mensagem = fnlimpaCampoZero($qrTempl['COD_MENSAGEM']);
+	$cod_template_sms = $qrTempl['COD_TEMPLATE_SMS'];
+} else {
+	$cod_mensagem = 0;
+	$cod_template_sms = 0;
+}
 
-$cod_mensagem = fnlimpaCampoZero($qrTempl['COD_MENSAGEM']);
-$cod_template_sms = $qrTempl['COD_TEMPLATE_SMS'];
 
 
 
