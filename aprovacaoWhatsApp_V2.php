@@ -9,6 +9,8 @@ $qtd_email = 0;
 $qtd_sms = 0;
 $qtd_whatsapp = 0;
 $count = 0;
+$request = 0;
+$cod_personas = 0;
 if (isset($_GET['pop'])) {
 	$popUp = fnLimpaCampo($_GET['pop']);
 } else {
@@ -26,10 +28,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	} else {
 		$_SESSION['last_request']  = $request;
 
-		$cod_campanha = fnLimpaCampo($_REQUEST['COD_CAMPANHA']);
-		$cod_empresa = fnLimpaCampo($_REQUEST['COD_EMPRESA']);
-		$des_emailex = fnLimpaCampo($_POST['DES_EMAILEX']);
-		$cod_template = fnLimpaCampoZero($_REQUEST['COD_TEMPLATE_WHATSAPP']);
+		$cod_campanha = fnLimpaCampo(@$_REQUEST['COD_CAMPANHA']);
+		$cod_empresa = fnLimpaCampo(@$_REQUEST['COD_EMPRESA']);
+		$des_emailex = fnLimpaCampo(@$_POST['DES_EMAILEX']);
+		$cod_template = fnLimpaCampoZero(@$_REQUEST['COD_TEMPLATE_WHATSAPP']);
 
 		if (isset($_POST['COD_PERSONA'])) {
 			$Arr_COD_PERSONAS = $_POST['COD_PERSONA'];
