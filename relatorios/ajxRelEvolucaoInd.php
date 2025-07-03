@@ -1,7 +1,7 @@
 <?php
 
 include '../_system/_functionsMain.php';
-echo $_SESSION['SYS_COD_EMPRESA'];
+// echo $_SESSION['SYS_COD_EMPRESA'];
 
 // if ($_SESSION['SYS_COD_EMPRESA'] == 2) {
 //     echo fnDebug('true');
