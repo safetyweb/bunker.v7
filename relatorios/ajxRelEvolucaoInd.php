@@ -63,6 +63,10 @@ if (isset($_POST['COD_CONTROLE'])) {
 $dat_ini = date('Y-m-d', strtotime($dat_ini));
 $dat_fim = date('Y-m-t', strtotime($dat_fim));
 
+if (!is_dir('../media/excel/')) {
+    mkdir('../media/excel/', 0777, true);
+}
+
 switch ($opcao) {
     case 'exportar':
 
@@ -121,12 +125,18 @@ switch ($opcao) {
                 GROUP BY COD_UNIVEND";
 
         $arrQuery = mysqli_query(connTemp($cod_empresa, ''), $sql);
+        if (!$arrQuery) {
+            die("Erro na consulta SQL: " . mysqli_error(connTemp($cod_empresa, '')) . "<br>Query: " . $sql);
+        }
 
         $arrResult = array();
 
         $arquivo = fopen($arquivoCaminho, 'w');
 
         // Cabeçalho
+        if (!isset($CABECHALHO)) {
+            $CABECHALHO = array();
+        }
         while ($headers = mysqli_fetch_field($arrQuery)) {
             $CABECHALHO[] = $headers->name;
         }
