@@ -452,7 +452,7 @@ while ($qrMes = mysqli_fetch_assoc($arrQuery)) {
                                         console.log(response);
                                         self.setContentAppend('<div>Exportação realizada com sucesso.</div>');
                                         var fileName = '<?php echo $cod_empresa; ?>_' + nome + '.csv';
-                                        SaveToDisk('media/excel/' + fileName, fileName);
+                                        SaveToDisk('../media/excel/' + fileName, fileName);
 
                                     }).fail(function() {
                                         self.setContentAppend('<div>Erro ao realizar o procedimento!</div>');
