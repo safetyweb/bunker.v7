@@ -1,4 +1,5 @@
 <?php
+
 /**
  * A PHP class to provide the basic functionality to create a pdf document without
  * any requirement for additional modules.
@@ -15,6 +16,7 @@
  * @license Public Domain http://creativecommons.org/licenses/publicdomain/
  * @package Cpdf
  */
+
 use FontLib\Font;
 use FontLib\BinaryStream;
 
@@ -343,7 +345,7 @@ class Cpdf
     function __construct($pageSize = array(0, 0, 612, 792), $isUnicode = false, $fontcache = '', $tmp = '')
     {
         $this->isUnicode = $isUnicode;
-        $this->fontcache = rtrim($fontcache, DIRECTORY_SEPARATOR."/\\");
+        $this->fontcache = rtrim($fontcache, DIRECTORY_SEPARATOR . "/\\");
         $this->tmp = ($tmp !== '' ? $tmp : sys_get_temp_dir());
         $this->newDocument($pageSize);
 
@@ -464,28 +466,28 @@ class Cpdf
                         // Named with limited valid values
                         case 'NonFullScreenPageMode':
                             if (!in_array($v, array('UseNone', 'UseOutlines', 'UseThumbs', 'UseOC'))) {
-                                continue;
+                                continue 2;
                             }
                             $o['info'][$k] = $v;
                             break;
 
                         case 'Direction':
                             if (!in_array($v, array('L2R', 'R2L'))) {
-                                continue;
+                                continue 2;
                             }
                             $o['info'][$k] = $v;
                             break;
 
                         case 'PrintScaling':
                             if (!in_array($v, array('None', 'AppDefault'))) {
-                                continue;
+                                continue 2;
                             }
                             $o['info'][$k] = $v;
                             break;
 
                         case 'Duplex':
                             if (!in_array($v, array('None', 'AppDefault'))) {
-                                continue;
+                                continue 2;
                             }
                             $o['info'][$k] = $v;
                             break;
@@ -728,12 +730,12 @@ class Cpdf
                         if (isset($o['info']['mediaBox'])) {
                             $tmp = $o['info']['mediaBox'];
                             $res .= "\n/MediaBox [" . sprintf(
-                                    '%.3F %.3F %.3F %.3F',
-                                    $tmp[0],
-                                    $tmp[1],
-                                    $tmp[2],
-                                    $tmp[3]
-                                ) . ']';
+                                '%.3F %.3F %.3F %.3F',
+                                $tmp[0],
+                                $tmp[1],
+                                $tmp[2],
+                                $tmp[3]
+                            ) . ']';
                         }
                     }
 
@@ -1628,12 +1630,12 @@ EOT;
                 if (isset($o['info']['mediaBox'])) {
                     $tmp = $o['info']['mediaBox'];
                     $res .= "\n/MediaBox [" . sprintf(
-                            '%.3F %.3F %.3F %.3F',
-                            $tmp[0],
-                            $tmp[1],
-                            $tmp[2],
-                            $tmp[3]
-                        ) . ']';
+                        '%.3F %.3F %.3F %.3F',
+                        $tmp[0],
+                        $tmp[1],
+                        $tmp[2],
+                        $tmp[3]
+                    ) . ']';
                 }
                 $res .= "\n/Parent " . $o['info']['parent'] . " 0 R";
 
@@ -1818,7 +1820,7 @@ EOT;
                 // make the new object
                 $this->objects[$id] = array('t' => 'image', 'data' => &$options['data'], 'info' => array());
 
-                $info =& $this->objects[$id]['info'];
+                $info = &$this->objects[$id]['info'];
 
                 $info['Type'] = '/XObject';
                 $info['Subtype'] = '/Image';
@@ -2139,8 +2141,7 @@ EOT;
             . chr(hexdec(substr($hex, 2, 2)))
             . chr(hexdec(substr($hex, 0, 2)))
             . chr(0)
-            . chr(0)
-        ;
+            . chr(0);
         $key = $this->md5_16($tmp);
         $this->ARC4_init(substr($key, 0, 10));
     }
@@ -2281,9 +2282,7 @@ EOT;
     /**
      * should be used for internal checks, not implemented as yet
      */
-    function checkAllHere()
-    {
-    }
+    function checkAllHere() {}
 
     /**
      * return the pdf stream as a string returned from the function
@@ -2343,8 +2342,7 @@ EOT;
         $content .= "trailer\n<<\n" .
             '/Size ' . (count($xref) + 1) . "\n" .
             '/Root 1 0 R' . "\n" .
-            '/Info ' . $this->infoObject . " 0 R\n"
-        ;
+            '/Info ' . $this->infoObject . " 0 R\n";
 
         // if encryption has been applied to this document then add the marker for this dictionary
         if ($this->arc4_objnum > 0) {
@@ -2416,7 +2414,7 @@ EOT;
 
         $fontcache = $this->fontcache;
         if ($fontcache == '') {
-            $fontcache = rtrim($dir, DIRECTORY_SEPARATOR."/\\");
+            $fontcache = rtrim($dir, DIRECTORY_SEPARATOR . "/\\");
         }
 
         //$name       filename without folder and extension of font metrics
@@ -3169,7 +3167,8 @@ EOT;
         }
 
         // Only create a new graphics state if required
-        if ($mode === $this->currentLineTransparency["mode"] &&
+        if (
+            $mode === $this->currentLineTransparency["mode"] &&
             $opacity == $this->currentLineTransparency["opacity"]
         ) {
             return;
@@ -3219,7 +3218,8 @@ EOT;
             $mode = "Normal";
         }
 
-        if ($mode === $this->currentFillTransparency["mode"] &&
+        if (
+            $mode === $this->currentFillTransparency["mode"] &&
             $opacity == $this->currentFillTransparency["opacity"]
         ) {
             return;
@@ -4072,7 +4072,7 @@ EOT;
                     for ($j = 1; $j < $numbytes; $j++) {
                         $c += ($bytes[$j] << (($numbytes - $j - 1) * 0x06));
                     }
-                    if ((($c >= 0xD800) AND ($c <= 0xDFFF)) OR ($c >= 0x10FFFF)) {
+                    if ((($c >= 0xD800) and ($c <= 0xDFFF)) or ($c >= 0x10FFFF)) {
                         // The definition of UTF-8 prohibits encoding character numbers between
                         // U+D800 and U+DFFF, which are reserved for use with the UTF-16
                         // encoding form (as surrogate pairs) and do not directly represent
@@ -4383,7 +4383,6 @@ EOT;
             if ($char_spacing != 0) {
                 $w += $char_spacing * $space_scale * (count($unicode) + $n_spaces);
             }
-
         } else {
             // If CPDF is in Unicode mode but the current font does not support Unicode we need to convert the character set to Windows-1252
             if ($this->isUnicode) {
