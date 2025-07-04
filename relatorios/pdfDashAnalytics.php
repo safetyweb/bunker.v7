@@ -71,7 +71,7 @@ $qtd_cli_expirado = 0;
 $h_vl_faturamento_expirado = "";
 $vl_faturamento_expirado = "";
 $h_perc_vl_resgate = "";
-$perc_vl_resgate = "";
+$perc_vl_resgate = 0;
 $h_perc_vl_resgate_100 = "";
 $h_pc_qtd_transacoes_fidelizado = 0;
 $h_pc_qtd_transacoes_avulso = 0;
@@ -215,10 +215,22 @@ $h_vl_total_resgate = fnValor($vl_total_resgate, 2);
 $h_qtd_cli_expirado = fnValor($qtd_cli_expirado, 0);
 $h_vl_faturamento_expirado = fnValor($vl_faturamento_expirado, 2);
 $h_perc_vl_resgate = fnValor($perc_vl_resgate, 2);
-$h_perc_vl_resgate_100 = fnValor(($perc_vl_resgate / 100), 2);
-$h_pc_qtd_transacoes_fidelizado = fnValor((($qtd_transacoes_fidelizado / $qtd_transacoes) * 100), 0);
-$h_pc_qtd_transacoes_avulso = fnValor((($qtd_transacoes_avulso / $qtd_transacoes) * 100), 0);
-$h_pc_qtd_inativos = fnValor((($qtd_inativos / $qtd_clientes) * 100), 0);
+
+if ($perc_vl_resgate > 0) {
+	$h_perc_vl_resgate = fnValor($perc_vl_resgate, 2);
+}
+
+if ($qtd_transacoes_fidelizado > 0 && $qtd_transacoes > 0) {
+	$h_pc_qtd_transacoes_fidelizado = fnValor((($qtd_transacoes_fidelizado / $qtd_transacoes) * 100), 0);
+}
+
+if ($qtd_transacoes_avulso > 0 && $qtd_transacoes > 0) {
+	$h_pc_qtd_transacoes_avulso = fnValor((($qtd_transacoes_avulso / $qtd_transacoes) * 100), 0);
+}
+
+if ($qtd_clientes > 0 && $qtd_inativos > 0) {
+	$h_pc_qtd_inativos = fnValor((($qtd_inativos / $qtd_clientes) * 100), 0);
+}
 $h_dt_filtroMenor = fnDataShort($dt_filtroMenor);
 $h_dt_filtro = fnDataShort($dt_filtro);
 $h_pct_tmcr = fnValor($pct_tmcr, 0);
