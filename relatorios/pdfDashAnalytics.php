@@ -1,5 +1,12 @@
 <?php
 
+if ($_SESSION['SYS_COD_EMPRESA'] == 2) {
+	echo fnDebug('true');
+	ini_set('display_errors', 1);
+	ini_set('display_startup_errors', 1);
+	error_reporting(E_ALL);
+}
+
 $dt_exibe = "";
 $qtd_clientes = 0;
 $qtd_cli_novos = 0;
@@ -159,13 +166,6 @@ ini_set('error_reporting', E_ALL);
 include "../_system/_functionsMain.php";
 
 require_once("../pdfComponente/autoload.inc.php");
-
-if ($_SESSION['SYS_COD_EMPRESA'] == 2) {
-	echo fnDebug('true');
-	ini_set('display_errors', 1);
-	ini_set('display_startup_errors', 1);
-	error_reporting(E_ALL);
-}
 
 $dt_exibe = "";
 $qtd_clientes = 0;
