@@ -1,7 +1,7 @@
 <?php
 
 include '../_system/_functionsMain.php';
-if ($_SESSION['SYS_COD_USUARIO'] == 127937) {
+if ($_SESSION['SYS_COD_EMPRESA'] == 2) {
 	echo fnDebug('true');
 	ini_set('display_errors', 1);
 	ini_set('display_startup_errors', 1);
@@ -30,13 +30,7 @@ $newRow = "";
 $objeto = "";
 $arrayColumnsNames = [];
 $writer = "";
-
-require_once '../js/plugins/Spout/Autoloader/autoload.php';
-
-use Box\Spout\Writer\WriterFactory;
-use Box\Spout\Common\Type;
-
-//echo fnDebug('true');
+$CABECHALHO = [];
 
 $opcao = @$_GET['opcao'];
 $cod_empresa = fnDecode(@$_GET['id']);
@@ -68,11 +62,6 @@ if ($cod_univend == "9999") {
 	$temUnivend = "S";
 }
 
-function encodeCsv($valor)
-{
-	return mb_convert_encoding($valor, 'ISO-8859-1', 'UTF-8');
-}
-
 switch ($opcao) {
 	case 'exportar':
 
@@ -91,7 +80,6 @@ switch ($opcao) {
 				" . $cod_persona . "															
 				) ";
 
-		// fnEscreve($sql);
 
 		$arrayQuery = mysqli_query(connTemp($cod_empresa, ''), $sql);
 
@@ -104,6 +92,8 @@ switch ($opcao) {
 			fputcsv($arquivo, $CABECHALHO, ';', '"');
 
 			while ($row = mysqli_fetch_assoc($arrayQuery)) {
+				// fnEscreveArray($row);
+				$arrayLinhas = [];
 
 				$row['TOT_VENDAS'] = fnValor($row['TOT_VENDAS'], 2);
 				$row['TOT_VENDAS_FIDEL'] = fnValor($row['TOT_VENDAS_FIDEL'], 2);
@@ -118,37 +108,32 @@ switch ($opcao) {
 				$row['QTD_VENDA_RESGATE'] = fnValor($row['QTD_VENDA_RESGATE'], 0);
 				$row['VAL_RESGATE'] = fnValor($row['VAL_RESGATE'], 2);
 
-				$linhaCSV = [
-					encodeCsv($row['V_ID_SESSION']),
-					encodeCsv($row['DES_PRODUTO']),
-					encodeCsv($row['COD_PRODUTO']),
-					encodeCsv($row['COD_EXTERNO']),
-					encodeCsv($row['TOTAL_QTD_PROD']),
-					encodeCsv($row['TOTAL_QTD_FIDE']),
-					encodeCsv($row['PERC_QTDFIDELIZADO']),
-					encodeCsv($row['TOT_VENDAS']),
-					encodeCsv($row['TOT_VENDAS_FIDEL']),
-					encodeCsv($row['PERC_VOLUME']),
-					encodeCsv($row['VPM_GERAL']),
-					encodeCsv($row['VPM_FIDE']),
-					encodeCsv($row['TOTAL_CLIENTES_FIDEL']),
-					encodeCsv($row['TOTAL_CLI_PERSONAS']),
-					encodeCsv($row['PERC_CLI_PERSONAS']),
-					encodeCsv($row['QTD_PRODUTO_TOTAL']),
-					encodeCsv($row['QTD_VENDA']),
-					encodeCsv($row['QTD_FIDELIZADO_TOTAL']),
-					encodeCsv($row['VAL_FIDELIZA_TOTAL']),
-					encodeCsv($row['QTD_VENDA_RESGATE']),
-					encodeCsv($row['VAL_RESGATE'])
+				$arrayLinhas = [
+					$row['DES_PRODUTO'],
+					$row['COD_PRODUTO'],
+					$row['COD_EXTERNO'],
+					$row['TOTAL_QTD_PROD'],
+					$row['TOTAL_QTD_FIDE'],
+					$row['PERC_QTDFIDELIZADO'],
+					$row['TOT_VENDAS'],
+					$row['TOT_VENDAS_FIDEL'],
+					$row['PERC_VOLUME'],
+					$row['VPM_GERAL'],
+					$row['VPM_FIDE'],
+					$row['TOTAL_CLIENTES_FIDEL'],
+					$row['TOTAL_CLI_PERSONAS'],
+					$row['PERC_CLI_PERSONAS'],
+					$row['QTD_PRODUTO_TOTAL'],
+					$row['QTD_VENDAS'],
+					$row['QTD_FIDELIZADO_TOTAL'],
+					$row['VAL_FIDELIZA_TOTAL'],
+					$row['QTD_VENDA_RESGATE'],
+					$row['VAL_RESGATE'],
 				];
 
 
-
-				//$limpandostring = fnAcentos(Utf8_ansi(json_encode($row)));
-				//$textolimpo = json_decode($limpandostring, true);
-				// $array = array_map("utf8_decode", $row);
-				// fputcsv($arquivo, $array, ';', '"');
-				fputcsv($arquivo, $linhaCSV, ';', '"');
+				$array = array_map("utf8_decode", $arrayLinhas);
+				fputcsv($arquivo, $array, ';', '"');
 			}
 		} else {
 
@@ -159,88 +144,15 @@ switch ($opcao) {
 			fputcsv($arquivo, $CABECALHODETALHES, ';', '"');
 
 			while ($row = mysqli_fetch_assoc($arrayQuery)) {
-
 				$row['VOLUME_VENDA'] = fnValor($row['VOLUME_VENDA'], 2);
 
-				//$limpandostring = fnAcentos(Utf8_ansi(json_encode($row)));
-				//$textolimpo = json_decode($limpandostring, true);
 				$array = array_map("utf8_decode", $row);
 				fputcsv($arquivo, $array, ';', '"');
-
-
-				//echo "<pre>";
-				//print_r($row);
-				//echo "</pre>";
 			}
 		}
 
 		fclose($arquivo);
-		/*
-			$array = array();
-			while($row = mysqli_fetch_assoc($arrayQuery)){
-				  $newRow = array();
-				  
-				  $cont = 0;
-				  foreach ($row as $objeto) {
-					// Colunas que são double converte com fnValor
-					 
-					if ($log_detalhes == "N"){	
-						//retorno simples
-						if($cont == 5 || $cont == 8 || $cont == 13){
-							array_push($newRow, fnValor($objeto, 2).'%');
-						}else if($cont == 6 || $cont == 7 || $cont == 9 || $cont == 10){
-							array_push($newRow, 'R$ '.fnValor($objeto, 2));
-						}else{
-							array_push($newRow, $objeto);
-						}
-					}else{
 
-						if($cont == 4){
-							array_push($newRow, 'R$ '.fnValor($objeto, 2));
-						}else if($cont == 3){
-							array_push($newRow, fnValor($objeto, 0));
-						}else{
-							//retorno completo
-							array_push($newRow, $objeto);
-						}
-						
-					}
-					  
-					$cont++;
-				  }
-				$array[] = $newRow;
-			}
-			
-			$arrayColumnsNames = array();
-			if ($log_detalhes == "N"){
-				array_push($arrayColumnsNames, "Produto");
-				array_push($arrayColumnsNames, "Cód.");
-				array_push($arrayColumnsNames, "Cód. Ext.");
-				array_push($arrayColumnsNames, "Qtd. Produto");
-				array_push($arrayColumnsNames, "Qtd. Fidel.");
-				array_push($arrayColumnsNames, "% Qtd. Fidel.");
-				array_push($arrayColumnsNames, "Tot. Vendas");
-				array_push($arrayColumnsNames, "Tot. Vendas Fidel.");
-				array_push($arrayColumnsNames, "% Vendas");
-				array_push($arrayColumnsNames, "VM. Total");
-				array_push($arrayColumnsNames, "VM. Fidel.");
-				array_push($arrayColumnsNames, "Clientes Fidel.");
-				array_push($arrayColumnsNames, "Tot. Cli. Personas");
-				array_push($arrayColumnsNames, "% Cli. Personas");
-				array_push($arrayColumnsNames, "Tot. Produtos");
-				array_push($arrayColumnsNames, "Qtd. Vendas");
-			}else{
-				while($row = mysqli_fetch_field($arrayQuery))
-				{
-					array_push($arrayColumnsNames, $row->name);
-				}
-			}		
-
-			$writer->addRow($arrayColumnsNames);
-			$writer->addRows($array);
-
-			$writer->close();
-*/
 		break;
 	case 'paginar':
 
