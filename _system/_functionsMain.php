@@ -2015,6 +2015,7 @@ function fngravacvs($texto, $destino, $nome)
 
 function procpalavras($frase, $connadm)
 {
+    $dadosconsulta = "";
     $sqldados = "SELECT KEY_BANCOVAR from VARIAVEIS WHERE	
                                                         LOG_EMAIL='S' OR
                                                         LOG_SMS='S' OR
@@ -2037,6 +2038,7 @@ function procpalavras($frase, $connadm)
 }
 function procpalavrasV2($frase, $connadm, $COD_EMPRESA)
 {
+    $dadosconsulta = "";
     $sqldados = "SELECT VD.DES_EXTERNO from variaveis OV
 					INNER JOIN variaveis_dinamize VD ON VD.COD_BANCOVAR=OV.COD_BANCOVAR 
 					WHERE	VD.COD_EMPRESA='$COD_EMPRESA' AND VD.DES_EXTERNO IS NOT null and VD.COD_BANCOVAR NOT IN ('21','3');";
@@ -2086,6 +2088,9 @@ function fnQualidadeCampos($conn, $COD_EMPRESA)
 
 function FnDebitos($arraydebitos, $consulta = false)
 {
+    $CredSaldo = 0;
+    $msg = "";
+    $cod_alterac = 0;
     //executar o ssql
     $sqlcomdebt = "SELECT                 pedido.TIP_LANCAMENTO 
                                             ,pedido.COD_VENDA

@@ -1,9 +1,4 @@
 <?php
-$dadosconsulta = array();
-$CredSaldo = 0;
-$msg = "";
-$cod_alterac = 0;
-
 include '_system/_functionsMain.php';
 
 // echo "EM MANUTENÇÃO";
@@ -443,7 +438,7 @@ $retornoDeb = FnDebitos($arraydebitos);
 
 if ($retornoDeb['cod_msg'] == 1) {
 
-	fngravacvs($newRow, $caminhoRelat, $nomeRel);
+	// fngravacvs($newRow, $caminhoRelat, $nomeRel);
 
 	include './_system/func_nexux/func_transacional.php';
 
