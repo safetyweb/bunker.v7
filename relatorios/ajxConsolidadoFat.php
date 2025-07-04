@@ -18,6 +18,7 @@ $cod_tiporeg = $_REQUEST['COD_TIPOREG'];
 $dat_ini = "01/" . $_REQUEST['DAT_INI'];
 $dat_fim = $_REQUEST['DAT_FIM'];
 $lojasSelecionadas = $_POST['LOJAS'];
+$CABECHALHO = [];
 
 $array_dat_fim  = explode("/", $dat_fim);
 
@@ -56,8 +57,8 @@ switch ($opcao) {
 		fputcsv($arquivo, $CABECHALHO, ';', '"', '\n');
 
 		while ($row = mysqli_fetch_assoc($arrayQuery)) {
-			$row[VALOR_TOTAL_VENDA] = fnValor($row['VALOR_TOTAL_VENDA'], 2);
-			$row[VALOR_TOTAL_VENDA_FIDELIZADO] = fnValor($row['VALOR_TOTAL_VENDA_FIDELIZADO'], 2);
+			$row['VALOR_TOTAL_VENDA'] = fnValor($row['VALOR_TOTAL_VENDA'], 2);
+			$row['VALOR_TOTAL_VENDA_FIDELIZADO'] = fnValor($row['VALOR_TOTAL_VENDA_FIDELIZADO'], 2);
 			//$limpandostring = fnAcentos(Utf8_ansi(json_encode($row)));
 			//$textolimpo = json_decode($limpandostring, true);
 			$array = array_map("utf8_decode", $row);
