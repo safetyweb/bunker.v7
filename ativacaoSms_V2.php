@@ -4,6 +4,7 @@
 
 $pct_unicos_sms = 0;
 $pct_reservaVl = 0;
+$personas = "";
 
 $hashLocal = mt_rand();
 

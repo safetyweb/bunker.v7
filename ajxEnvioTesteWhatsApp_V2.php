@@ -6,6 +6,9 @@ include '_system/_functionsMain.php';
 $cod_empresa = fnLimpaCampoZero(fnDecode($_GET['id']));
 $cod_campanha = fnLimpaCampoZero(fnDecode($_GET['idc']));
 $cod_usucada = $_SESSION['SYS_COD_USUARIO'];
+$otp = "";
+$mensagensContatos = "";
+$insertListaRet = "";
 
 $sql = "SELECT SENHAS_WHATSAPP.*
 from SENHAS_WHATSAPP
@@ -24,10 +27,10 @@ $session = $qrBuscaModulos['NOM_SESSAO'];
 //   $session = $cod_empresa."_".$qrBuscaModulos[COD_UNIVEND];
 // }
 
-$des_token = $qrBuscaModulos[DES_TOKEN];
-$des_authkey = $qrBuscaModulos[DES_AUTHKEY];
-$log_login = $qrBuscaModulos[LOG_LOGIN];
-$port = $qrBuscaModulos[PORT_SERVICAO];
+$des_token = $qrBuscaModulos['DES_TOKEN'];
+$des_authkey = $qrBuscaModulos['DES_AUTHKEY'];
+$log_login = $qrBuscaModulos['LOG_LOGIN'];
+$port = $qrBuscaModulos['PORT_SERVICAO'];
 
 // echo "EM MANUTENÇÃO";       	
 // exit();
@@ -410,12 +413,12 @@ while ($row = mysqli_fetch_assoc($arrayQuery)) {
 
 	$NOM_CLIENTE = explode(" ", ucfirst(strtolower(fnAcentos($row['NOM_CLIENTE']))));
 	$TEXTOENVIO = str_replace('<#NOME>', $NOM_CLIENTE[0], $msgCli);
-	$TEXTOENVIO = str_replace('<#CODCLIENTE>', $row['COD_CLIENTE'], $TEXTOENVIO);
-	$TEXTOENVIO = str_replace('<#SALDO>', $row['CREDITO_DISPONIVEL'], $TEXTOENVIO);
-	$TEXTOENVIO = str_replace('<#NOMELOJA>',  $row['NOM_FANTASI'], $TEXTOENVIO);
-	$TEXTOENVIO = str_replace('<#ANIVERSARIO>', $row['DAT_NASCIME'], $TEXTOENVIO);
-	$TEXTOENVIO = str_replace('<#DATAEXPIRA>', fnDataShort($row['DAT_EXPIRA']), $TEXTOENVIO);
-	$TEXTOENVIO = str_replace('<#EMAIL>', $row['DES_EMAILUS'], $TEXTOENVIO);
+	$TEXTOENVIO = str_replace('<#CODCLIENTE>', @$row['COD_CLIENTE'], $TEXTOENVIO);
+	$TEXTOENVIO = str_replace('<#SALDO>', @$row['CREDITO_DISPONIVEL'], $TEXTOENVIO);
+	$TEXTOENVIO = str_replace('<#NOMELOJA>',  @$row['NOM_FANTASI'], $TEXTOENVIO);
+	$TEXTOENVIO = str_replace('<#ANIVERSARIO>', @$row['DAT_NASCIME'], $TEXTOENVIO);
+	$TEXTOENVIO = str_replace('<#DATAEXPIRA>', fnDataShort(@$row['DAT_EXPIRA']), $TEXTOENVIO);
+	$TEXTOENVIO = str_replace('<#EMAIL>', @$row['DES_EMAILUS'], $TEXTOENVIO);
 	$msgsbtr = nl2br($TEXTOENVIO, true);
 	$msgsbtr = str_replace('<br />', "\n", $msgsbtr);
 
@@ -496,10 +499,10 @@ foreach ($CLIE_WHATSAPP_L as $key => $dadosArray) {
 
 	if (empty($des_imagem)) {
 		// fnEscreve('sem imagem');
-		$retorno = FnsendText($session, $des_authkey, '55' . $dadosArray[number], $dadosArray[message], $tempo_aleatorio, $port);
+		$retorno = FnsendText($session, $des_authkey, '55' . $dadosArray['number'], $dadosArray['message'], $tempo_aleatorio, $port);
 	} else {
 		// fnEscreve('com imagem');
-		$retorno = sendMedia($session, $des_authkey, '55' . $dadosArray[number], $tempo_aleatorio, 'image', $des_imagem, $dadosArray[message], "https://img.bunker.mk/media/clientes/$cod_empresa/wpp/$des_imagem", $port);
+		$retorno = sendMedia($session, $des_authkey, '55' . $dadosArray['number'], $tempo_aleatorio, 'image', $des_imagem, $dadosArray['message'], "https://img.bunker.mk/media/clientes/$cod_empresa/wpp/$des_imagem", $port);
 	}
 
 	// echo "<pre>";
