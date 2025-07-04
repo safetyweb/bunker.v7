@@ -66,6 +66,7 @@ $dat_fim = date('Y-m-t', strtotime($dat_fim));
 if (!is_dir('../media/excel/')) {
     mkdir('../media/excel/', 0777, true);
 }
+$CABECHALHO = [];
 
 switch ($opcao) {
     case 'exportar':
@@ -133,10 +134,6 @@ switch ($opcao) {
 
         $arquivo = fopen($arquivoCaminho, 'w');
 
-        // Cabeçalho
-        if (!isset($CABECHALHO)) {
-            $CABECHALHO = array();
-        }
         while ($headers = mysqli_fetch_field($arrQuery)) {
             $CABECHALHO[] = $headers->name;
         }
