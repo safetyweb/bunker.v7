@@ -9,6 +9,8 @@ include "../_system/_functionsMain.php";
 require_once("../pdfComponente/autoload.inc.php");
 
 $dt_exibe = "";
+$qtd_clientes = 0;
+$qtd_cli_novos = 0;
 
 use Dompdf\Dompdf;
 
