@@ -1,91 +1,5 @@
 <?php
 
-$hashLocal = "";
-$hoje = "";
-$dias30 = "";
-$msgRetorno = "";
-$msgTipo = "";
-$log_labels = "";
-$cod_controle = "";
-$periodo = "";
-$dat_ini = "";
-$dat_fim = "";
-$opcao = "";
-$hHabilitado = "";
-$hashForm = "";
-$array_dat_fim = [];
-$arrayQuery = [];
-$qrBuscaEmpresa = "";
-$nom_empresa = "";
-$dat_cadastr = "";
-$temUnivend = "";
-$maxComp = "";
-$maxEvo = "";
-$qrBuscaFiltro = "";
-$sqlPeriodo = "";
-$arrayQueryPeriodo = [];
-$qtd_periodos = 0;
-$checkLabels = "";
-$dt_filtro = "";
-$qrListaFiltro = "";
-$ano = "";
-$sqlPeriodo2 = "";
-$arrayQueryPeriodo2 = [];
-$qrPer = "";
-$classifica = "";
-$andPeriodo = "";
-$rs = "";
-$tot_QTD_CLIENTE = "";
-$tot_QTD_COMPRAS = "";
-$tot_VAL_TOTCOMPRAS = "";
-$tot_VAL_TOTPRODU = "";
-$tot_QTD_RESGATES = "";
-$tot_VAL_RESGATES = "";
-$tot_QTD_PRODUTOS = "";
-$tot_VAL_VINCULADO_RESGATE = "";
-$qrLista = "";
-$qtd_cliente = 0;
-$qtd_compras = 0;
-$val_totcompras = "";
-$val_totprodu = "";
-$tot_casual = "";
-$tot_frequente = "";
-$tot_fiel = "";
-$tot_fa = "";
-$pct_casual = "";
-$pct_frequente = "";
-$pct_fiel = "";
-$pct_fa = "";
-$tot_compra_casual = "";
-$tot_compra_frequente = "";
-$tot_compra_fiel = "";
-$tot_compra_fa = "";
-$tot_produ_casual = "";
-$tot_produ_frequente = "";
-$tot_produ_fiel = "";
-$tot_produ_fa = "";
-$media_val_casual = "";
-$media_val_frequente = "";
-$media_val_fiel = "";
-$media_val_fa = "";
-$valores = "";
-$porcentagens = "";
-$minMed = "";
-$maxMed = "";
-$minPct = "";
-$maxPct = "";
-$primeiro_indiceM = "";
-$primeiro_indiceP = "";
-$ticksMed = "";
-$ticksPct = "";
-$ticksExibe = "";
-$ticksExibeP = "";
-$tick = "";
-$step = "";
-$tickPct = "";
-$stepPct = "";
-
-
 //echo fnDebug('true');
 $hashLocal = mt_rand();
 //fnMostraForm();
@@ -95,7 +9,7 @@ $hoje = fnFormatDate(date('Y-m-d', strtotime($hoje . '- 1 days')));
 $dias30 = fnFormatDate(date('Y-m-d', strtotime($dias30 . '- 30 days')));
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	$request = md5(implode(@$_POST));
+	$request = md5(implode($_POST));
 
 	if (isset($_SESSION['last_request']) && $_SESSION['last_request'] == $request) {
 		$msgRetorno = 'Essa página já foi utilizada';
@@ -103,36 +17,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	} else {
 		$_SESSION['last_request']  = $request;
 
-		$cod_empresa = fnLimpaCampoZero(@$_POST['COD_EMPRESA']);
-		if (empty(@$_REQUEST['LOG_LABELS'])) {
+		$cod_empresa = fnLimpaCampoZero($_POST['COD_EMPRESA']);
+		if (empty($_REQUEST['LOG_LABELS'])) {
 			$log_labels = 'N';
 		} else {
-			$log_labels = @$_REQUEST['LOG_LABELS'];
+			$log_labels = $_REQUEST['LOG_LABELS'];
 		}
-		$cod_univend = @$_REQUEST['COD_UNIVEND'];
-		$cod_grupotr = @$_REQUEST['COD_GRUPOTR'];
-		$cod_tiporeg = @$_REQUEST['COD_TIPOREG'];
-		$cod_controle = @$_REQUEST['COD_CONTROLE'];
-		$periodo = fnLimpaCampoZero(@$_REQUEST['COD_CONTROLE']);
-		$dat_ini = @$_REQUEST['DAT_INI'] != 0 ? ("01 / " . @$_REQUEST['DAT_INI']) : 0;
-		$dat_fim = @$_REQUEST['DAT_FIM'];
-		$opcao = @$_REQUEST['opcao'];
-		$hHabilitado = @$_REQUEST['hHabilitado'];
-		$hashForm = @$_REQUEST['hashForm'];
+		$cod_univend = $_REQUEST['COD_UNIVEND'];
+		$cod_grupotr = $_REQUEST['COD_GRUPOTR'];
+		$cod_tiporeg = $_REQUEST['COD_TIPOREG'];
+		$cod_controle = $_REQUEST['COD_CONTROLE'];
+		$periodo = fnLimpaCampoZero($_REQUEST['COD_CONTROLE']);
+		$dat_ini = "01/" . $_REQUEST['DAT_INI'];
+		$dat_fim = $_REQUEST['DAT_FIM'];
+		$opcao = $_REQUEST['opcao'];
+		$hHabilitado = $_REQUEST['hHabilitado'];
+		$hashForm = $_REQUEST['hashForm'];
 
 		$array_dat_fim  = explode("/", $dat_fim);
 
-		$dat_fim = cal_days_in_month(CAL_GREGORIAN, $array_dat_fim['0'], $array_dat_fim['1']) . "/" . $dat_fim;
+		$dat_fim = cal_days_in_month(CAL_GREGORIAN, $array_dat_fim[0], $array_dat_fim[1]) . "/" . $dat_fim;
 
-		if ($opcao != '' && $opcao != 0) {
+		if ($opcao != '') {
 		}
 	}
 }
 
 //busca dados da url	
-if (is_numeric(fnLimpacampo(fnDecode(@$_GET['id'])))) {
+if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
 	//busca dados da empresa
-	$cod_empresa = fnDecode(@$_GET['id']);
+	$cod_empresa = fnDecode($_GET['id']);
 	$sql = "SELECT COD_EMPRESA, NOM_FANTASI, DAT_CADASTR FROM empresas where COD_EMPRESA = '" . $cod_empresa . "' ";
 	//fnEscreve($sql);
 	$arrayQuery = mysqli_query($connAdm->connAdm(), $sql);
@@ -361,7 +275,7 @@ if ($log_labels == 'S') {
 			<?php
 			//fnEscreve($cod_controle);
 
-			if ($periodo != 0 && $periodo != '') {
+			if ($periodo != 0) {
 				$sqlPeriodo2 = "SELECT * FROM FECHAMENTO_CLIENTES_U WHERE COD_EMPRESA = $cod_empresa AND COD_CONTROLE = $periodo";
 			} else {
 				$sqlPeriodo2 = "SELECT * FROM FECHAMENTO_CLIENTES_U WHERE COD_EMPRESA = $cod_empresa AND COD_CONTROLE = $cod_controle";
@@ -373,7 +287,7 @@ if ($log_labels == 'S') {
 
 			$qrPer = mysqli_fetch_assoc($arrayQueryPeriodo2);
 
-			switch ($qrPer['COD_FREQUENCIA']) {
+			switch ($qrPer[COD_FREQUENCIA]) {
 				case 12:
 					$classifica = "Anual";
 					break;
@@ -426,7 +340,7 @@ if ($log_labels == 'S') {
 						<div class="col text-center text-info">
 							<i class="fal fa-shopping-cart fa-3x" aria-hidden="true"></i>
 							<div class="push10"></div>
-							<b><?= fnDataShort($qrPer['DAT_INICIO']) ?> a <?= fnDataShort($qrPer['DAT_FIM']); ?></b>
+							<b><?= fnDataShort($qrPer[DAT_INICIO]) ?> a <?= fnDataShort($qrPer[DAT_FIM]); ?></b>
 							<div class="push10"></div>
 							<small style="font-weight:normal;">Compras Neste Período</small>
 						</div>
@@ -434,7 +348,7 @@ if ($log_labels == 'S') {
 						<div class="col text-center text-info">
 							<i class="fal fa-history fa-3x" aria-hidden="true"></i>
 							<div class="push10"></div>
-							<b><?= $qrPer['QTD_DIASHIST'] ?></b>
+							<b><?= $qrPer[QTD_DIASHIST] ?></b>
 							<div class="push10"></div>
 							<small style="font-weight:normal;">Período Histórico de Consulta <br /><small>(dias)</small></small>
 						</div>
@@ -489,33 +403,33 @@ if ($log_labels == 'S') {
 
 				<div class="col-md-2 col-md-offset-2 text-center">
 
-					<span class="fCor1 f21"><i class='fas fa-male' style='margin: 0 3px 0 0;'></i><?= $qrPer['TXT_CASUAIS'] ?></span>
+					<span class="fCor1 f21"><i class='fas fa-male' style='margin: 0 3px 0 0;'></i><?= $qrPer[TXT_CASUAIS] ?></span>
 					<div class="push"></div>
-					<span class="text-center f14">De <b><?= $qrPer['FAIXA_MIN_CASUAIS'] ?></b> a <b><?= $qrPer['FAIXA_MAX_CASUAIS'] ?></b> Compras no Período</span>
+					<span class="text-center f14">De <b><?= $qrPer[FAIXA_MIN_CASUAIS] ?></b> a <b><?= $qrPer[FAIXA_MAX_CASUAIS] ?></b> Compras no Período</span>
 
 				</div>
 
 				<div class="col-md-2 text-center">
 
-					<span class="fCor2 f21"><i class='fas fa-male' style='margin: 0 3px 0 0;'></i><?= $qrPer['TXT_FREQUENTES'] ?></span>
+					<span class="fCor2 f21"><i class='fas fa-male' style='margin: 0 3px 0 0;'></i><?= $qrPer[TXT_FREQUENTES] ?></span>
 					<div class="push"></div>
-					<span class="text-center f14">De <b><?= $qrPer['FAIXA_MIN_FREQUENTES'] ?></b> a <b><?= $qrPer['FAIXA_MAX_FREQUENTES'] ?></b> Compras no Período</span>
+					<span class="text-center f14">De <b><?= $qrPer[FAIXA_MIN_FREQUENTES] ?></b> a <b><?= $qrPer[FAIXA_MAX_FREQUENTES] ?></b> Compras no Período</span>
 
 				</div>
 
 				<div class="col-md-2 text-center">
 
-					<span class="fCor3 f21"><i class='fas fa-male' style='margin: 0 3px 0 0;'></i><?= $qrPer['TXT_FIEIS'] ?></span>
+					<span class="fCor3 f21"><i class='fas fa-male' style='margin: 0 3px 0 0;'></i><?= $qrPer[TXT_FIEIS] ?></span>
 					<div class="push"></div>
-					<span class="text-center f14">De <b><?= $qrPer['FAIXA_MIN_FIEIS'] ?></b> a <b><?= $qrPer['FAIXA_MAX_FIEIS'] ?></b> Compras no Período</span>
+					<span class="text-center f14">De <b><?= $qrPer[FAIXA_MIN_FIEIS] ?></b> a <b><?= $qrPer[FAIXA_MAX_FIEIS] ?></b> Compras no Período</span>
 
 				</div>
 
 				<div class="col-md-2 text-center">
 
-					<span class="fCor4 f21"><i class='fas fa-male' style='margin: 0 3px 0 0;'></i><?= $qrPer['TXT_FANS'] ?></span>
+					<span class="fCor4 f21"><i class='fas fa-male' style='margin: 0 3px 0 0;'></i><?= $qrPer[TXT_FANS] ?></span>
 					<div class="push"></div>
-					<span class="text-center f14">Com <b><?= $qrPer['FAIXA_MIN_FANS'] ?></b> ou Mais Compras no Período</span>
+					<span class="text-center f14">Com <b><?= $qrPer[FAIXA_MIN_FANS] ?></b> ou Mais Compras no Período</span>
 
 				</div>
 
@@ -541,7 +455,7 @@ if ($log_labels == 'S') {
 				<tbody>
 					<?php
 
-					if ($periodo != 0 && $periodo != '') {
+					if ($periodo != 0) {
 						$andPeriodo = "AND COD_CONTROLE = $periodo";
 					} else {
 						$andPeriodo = "AND COD_CONTROLE = $cod_controle";
@@ -636,9 +550,9 @@ if ($log_labels == 'S') {
 					}
 
 					$tot_casual = $qtd_cliente[0];
-					$tot_frequente = $qtd_cliente['1'];
-					$tot_fiel = $qtd_cliente['2'];
-					$tot_fa = $qtd_cliente['3'];
+					$tot_frequente = $qtd_cliente[1];
+					$tot_fiel = $qtd_cliente[2];
+					$tot_fa = $qtd_cliente[3];
 
 					/*
 									fnEscreve($tot_casual);
@@ -647,10 +561,10 @@ if ($log_labels == 'S') {
 									fnEscreve($tot_fa);
 									*/
 
-					$pct_casual = $tot_QTD_CLIENTE != 0 ? (($tot_casual) / $tot_QTD_CLIENTE) * 100 : 0;
-					$pct_frequente = $tot_QTD_CLIENTE != 0 ? (($tot_frequente) / $tot_QTD_CLIENTE) * 100 : 0;
-					$pct_fiel = $tot_QTD_CLIENTE != 0 ? (($tot_fiel) / $tot_QTD_CLIENTE) * 100 : 0;
-					$pct_fa = $tot_QTD_CLIENTE != 0 ? (($tot_fa) / $tot_QTD_CLIENTE) * 100 : 0;
+					$pct_casual = ($tot_casual / $tot_QTD_CLIENTE) * 100;
+					$pct_frequente = ($tot_frequente / $tot_QTD_CLIENTE) * 100;
+					$pct_fiel = ($tot_fiel / $tot_QTD_CLIENTE) * 100;
+					$pct_fa = ($tot_fa / $tot_QTD_CLIENTE) * 100;
 
 
 					// fnEscreve(fnValor($pct_casual,2));
@@ -660,9 +574,9 @@ if ($log_labels == 'S') {
 
 
 					$tot_compra_casual = $qtd_compras[0];
-					$tot_compra_frequente = $qtd_compras['1'];
-					$tot_compra_fiel = $qtd_compras['2'];
-					$tot_compra_fa = $qtd_compras['3'];
+					$tot_compra_frequente = $qtd_compras[1];
+					$tot_compra_fiel = $qtd_compras[2];
+					$tot_compra_fa = $qtd_compras[3];
 
 					/*
 									fnEscreve($tot_compra_casual);
@@ -672,21 +586,21 @@ if ($log_labels == 'S') {
 									*/
 
 					$tot_produ_casual = $val_totprodu[0];
-					$tot_produ_frequente = $val_totprodu['1'];
-					$tot_produ_fiel = $val_totprodu['2'];
-					$tot_produ_fa = $val_totprodu['3'];
+					$tot_produ_frequente = $val_totprodu[1];
+					$tot_produ_fiel = $val_totprodu[2];
+					$tot_produ_fa = $val_totprodu[3];
 
 					/*
-									$media_val_casual = $tot_compra_casual != 0 ? (($tot_produ_casual) / $tot_compra_casual) : 0;
-									$media_val_frequente = $tot_compra_frequente != 0 ? (($tot_produ_frequente) / $tot_compra_frequente) : 0;
-									$media_val_fiel = $tot_compra_fiel != 0 ? (($tot_produ_fiel) / $tot_compra_fiel) : 0;
-									$media_val_fa = $tot_compra_fa != 0 ? (($tot_produ_fa) / $tot_compra_fa) : 0;
+									$media_val_casual = ($tot_produ_casual / $tot_compra_casual);
+									$media_val_frequente = ($tot_produ_frequente / $tot_compra_frequente);
+									$media_val_fiel = ($tot_produ_fiel / $tot_compra_fiel);
+									$media_val_fa = ($tot_produ_fa / $tot_compra_fa);
 									*/
 
-					$media_val_casual = $tot_casual != 0 ? (($tot_produ_casual) / $tot_casual) : 0;
-					$media_val_frequente = $tot_frequente != 0 ? (($tot_produ_frequente) / $tot_frequente) : 0;
-					$media_val_fiel = $tot_fiel != 0 ? (($tot_produ_fiel) / $tot_fiel) : 0;
-					$media_val_fa = $tot_fa != 0 ? (($tot_produ_fa) / $tot_fa) : 0;
+					$media_val_casual = ($tot_produ_casual / $tot_casual);
+					$media_val_frequente = ($tot_produ_frequente / $tot_frequente);
+					$media_val_fiel = ($tot_produ_fiel / $tot_fiel);
+					$media_val_fa = ($tot_produ_fa / $tot_fa);
 
 					// echo("<br/>");
 					// fnEscreve(fnValor($media_val_casual,2));
@@ -718,8 +632,8 @@ if ($log_labels == 'S') {
 					$minPct = floor(min($porcentagens));
 					$maxPct = ceil(max($porcentagens));
 
-					$primeiro_indiceM = 2 != 0 ? ($minMed / 2) : 0;
-					$primeiro_indiceP = 2 != 0 ? ($minPct / 2) : 0;
+					$primeiro_indiceM = $minMed / 2;
+					$primeiro_indiceP = $minPct / 2;
 					// fnEscreve($minPct);
 					// fnEscreve($maxPct);
 
