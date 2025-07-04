@@ -8,6 +8,8 @@ include "../_system/_functionsMain.php";
 
 require_once("../pdfComponente/autoload.inc.php");
 
+$dt_exibe = "";
+
 use Dompdf\Dompdf;
 
 $dompdf = new DOMPDF();
