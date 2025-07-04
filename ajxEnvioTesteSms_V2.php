@@ -1,5 +1,4 @@
 <?php
-
 include '_system/_functionsMain.php';
 
 // echo "EM MANUTENÇÃO";
@@ -8,7 +7,9 @@ include '_system/_functionsMain.php';
 $cod_empresa = fnLimpaCampoZero(fnDecode($_GET['id']));
 $cod_campanha = fnLimpaCampoZero(fnDecode($_GET['idc']));
 $cod_usucada = $_SESSION['SYS_COD_USUARIO'];
-
+$otp = "";
+$mensagensContatos = "";
+$insertListaRet = "";
 $ARRAY_UNIDADE1 = array(
 	'sql' => "select COD_UNIVEND,cod_empresa,nom_fantasi,NOM_UNIVEND from unidadevenda where cod_empresa=$cod_empresa  and cod_exclusa=0",
 	'cod_empresa' => $cod_empresa,
@@ -328,7 +329,7 @@ while ($row = mysqli_fetch_assoc($arrayQuery)) {
 				$itemLinha = fnDataShort($row['DAT_EXPIRA']);
 				break;
 			default:
-				$itemLinha = $row['DES_EMAILUS'];
+				$itemLinha = @$row['DES_EMAILUS'];
 				break;
 		}
 		$linha .= $itemLinha . ";";
@@ -339,18 +340,18 @@ while ($row = mysqli_fetch_assoc($arrayQuery)) {
 
 	$NOM_CLIENTE = explode(" ", ucfirst(strtolower(fnAcentos($row['NOM_CLIENTE']))));
 	$TEXTOENVIO = str_replace('<#NOME>', $NOM_CLIENTE[0], $qrMsg['HTML']);
-	$TEXTOENVIO = str_replace('<#CODCLIENTE>', $row['COD_CLIENTE'], $TEXTOENVIO);
-	$TEXTOENVIO = str_replace('<#SALDO>', $row['CREDITO_DISPONIVEL'], $TEXTOENVIO);
-	$TEXTOENVIO = str_replace('<#NOMELOJA>',  fnAcentos($ARRAY_UNIDADE[$NOM_ARRAY_UNIDADE]['nom_fantasi']), $TEXTOENVIO);
-	$TEXTOENVIO = str_replace('<#ANIVERSARIO>', $row['DAT_NASCIME'], $TEXTOENVIO);
-	$TEXTOENVIO = str_replace('<#DATAEXPIRA>', fnDataShort($row['DAT_EXPIRA']), $TEXTOENVIO);
-	$TEXTOENVIO = str_replace('<#EMAIL>', $row['DES_EMAILUS'], $TEXTOENVIO);
+	$TEXTOENVIO = str_replace('<#CODCLIENTE>', @$row['COD_CLIENTE'], $TEXTOENVIO);
+	$TEXTOENVIO = str_replace('<#SALDO>', @$row['CREDITO_DISPONIVEL'], $TEXTOENVIO);
+	$TEXTOENVIO = str_replace('<#NOMELOJA>',  fnAcentos(@$ARRAY_UNIDADE[$NOM_ARRAY_UNIDADE]['nom_fantasi']), $TEXTOENVIO);
+	$TEXTOENVIO = str_replace('<#ANIVERSARIO>', @$row['DAT_NASCIME'], $TEXTOENVIO);
+	$TEXTOENVIO = str_replace('<#DATAEXPIRA>', fnDataShort(@$row['DAT_EXPIRA']), $TEXTOENVIO);
+	$TEXTOENVIO = str_replace('<#EMAIL>', @$row['DES_EMAILUS'], $TEXTOENVIO);
 	$msgsbtr = nl2br($TEXTOENVIO, true);
 	$msgsbtr = str_replace('<br />', ' \n ', $msgsbtr);
 	$msgsbtr = str_replace(array("\r", "\n"), '', $msgsbtr);
 
 	// fnEscreve($msgsbtr);
-	$nom_camp_msg = $qrMsg[COD_CAMPANHA] . '||' . $qrMsg[COD_EMPRESA] . '||' . $row[COD_CLIENTE] . '||' . $qrMsg[COD_TEMPLATE];
+	$nom_camp_msg = $qrMsg['COD_CAMPANHA'] . '||' . $qrMsg['COD_EMPRESA'] . '||' . $row['COD_CLIENTE'] . '||' . $qrMsg['COD_TEMPLATE'];
 
 	// $row['NUM_CELULAR'] = "15981146246";
 
@@ -437,7 +438,7 @@ $retornoDeb = FnDebitos($arraydebitos);
 
 if ($retornoDeb['cod_msg'] == 1) {
 
-	fngravacvs($newRow, $caminhoRelat, $nomeRel);
+	// fngravacvs($newRow, $caminhoRelat, $nomeRel);
 
 	include './_system/func_nexux/func_transacional.php';
 
@@ -456,9 +457,9 @@ if ($retornoDeb['cod_msg'] == 1) {
 
 		$testefast = EnvioSms_fast($senha, $des_campanha, json_encode($CLIE_SMS_L), 'short');
 
-		$cod_erro_nexux = $testefast[Resultado][CodigoResultado];
+		$cod_erro_nexux = $testefast['Resultado']['CodigoResultado'];
 
-		$msgenvio = $testefast[Resultado][Mensagem];
+		$msgenvio = $testefast['Resultado']['Mensagem'];
 		$jsonputo = json_encode($testefast);
 	} else {
 		// fnEscreve("wavy");
@@ -501,23 +502,23 @@ if ($retornoDeb['cod_msg'] == 1) {
 	if ($cod_erro_nexux == '0' && $cod_parcomu_auth == 17) {
 		// $msgErro = fnDataFull($dat_envio);
 		$msgErro = "";
-		$CHAVE_GERAL = $testefast[Resultado][Chave];
-		$CHAVE_CLIENTE = $testefast[Mensagens][0][UniqueID];
+		$CHAVE_GERAL = $testefast['Resultado']['Chave'];
+		$CHAVE_CLIENTE = $testefast['Mensagens'][0]['UniqueID'];
 
-		foreach ($testefast[Mensagens] as $key => $cliente) {
+		foreach ($testefast['Mensagens'] as $key => $cliente) {
 
-			$info = explode("||", $cliente[Codigo_cliente]);
+			$info = explode("||", $cliente['Codigo_cliente']);
 
 			$cod_cliente = $info[2];
-			$celular = substr($cliente[numero], 3);
+			$celular = substr($cliente['numero'], 3);
 			$idDisparo = date('Ymd');
-			$TEXTOENVIO = $cliente[body];
-			$CHAVE_CLIENTE = $cliente[UniqueID];
+			$TEXTOENVIO = $cliente['body'];
+			$CHAVE_CLIENTE = $cliente['UniqueID'];
 
 			$insertListaRet .= "('" . $cod_empresa . "',
 		                             '" . $cod_campanha . "',       
-		                             '" . $cliente[nome] . "',       
-		                             '" . $cliente[univend] . "',
+		                             '" . $cliente['nome'] . "',       
+		                             '" . $cliente['univend'] . "',
 		                             '" . $cod_cliente . "',
 		                             '" . $celular . "',
 		                             'S',
@@ -553,8 +554,8 @@ if ($retornoDeb['cod_msg'] == 1) {
 
 			$insertListaRet .= "('" . $cod_empresa . "',
 			                             '" . $cod_campanha . "',       
-			                             '" . $cliente[nome] . "',       
-		                             	 '" . $cliente[univend] . "',
+			                             '" . $cliente['nome'] . "',       
+		                             	 '" . $cliente['univend'] . "',
 			                             '" . $codCliente . "',
 			                             '" . $celular . "',
 			                             'S',
@@ -631,5 +632,5 @@ if ($retornoDeb['cod_msg'] == 1) {
 
 	$msgErro = fnDataFull($dat_envio);
 } else {
-	echo $retornoDeb[MSG];
+	echo $retornoDeb['MSG'];
 }
