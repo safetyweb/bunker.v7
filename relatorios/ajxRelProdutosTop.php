@@ -92,7 +92,7 @@ switch ($opcao) {
 			fputcsv($arquivo, $CABECHALHO, ';', '"');
 
 			while ($row = mysqli_fetch_assoc($arrayQuery)) {
-				// fnEscreveArray($row);
+				fnEscreveArray($row);
 				$arrayLinhas = [];
 
 				$row['TOT_VENDAS'] = fnValor($row['TOT_VENDAS'], 2);
