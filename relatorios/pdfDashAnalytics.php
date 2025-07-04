@@ -29,7 +29,10 @@ $filename = "Analytics";
 $h_dt_exibe = date("m/Y", strtotime($dt_exibe));
 $h_qtd_clientes = fnValor($qtd_clientes, 0);
 $h_qtd_cli_novos = fnValor($qtd_cli_novos, 0);
-$h_pc_cli_cad = fnValor(($qtd_cli_novos * 100) / ($qtd_clientes), 1);
+$h_pc_cli_cad = 0;
+if ($qtd_cli_novos > 0) {
+	$h_pc_cli_cad = fnValor(($qtd_cli_novos * 100) / ($qtd_clientes), 1);
+}
 $h_listaFatLmp = fnValor($listaFatLmp, 2);
 $h_listaFatAv = fnValor($listaFatAv, 2);
 $h_listaFatTotRes = fnValor($listaFatTotRes, 2);
