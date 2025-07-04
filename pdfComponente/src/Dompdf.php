@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package dompdf
  * @link    http://dompdf.github.com/
@@ -6,6 +7,7 @@
  * @author  Fabien Ménager <fabien.menager@gmail.com>
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  */
+
 namespace Dompdf;
 
 use DOMDocument;
@@ -206,22 +208,22 @@ class Dompdf
     private $quirksmode = false;
 
     /**
-    * Protocol whitelist
-    *
-    * Protocols and PHP wrappers allowed in URLs. Full support is not
-    * guarantee for the protocols/wrappers contained in this array.
-    *
-    * @var array
-    */
+     * Protocol whitelist
+     *
+     * Protocols and PHP wrappers allowed in URLs. Full support is not
+     * guarantee for the protocols/wrappers contained in this array.
+     *
+     * @var array
+     */
     private $allowedProtocols = array(null, "", "file://", "http://", "https://");
 
     /**
-    * Local file extension whitelist
-    *
-    * File extensions supported by dompdf for local files.
-    *
-    * @var array
-    */
+     * Local file extension whitelist
+     *
+     * File extensions supported by dompdf for local files.
+     *
+     * @var array
+     */
     private $allowedLocalFileExtensions = array("htm", "html");
 
     /**
@@ -246,10 +248,20 @@ class Dompdf
      * @deprecated
      */
     public static $native_fonts = array(
-        "courier", "courier-bold", "courier-oblique", "courier-boldoblique",
-        "helvetica", "helvetica-bold", "helvetica-oblique", "helvetica-boldoblique",
-        "times-roman", "times-bold", "times-italic", "times-bolditalic",
-        "symbol", "zapfdinbats"
+        "courier",
+        "courier-bold",
+        "courier-oblique",
+        "courier-boldoblique",
+        "helvetica",
+        "helvetica-bold",
+        "helvetica-oblique",
+        "helvetica-boldoblique",
+        "times-roman",
+        "times-bold",
+        "times-italic",
+        "times-bolditalic",
+        "symbol",
+        "zapfdinbats"
     );
 
     /**
@@ -258,10 +270,20 @@ class Dompdf
      * @var array
      */
     public static $nativeFonts = array(
-        "courier", "courier-bold", "courier-oblique", "courier-boldoblique",
-        "helvetica", "helvetica-bold", "helvetica-oblique", "helvetica-boldoblique",
-        "times-roman", "times-bold", "times-italic", "times-bolditalic",
-        "symbol", "zapfdinbats"
+        "courier",
+        "courier-bold",
+        "courier-oblique",
+        "courier-boldoblique",
+        "helvetica",
+        "helvetica-bold",
+        "helvetica-oblique",
+        "helvetica-boldoblique",
+        "times-roman",
+        "times-bold",
+        "times-italic",
+        "times-bolditalic",
+        "symbol",
+        "zapfdinbats"
     );
 
     /**
@@ -283,7 +305,7 @@ class Dompdf
 
         $versionFile = realpath(__DIR__ . '/../VERSION');
         if (file_exists($versionFile) && ($version = file_get_contents($versionFile)) !== false && $version !== '$Format:<%h>$') {
-          $this->version = sprintf('dompdf %s', $version);
+            $this->version = sprintf('dompdf %s', $version);
         }
 
         $this->localeStandard = sprintf('%.1f', 1.0) == '1.0';
@@ -350,7 +372,7 @@ class Dompdf
         }
         $protocol = strtolower($this->protocol);
 
-        if ( !in_array($protocol, $this->allowedProtocols) ) {
+        if (!in_array($protocol, $this->allowedProtocols)) {
             throw new Exception("Permission denied on $file. The communication protocol is not supported.");
         }
 
@@ -424,7 +446,7 @@ class Dompdf
         if (($file_encoding = mb_detect_encoding($str, null, true)) === false) {
             $file_encoding = "auto";
         }
-        if (in_array(strtoupper($file_encoding), array('UTF-8','UTF8')) === false) {
+        if (in_array(strtoupper($file_encoding), array('UTF-8', 'UTF8')) === false) {
             $str = mb_convert_encoding($str, 'UTF-8', $file_encoding);
         }
 
@@ -441,7 +463,7 @@ class Dompdf
                 }
             }
         }
-        if (isset($document_encoding) && in_array(strtoupper($document_encoding), array('UTF-8','UTF8')) === false) {
+        if (isset($document_encoding) && in_array(strtoupper($document_encoding), array('UTF-8', 'UTF8')) === false) {
             $str = preg_replace('/charset=([^\s"]+)/i', 'charset=UTF-8', $str);
         } elseif (isset($document_encoding) === false && strpos($str, '<head>') !== false) {
             $str = str_replace('<head>', '<head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8">', $str);
@@ -589,7 +611,8 @@ class Dompdf
             switch (strtolower($tag->nodeName)) {
                 // load <link rel="STYLESHEET" ... /> tags
                 case "link":
-                    if (mb_strtolower(stripos($tag->getAttribute("rel"), "stylesheet") !== false) || // may be "appendix stylesheet"
+                    if (
+                        mb_strtolower(stripos($tag->getAttribute("rel"), "stylesheet") !== false) || // may be "appendix stylesheet"
                         mb_strtolower($tag->getAttribute("type")) === "text/css"
                     ) {
                         //Check if the css file is for an accepted media type
@@ -607,7 +630,7 @@ class Dompdf
                             if (!$accept) {
                                 //found at least one mediatype, but none of the accepted ones
                                 //Skip this css file.
-                                continue;
+                                continue 2;
                             }
                         }
 
@@ -624,11 +647,12 @@ class Dompdf
                     // HTML 4.0 spec:
                     // http://www.w3.org/TR/REC-html40/present/styles.html#adef-media
                     // which states that the default media type is 'screen'
-                    if ($tag->hasAttributes() &&
+                    if (
+                        $tag->hasAttributes() &&
                         ($media = $tag->getAttribute("media")) &&
                         !in_array($media, $acceptedmedia)
                     ) {
-                        continue;
+                        continue 2;
                     }
 
                     $css = "";
@@ -785,9 +809,13 @@ class Dompdf
                     $canvas->register_string_subset($style->font_family, $chars);
 
                     // the hex-decoded text of the content property, duplicated from AbstrctFrameReflower::_parse_string
-                    $decoded_string = preg_replace_callback("/\\\\([0-9a-fA-F]{0,6})/",
-                        function ($matches) { return \Dompdf\Helpers::unichr(hexdec($matches[1])); },
-                        $style->content);
+                    $decoded_string = preg_replace_callback(
+                        "/\\\\([0-9a-fA-F]{0,6})/",
+                        function ($matches) {
+                            return \Dompdf\Helpers::unichr(hexdec($matches[1]));
+                        },
+                        $style->content
+                    );
                     $chars = mb_strtoupper($style->content) . mb_strtolower($style->content) . mb_strtoupper($decoded_string) . mb_strtolower($decoded_string);
                     $canvas->register_string_subset($style->font_family, $chars);
                     continue;
@@ -835,7 +863,7 @@ class Dompdf
             }
         }
 
-        $root->set_containing_block(0, 0,$canvas->get_width(), $canvas->get_height());
+        $root->set_containing_block(0, 0, $canvas->get_width(), $canvas->get_height());
         $root->set_renderer(new Renderer($this));
 
         // This is where the magic happens:
@@ -895,11 +923,15 @@ class Dompdf
 
         $out = sprintf(
             "<span style='color: #000' title='Frames'>%6d</span>" .
-            "<span style='color: #009' title='Memory'>%10.2f KB</span>" .
-            "<span style='color: #900' title='Time'>%10.2f ms</span>" .
-            "<span  title='Quirksmode'>  " .
-            ($this->quirksmode ? "<span style='color: #d00'> ON</span>" : "<span style='color: #0d0'>OFF</span>") .
-            "</span><br />", $frames, $memory, $time);
+                "<span style='color: #009' title='Memory'>%10.2f KB</span>" .
+                "<span style='color: #900' title='Time'>%10.2f ms</span>" .
+                "<span  title='Quirksmode'>  " .
+                ($this->quirksmode ? "<span style='color: #d00'> ON</span>" : "<span style='color: #0d0'>OFF</span>") .
+                "</span><br />",
+            $frames,
+            $memory,
+            $time
+        );
 
         $out .= ob_get_contents();
         ob_clean();
@@ -1500,12 +1532,11 @@ class Dompdf
      */
     function __get($prop)
     {
-        switch ($prop)
-        {
-            case 'version' :
+        switch ($prop) {
+            case 'version':
                 return $this->version;
             default:
-                throw new Exception( 'Invalid property: ' . $prop );
+                throw new Exception('Invalid property: ' . $prop);
         }
     }
 }
