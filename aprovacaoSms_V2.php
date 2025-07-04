@@ -848,7 +848,7 @@ $msgRetornoSaldo = "<span class='fal fa-exclamation-triangle f16'></span><strong
 						$('#ENV').attr('disabled');
 						$('.data-envio').text(data);
 						if (data !== "Erro interno") {
-							// location.reload();
+							location.reload();
 						}
 					} else {
 						$('#ENV').html("<span class='fa fa-times'></span>&nbsp;" + data).removeAttr('disabled').removeClass('btn-primary').addClass('btn-danger');
