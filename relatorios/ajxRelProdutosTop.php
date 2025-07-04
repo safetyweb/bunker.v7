@@ -124,7 +124,7 @@ switch ($opcao) {
 					$row['TOTAL_CLI_PERSONAS'],
 					$row['PERC_CLI_PERSONAS'],
 					$row['QTD_PRODUTO_TOTAL'],
-					$row['QTD_VENDAS'],
+					$row['QTD_VENDA'],
 					$row['QTD_FIDELIZADO_TOTAL'],
 					$row['VAL_FIDELIZA_TOTAL'],
 					$row['QTD_VENDA_RESGATE'],
