@@ -267,28 +267,59 @@ $famalefCor4 = fnFa64("fas fa-male fa-2x fCor4");
 
 $bar = unserialize($bar);
 $cliente = unserialize($cliente);
-$h_cliente['0'] = fnValor($cliente['0'], 0);
-$h_cliente['1'] = fnValor($cliente['1'], 0);
-$h_cliente['2'] = fnValor($cliente['2'], 0);
-$h_cliente['3'] = fnValor($cliente['3'], 0);
+if (is_array($cliente)) {
+	$h_cliente['0'] = fnValor($cliente['0'], 0);
+	$h_cliente['1'] = fnValor($cliente['1'], 0);
+	$h_cliente['2'] = fnValor($cliente['2'], 0);
+	$h_cliente['3'] = fnValor($cliente['3'], 0);
+} else {
+	// Defina valores padrão ou trate o erro
+	$h_cliente['0'] = 0;
+	$h_cliente['1'] = 0;
+	$h_cliente['2'] = 0;
+	$h_cliente['3'] = 0;
+}
+
 
 $im = unserialize($im);
-$h_im['0'] = fnValor($im['0'], 0);
-$h_im['1'] = fnValor($im['1'], 0);
-$h_im['2'] = fnValor($im['2'], 0);
-$h_im['3'] = fnValor($im['3'], 0);
+if (is_array($im)) {
+	$h_im['0'] = fnValor($im['0'], 0);
+	$h_im['1'] = fnValor($im['1'], 0);
+	$h_im['2'] = fnValor($im['2'], 0);
+	$h_im['3'] = fnValor($im['3'], 0);
+} else {
+	$h_im['0'] = 0;
+	$h_im['1'] = 0;
+	$h_im['2'] = 0;
+	$h_im['3'] = 0;
+}
 
 $faixa = unserialize($faixa);
-$h_faixa['0'] = fnValor($faixa['0'], 0);
-$h_faixa['1'] = fnValor($faixa['1'], 0);
-$h_faixa['2'] = fnValor($faixa['2'], 0);
-$h_faixa['3'] = fnValor($faixa['3'], 0);
+if (is_array($faixa)) {
+	$h_faixa['0'] = fnValor($faixa['0'], 0);
+	$h_faixa['1'] = fnValor($faixa['1'], 0);
+	$h_faixa['2'] = fnValor($faixa['2'], 0);
+	$h_faixa['3'] = fnValor($faixa['3'], 0);
+} else {
+	$h_faixa['0'] = 0;
+	$h_faixa['1'] = 0;
+	$h_faixa['2'] = 0;
+	$h_faixa['3'] = 0;
+}
 
 $gm = unserialize($gm);
-$h_gm['0'] = fnValor($gm['0'], 2);
-$h_gm['1'] = fnValor($gm['1'], 2);
-$h_gm['2'] = fnValor($gm['2'], 2);
-$h_gm['3'] = fnValor($gm['3'], 2);
+if (is_array($gm)) {
+	$h_gm['0'] = fnValor($gm['0'], 2);
+	$h_gm['1'] = fnValor($gm['1'], 2);
+	$h_gm['2'] = fnValor($gm['2'], 2);
+	$h_gm['3'] = fnValor($gm['3'], 2);
+} else {
+	$h_gm['0'] = 0;
+	$h_gm['1'] = 0;
+	$h_gm['2'] = 0;
+	$h_gm['3'] = 0;
+}
+
 
 
 //echo "<pre>";
