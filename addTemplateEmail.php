@@ -145,7 +145,7 @@ if (is_numeric(fnLimpacampo(fnDecode($_GET['id'])))) {
 	$nom_empresa = "";
 }
 
-if (is_numeric(fnLimpacampo(fnDecode($_GET['idT'])))) {
+if (is_numeric(fnLimpacampo(fnDecode(@$_GET['idT'])))) {
 
 	//busca dados do convênio
 	$cod_template = fnDecode($_GET['idT']);

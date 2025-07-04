@@ -2,8 +2,9 @@
 
 include '_system/_functionsMain.php';
 
-$opcao = fnLimpaCampo($_GET['opcao']);
+$opcao = fnLimpaCampo(@$_GET['opcao']);
 $cod_empresa = fnLimpaCampoZero(fnDecode($_REQUEST['COD_EMPRESA']));
+$des_campanha = "";
 
 switch ($opcao) {
 

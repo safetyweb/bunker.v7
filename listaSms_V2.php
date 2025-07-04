@@ -198,13 +198,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 										$cod_campanha,
 										'$cod_personas',
 										'$pct_reserva',
-										'" . fnLimpaCampoZero($qrTot['TOTAL_PERSONAS']) . "',
-										'" . fnLimpaCampoZero($qrTot['CLIENTES_UNICOS']) . "',
-										'" . fnLimpaCampoZero($qrTot['CLIENTES_UNICOS_SMS']) . "',
-										'" . fnLimpaCampoZero($qrTot['CLIENTES_UNICO_PERC']) . "',
-										'" . fnLimpaCampoZero($qrTot['TOTAL_CLIENTE_SMS_NAO']) . "',
-										'" . fnLimpaCampoZero($qrTot['CLIENTES_OPTOUT']) . "',
-										'" . fnLimpaCampoZero($qrTot['CLIENTES_BLACKLIST']) . "',
+										'" . fnLimpaCampoZero(@$qrTot['TOTAL_PERSONAS']) . "',
+										'" . fnLimpaCampoZero(@$qrTot['CLIENTES_UNICOS']) . "',
+										'" . fnLimpaCampoZero(@$qrTot['CLIENTES_UNICOS_SMS']) . "',
+										'" . fnLimpaCampoZero(@$qrTot['CLIENTES_UNICO_PERC']) . "',
+										'" . fnLimpaCampoZero(@$qrTot['TOTAL_CLIENTE_SMS_NAO']) . "',
+										'" . fnLimpaCampoZero(@$qrTot['CLIENTES_OPTOUT']) . "',
+										'" . fnLimpaCampoZero(@$qrTot['CLIENTES_BLACKLIST']) . "',
 										$cod_usucada
 									)";
 
