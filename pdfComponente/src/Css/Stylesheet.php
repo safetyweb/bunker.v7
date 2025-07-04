@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package dompdf
  * @link    http://dompdf.github.com/
@@ -7,6 +8,7 @@
  * @author  Fabien Ménager <fabien.menager@gmail.com>
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  */
+
 namespace Dompdf\Css;
 
 use DOMElement;
@@ -367,7 +369,8 @@ class Stylesheet
             // See http://the-stickman.com/web-development/php/getting-http-response-headers-when-using-file_get_contents/
             if (isset($http_response_header) && !$this->_dompdf->getQuirksmode()) {
                 foreach ($http_response_header as $_header) {
-                    if (preg_match("@Content-Type:\s*([\w/]+)@i", $_header, $matches) &&
+                    if (
+                        preg_match("@Content-Type:\s*([\w/]+)@i", $_header, $matches) &&
                         ($matches[1] !== "text/css")
                     ) {
                         $good_mime_type = false;
@@ -606,15 +609,15 @@ class Stylesheet
                             $tok = "";
                             break;
 
-                        // an+b, n, odd, and even
+                            // an+b, n, odd, and even
                         /** @noinspection PhpMissingBreakStatementInspection */
                         case "nth-last-of-type":
                             $last = true;
                         case "nth-of-type":
                             //FIXME: this fix-up is pretty ugly, would parsing the selector in reverse work better generally?
                             $descendant_delimeter = strrpos($query, "::");
-                            $isChild = substr($query, $descendant_delimeter-5, 5) == "child";
-                            $el = substr($query, $descendant_delimeter+2);
+                            $isChild = substr($query, $descendant_delimeter - 5, 5) == "child";
+                            $el = substr($query, $descendant_delimeter + 2);
                             $query = substr($query, 0, strrpos($query, "/")) . ($isChild ? "/" : "//") . $el;
 
                             $pseudo_classes[$tok] = true;
@@ -644,8 +647,8 @@ class Stylesheet
                         case "nth-child":
                             //FIXME: this fix-up is pretty ugly, would parsing the selector in reverse work better generally?
                             $descendant_delimeter = strrpos($query, "::");
-                            $isChild = substr($query, $descendant_delimeter-5, 5) == "child";
-                            $el = substr($query, $descendant_delimeter+2);
+                            $isChild = substr($query, $descendant_delimeter - 5, 5) == "child";
+                            $el = substr($query, $descendant_delimeter + 2);
                             $query = substr($query, 0, strrpos($query, "/")) . ($isChild ? "/" : "//") . "*";
 
                             $pseudo_classes[$tok] = true;
@@ -703,7 +706,7 @@ class Stylesheet
                             $pseudo_elements[$el] = true;
                             break;
 
-                            // N/A
+                        // N/A
                         case "focus":
                         case "active":
                         case "hover":
@@ -787,7 +790,6 @@ class Stylesheet
                         case "=":
                             $op = "=";
                             break;
-
                     }
 
                     // Read the attribute value, if required
@@ -859,25 +861,25 @@ class Stylesheet
         }
         $i++;
 
-//       case ":":
-//         // Pseudo selectors: ignore for now.  Partially handled directly
-//         // below.
+        //       case ":":
+        //         // Pseudo selectors: ignore for now.  Partially handled directly
+        //         // below.
 
-//         // Skip until the next special character, leaving the token as-is
-//         while ( $i < $len ) {
-//           if ( in_array($selector[$i], $delimiters) )
-//             break;
-//           $i++;
-//         }
-//         break;
+        //         // Skip until the next special character, leaving the token as-is
+        //         while ( $i < $len ) {
+        //           if ( in_array($selector[$i], $delimiters) )
+        //             break;
+        //           $i++;
+        //         }
+        //         break;
 
-//       default:
-//         // Add the character to the token
-//         $tok .= $selector[$i++];
-//         break;
-//       }
+        //       default:
+        //         // Add the character to the token
+        //         $tok .= $selector[$i++];
+        //         break;
+        //       }
 
-//    }
+        //    }
 
 
         // Trim the trailing '/' from the query
@@ -1217,7 +1219,6 @@ class Stylesheet
             $this->_styles[$key] = null;
             unset($this->_styles[$key]);
         }
-
     }
 
     /**
@@ -1357,7 +1358,7 @@ class Stylesheet
                                 $key = $page_selector;
 
                             default:
-                                continue;
+                                continue 2;
                         }
 
                         // Store the style for later...
@@ -1383,7 +1384,6 @@ class Stylesheet
             if ($match[7] !== "") {
                 $this->_parse_sections($match[7]);
             }
-
         }
     }
 
@@ -1420,10 +1420,12 @@ class Stylesheet
                     $path = 'none';
                 }
             } else {
-                $path = Helpers::build_url($this->get_protocol(),
+                $path = Helpers::build_url(
+                    $this->get_protocol(),
                     $this->get_host(),
                     $this->get_base_path(),
-                    $val);
+                    $val
+                );
             }
         }
 
@@ -1459,7 +1461,6 @@ class Stylesheet
                     break;
                 }
             }
-
         } else {
             // unconditional import
             $accept = true;
@@ -1486,7 +1487,6 @@ class Stylesheet
             $this->_base_host = $host;
             $this->_base_path = $path;
         }
-
     }
 
     /**
@@ -1643,10 +1643,12 @@ class Stylesheet
         if ($DEBUGCSS) print '[_parse_sections';
         foreach ($sections as $sect) {
             $i = mb_strpos($sect, "{");
-            if ($i === false) { continue; }
+            if ($i === false) {
+                continue;
+            }
 
             //$selectors = explode(",", mb_substr($sect, 0, $i));
-            $selectors = preg_split("/,(?![^\(]*\))/", mb_substr($sect, 0, $i),0, PREG_SPLIT_NO_EMPTY);
+            $selectors = preg_split("/,(?![^\(]*\))/", mb_substr($sect, 0, $i), 0, PREG_SPLIT_NO_EMPTY);
             if ($DEBUGCSS) print '[section';
 
             $style = $this->_parse_properties(trim(mb_substr($sect, $i + 1)));
