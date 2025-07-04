@@ -143,13 +143,13 @@ $arrayQuery = mysqli_query(connTemp($cod_empresa, ''), $sql) or die(mysqli_error
 $qrBuscaCampanha = mysqli_fetch_assoc($arrayQuery);
 
 if (isset($arrayQuery)) {
-	$log_ativo = $qrBuscaCampanha['LOG_ATIVO'];
-	$des_campanha = $qrBuscaCampanha['DES_CAMPANHA'];
-	$abr_campanha = $qrBuscaCampanha['ABR_CAMPANHA'];
-	$des_icone = $qrBuscaCampanha['DES_ICONE'];
-	$tip_campanha = $qrBuscaCampanha['TIP_CAMPANHA'];
-	$qtd_diasind = $qrBuscaCampanha['QTD_DIASIND'];
-	$log_realtime = $qrBuscaCampanha['LOG_REALTIME'];
+	$log_ativo = @$qrBuscaCampanha['LOG_ATIVO'];
+	$des_campanha = @$qrBuscaCampanha['DES_CAMPANHA'];
+	$abr_campanha = @$qrBuscaCampanha['ABR_CAMPANHA'];
+	$des_icone = @$qrBuscaCampanha['DES_ICONE'];
+	$tip_campanha = @$qrBuscaCampanha['TIP_CAMPANHA'];
+	$qtd_diasind = @$qrBuscaCampanha['QTD_DIASIND'];
+	$log_realtime = @$qrBuscaCampanha['LOG_REALTIME'];
 }
 
 //busca dados do tipo da campanha
