@@ -3,6 +3,15 @@
 //echo fnDebug('true');
 
 $log_ativo = 'N';
+$lista_gerada = 0;
+$contatos_graph = 0;
+$nentregues_graph = 0;
+$disparados_graph = 0;
+$sucesso_graph = 0;
+$falha_graph = 0;
+$optout_graph = 0;
+$aguardo_graph = 0;
+$nrecebido_graph = 0;
 
 if (isset($_GET['pop'])) {
 	$popUp = fnLimpaCampo($_GET['pop']);
